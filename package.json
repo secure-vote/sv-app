@@ -1,0 +1,22 @@
+{
+  "name": "sv-app",
+  "version": "0.1.0",
+  "description": "Voting App for SecureVote",
+  "main": "index.js",
+  "dependencies": {
+    "css-loader": "^0.26.1",
+    "elm-webpack-loader": "^4.2.0",
+    "file-loader": "^0.10.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^2.2.1",
+    "webpack-dev-server": "^2.9.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "build-web": "webpack",
+    "web": "webpack-dev-server --port 3000 --open"
+  },
+  "author": "Max Kaye (SecureVote)",
+  "license": "UNLICENSED"
+}
