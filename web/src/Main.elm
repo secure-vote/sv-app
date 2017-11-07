@@ -5,7 +5,7 @@ import Material
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import Update exposing (update)
-import View exposing (view)
+import Views.RootV exposing (rootView)
 
 
 init : ( Model, Cmd Msg )
@@ -26,7 +26,7 @@ main : Program Never Model Msg
 main =
     program
         { init = init
-        , view = view
+        , view = rootView
         , update = update
         , subscriptions = subscriptions
         }
