@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Html exposing (program)
 import Material
-import Models exposing (Model)
+import Models exposing (Model, initModel)
 import Msgs exposing (Msg)
 import Update exposing (update)
 import Views.RootV exposing (rootView)
@@ -10,7 +10,7 @@ import Views.RootV exposing (rootView)
 
 init : ( Model, Cmd Msg )
 init =
-    ( { mdl = Material.model }, Cmd.none )
+    ( initModel, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg

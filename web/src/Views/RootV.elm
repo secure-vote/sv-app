@@ -35,5 +35,5 @@ rootView model =
         { header = header dashboardH
         , drawer = []
         , tabs = ( [], [] )
-        , main = [ dashboardV ]
+        , main = [ dashboardV model ]
         }
