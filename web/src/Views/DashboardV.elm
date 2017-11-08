@@ -3,9 +3,10 @@ module Views.DashboardV exposing (..)
 import Html exposing (Html, div, img, span, text)
 import Material.Card as Card
 import Material.Elevation as Elevation
+import Material.Icon as Icon
+import Material.Layout as Layout
 import Material.Options exposing (cs, styled)
 import Material.Typography as Typo
-import Models exposing (Model)
 import Msgs exposing (Msg(Mdl))
 
 
@@ -41,6 +42,19 @@ dashboardV =
                     ++ showRecentBallot ballots
     in
     content
+
+
+dashboardH : List (Html m)
+dashboardH =
+    [ Layout.title [] [ text "Your Democracies" ]
+    , Layout.spacer
+    , Layout.navigation []
+        [ Layout.link [ cs "ba br-pill" ]
+            [ text "Join"
+            , Icon.i "add"
+            ]
+        ]
+    ]
 
 
 type alias Democracy =
