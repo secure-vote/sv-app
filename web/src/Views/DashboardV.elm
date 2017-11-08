@@ -8,15 +8,12 @@ import Material.Layout as Layout
 import Material.Options exposing (cs, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl))
+import Msgs exposing (Msg)
 
 
 dashboardV : Model -> Html Msg
 dashboardV model =
     let
-        content =
-            div [] <| List.map democracyCard model.democracies
-
         showRecentBallot ballots =
             case List.head ballots of
                 Nothing ->
@@ -42,7 +39,7 @@ dashboardV model =
                 ]
                     ++ showRecentBallot ballots
     in
-    content
+    div [] <| List.map democracyCard model.democracies
 
 
 dashboardH : List (Html m)

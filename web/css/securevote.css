@@ -1,3 +1,11 @@
 .main-header {
     background-color: #0f1924
 }
+
+.mdl-data-table td.tl {
+    text-align: left;
+}
+
+.mdl-data-table td.tc {
+    text-align: center;
+}

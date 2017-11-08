@@ -1,7 +1,6 @@
 module Main exposing (..)
 
 import Html exposing (program)
-import Material
 import Models exposing (Model, initModel)
 import Msgs exposing (Msg)
 import Update exposing (update)
