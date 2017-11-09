@@ -5,7 +5,7 @@ import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Icon as Icon
 import Material.Layout as Layout
-import Material.Options exposing (cs, styled)
+import Material.Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
 import Msgs exposing (Msg)
@@ -32,7 +32,10 @@ dashboardV model =
 
         democracyCard { name, desc, ballots } =
             Card.view
-                [ Elevation.e4, cs "ma3" ]
+                [ Elevation.e4
+                , cs "ma4"
+                , css "width" "auto"
+                ]
             <|
                 [ Card.title [] [ text name ]
                 , Card.text [] [ text desc ]
