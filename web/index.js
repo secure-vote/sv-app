@@ -1,9 +1,9 @@
 'use strict';
 
-require('./css/vendor/tachyons.min.css');
-require('./css/vendor/material.blue_grey-deep_orange.min.css');
-require('./css/securevote.css');
-require('./index.html');
+setTimeout(() => {
+    const Elm = require('./src/Main.elm');
+    const app = Elm.Main.embed(document.getElementById('sv-fullscreen'));
 
-const Elm = require('./src/Main.elm');
-const app = Elm.Main.embed(document.getElementById('sv-fullscreen'));
+}, 400);
+
+

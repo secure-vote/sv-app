@@ -1,4 +1,14 @@
 var path = require("path");
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+
+const _dist = '_dist';
+const outputPath = path.join(__dirname, _dist);
+const CopyWebpackPluginConfig = new CopyWebpackPlugin([
+  {from: './web/css', to: outputPath + '/css'},
+  {from: './web/js', to: outputPath + '/js'},
+  {from: './web/img', to: outputPath + '/img'}
+]);
 
 module.exports = {
   entry: {
@@ -15,11 +25,11 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(css|scss)$/,
-        use: [
-          'style-loader',
-          'css-loader',
-        ]
+        test: /\.css$/,
+        exclude: [
+            /elm-stuff/, /node_modules/
+        ],
+        loaders: ["css-loader"]
       },
       {
         test:    /\.html$/,
@@ -43,6 +53,15 @@ module.exports = {
 
     noParse: /\.elm$/,
   },
+  plugins: [
+      CopyWebpackPluginConfig,
+      new HTMLWebpackPlugin({
+          // using .ejs prevents other loaders causing errors
+          template: 'web/index.ejs',
+          // inject details of output file at end of body
+          inject: 'body'
+      })
+  ],
 
   devServer: {
     inline: true,

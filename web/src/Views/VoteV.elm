@@ -11,7 +11,8 @@ import Material.Slider as Slider
 import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (Msg(SetDialog))
+import Routes exposing (DialogRoute(VoteConfirmationDialog))
 
 
 voteV : Model -> Html Msg
@@ -74,7 +75,7 @@ voteV model =
             ]
             [ text sampleBallot.finish ]
         , div [] optionList
-        , btn 894823489 model [ PriBtn, Attr (class "ma3") ] [ text "Continue" ]
+        , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationDialog), OpenDialog ] [ text "Continue" ]
         ]
 
 

@@ -4,6 +4,7 @@ module Views.RootV exposing (..)
 --import Views.DemocracyListV exposing (democracyListH, democracyListV)
 --import Views.DemocracyV exposing (democracyH, democracyV)
 
+import Components.Dialog exposing (dialog)
 import Html exposing (Html, div, hr, img, span, text)
 import Html.Attributes exposing (class, src, style)
 import Material.Icon as Icon
@@ -31,6 +32,11 @@ rootView model =
                 ]
             , Layout.row [] secHeader
             ]
+
+        main =
+            [ voteV model
+            , dialog model
+            ]
     in
     Layout.render Mdl
         model.mdl
@@ -40,5 +46,5 @@ rootView model =
         { header = header <| voteH
         , drawer = []
         , tabs = ( [], [] )
-        , main = [ voteV model ]
+        , main = main
         }

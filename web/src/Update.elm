@@ -2,7 +2,7 @@ module Update exposing (..)
 
 import Material
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl))
+import Msgs exposing (Msg(..))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -13,3 +13,6 @@ update msg model =
 
         Mdl msg_ ->
             Material.update Mdl msg_ model
+
+        SetDialog title route ->
+            { model | dialogHtml = { title = title, route = route } } ! []
