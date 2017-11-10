@@ -2,6 +2,7 @@ module Views.RootV exposing (..)
 
 --import Views.DashboardV exposing (dashboardH, dashboardV)
 --import Views.DemocracyListV exposing (democracyListH, democracyListV)
+--import Views.DemocracyV exposing (democracyH, democracyV)
 
 import Html exposing (Html, div, hr, img, span, text)
 import Html.Attributes exposing (class, src, style)
@@ -11,7 +12,7 @@ import Material.Options exposing (cs, css, styled)
 import Maybe.Extra exposing ((?))
 import Models exposing (Democracy, Model)
 import Msgs exposing (Msg(Mdl))
-import Views.DemocracyV exposing (democracyH, democracyV)
+import Views.VoteV exposing (voteH, voteV)
 
 
 rootView : Model -> Html Msg
@@ -36,8 +37,8 @@ rootView model =
         [ Layout.fixedHeader
         , Layout.fixedDrawer
         ]
-        { header = header <| democracyH <| List.head model.democracies ? Democracy "" "" "" []
+        { header = header <| voteH
         , drawer = []
         , tabs = ( [], [] )
-        , main = [ democracyV (List.head model.democracies ? Democracy "" "" "" []) model ]
+        , main = [ voteV model ]
         }
