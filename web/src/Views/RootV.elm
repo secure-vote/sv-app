@@ -30,7 +30,13 @@ rootView model =
                     [ Layout.link [] [ Icon.view "account_circle" [ Icon.size48 ] ]
                     ]
                 ]
-            , Layout.row [] <| pageHeader model
+            , Layout.row [ cs "relative" ]
+                ([ Layout.navigation [ cs "absolute left-0" ]
+                    [ Layout.link [] [ Icon.view "arrow_back" [ Icon.size48 ] ]
+                    ]
+                 ]
+                    ++ pageHeader model
+                )
             ]
 
         main =
