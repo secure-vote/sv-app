@@ -1,9 +1,5 @@
 module Views.RootV exposing (..)
 
---import Views.DashboardV exposing (dashboardH, dashboardV)
---import Views.DemocracyListV exposing (democracyListH, democracyListV)
---import Views.DemocracyV exposing (democracyH, democracyV)
-
 import Components.Dialog exposing (dialog)
 import Html exposing (Html, div, hr, img, span, text)
 import Html.Attributes exposing (class, src, style)
@@ -13,6 +9,10 @@ import Material.Options exposing (cs, css, styled)
 import Maybe.Extra exposing ((?))
 import Models exposing (Democracy, Model)
 import Msgs exposing (Msg(Mdl))
+import Routes exposing (Route(..))
+import Views.DashboardV exposing (dashboardH, dashboardV)
+import Views.DemocracyListV exposing (democracyListH, democracyListV)
+import Views.DemocracyV exposing (democracyH, democracyV)
 import Views.VoteV exposing (voteH, voteV)
 
 
@@ -22,7 +22,7 @@ rootView model =
         logo =
             img [ src "/web/img/securevote-logo-side.svg", style [ ( "max-width", "55%" ) ] ] []
 
-        header secHeader =
+        header =
             [ Layout.row [ cs "main-header" ]
                 [ Layout.title [] [ logo ]
                 , Layout.spacer
@@ -30,11 +30,11 @@ rootView model =
                     [ Layout.link [] [ Icon.view "account_circle" [ Icon.size48 ] ]
                     ]
                 ]
-            , Layout.row [] secHeader
+            , Layout.row [] <| pageHeader model
             ]
 
         main =
-            [ voteV model
+            [ page model
             , dialog model
             ]
     in
@@ -43,8 +43,39 @@ rootView model =
         [ Layout.fixedHeader
         , Layout.fixedDrawer
         ]
-        { header = header <| voteH
+        { header = header
         , drawer = []
         , tabs = ( [], [] )
         , main = main
         }
+
+
+page : Model -> Html Msg
+page model =
+    case model.route of
+        DashboardR ->
+            dashboardV model
+
+        DemocracyListR ->
+            democracyListV model
+
+        DemocracyR ->
+            democracyV model
+
+        VoteR ->
+            voteV model
+
+
+pageHeader model =
+    case model.route of
+        DashboardR ->
+            dashboardH
+
+        DemocracyListR ->
+            democracyListH model
+
+        DemocracyR ->
+            democracyH model
+
+        VoteR ->
+            voteH

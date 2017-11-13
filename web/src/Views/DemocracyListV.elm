@@ -1,5 +1,6 @@
 module Views.DemocracyListV exposing (..)
 
+import Dict
 import Html exposing (Html, div, img, span, text)
 import Html.Attributes exposing (height, src)
 import Material.Icon as Icon
@@ -15,7 +16,7 @@ import Msgs exposing (Msg(Mdl))
 democracyListV : Model -> Html Msg
 democracyListV model =
     let
-        listItem { name, logo } =
+        listItem ( id, { name, logo } ) =
             Table.tr []
                 [ Table.td [ cs "center tc" ] [ img [ src logo, height 50 ] [] ]
                 , Table.td [ cs "tl" ] [ styled span [ Typo.title ] [ text name ] ]
@@ -23,7 +24,7 @@ democracyListV model =
                 ]
     in
     Table.table [ cs "w-100" ]
-        [ Table.tbody [] <| List.map listItem model.democracies
+        [ Table.tbody [] <| List.map listItem <| Dict.toList model.democracies
         ]
 
 

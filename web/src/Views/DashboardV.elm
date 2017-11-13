@@ -1,19 +1,33 @@
 module Views.DashboardV exposing (..)
 
+import Dict
 import Html exposing (Html, div, img, span, text)
 import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Icon as Icon
 import Material.Layout as Layout
-import Material.Options exposing (cs, css, styled)
+import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
+import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (MouseState(..), Msg(MultiMsg, SetDemocracy, SetElevation, SetPage))
+import Routes exposing (Route(DemocracyR))
 
 
 dashboardV : Model -> Html Msg
 dashboardV model =
     let
+        elevation id =
+            case Dict.get id model.elevations ? MouseUp of
+                MouseUp ->
+                    Elevation.e4
+
+                MouseDown ->
+                    Elevation.e2
+
+                MouseOver ->
+                    Elevation.e8
+
         showRecentBallot ballots =
             case List.head ballots of
                 Nothing ->
@@ -30,9 +44,15 @@ dashboardV model =
                         ]
                     ]
 
-        democracyCard { name, desc, ballots } =
+        democracyCard ( id, { name, desc, ballots } ) =
             Card.view
-                [ Elevation.e4
+                [ elevation id
+                , Options.onMouseOver (SetElevation id MouseOver)
+                , Options.onMouseDown (SetElevation id MouseDown)
+                , Options.onMouseLeave (SetElevation id MouseUp)
+                , Options.onMouseUp (SetElevation id MouseOver)
+                , Options.onClick (MultiMsg [ SetPage DemocracyR, SetDemocracy id ])
+                , Elevation.transition 50
                 , cs "ma4"
                 , css "width" "auto"
                 ]
@@ -42,7 +62,7 @@ dashboardV model =
                 ]
                     ++ showRecentBallot ballots
     in
-    div [] <| List.map democracyCard model.democracies
+    div [] <| List.map democracyCard <| Dict.toList model.democracies
 
 
 dashboardH : List (Html m)
