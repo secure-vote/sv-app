@@ -11,7 +11,7 @@ import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (MouseState(..), Msg(MultiMsg, SetDemocracy, SetElevation, SetPage))
-import Routes exposing (Route(DemocracyR))
+import Routes exposing (Route(DemocracyListR, DemocracyR))
 
 
 dashboardV : Model -> Html Msg
@@ -65,12 +65,15 @@ dashboardV model =
     div [] <| List.map democracyCard <| Dict.toList model.democracies
 
 
-dashboardH : List (Html m)
+dashboardH : List (Html Msg)
 dashboardH =
     [ Layout.title [] [ text "Your Democracies" ]
     , Layout.spacer
     , Layout.navigation []
-        [ Layout.link [ cs "ba br-pill" ]
+        [ Layout.link
+            [ Options.onClick <| SetPage DemocracyListR
+            , cs "ba br-pill"
+            ]
             [ text "Join"
             , Icon.i "add"
             ]
