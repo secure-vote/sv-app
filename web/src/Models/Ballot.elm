@@ -1,6 +1,10 @@
 module Models.Ballot exposing (..)
 
 
+type alias BallotId =
+    Int
+
+
 type alias Ballot =
     { name : String
     , desc : String

@@ -1,3 +1,6 @@
+-- THIS MODULE IS NOT CURRENTLY BEING USED
+
+
 module Views.DemocracyListV exposing (..)
 
 import Dict
@@ -10,15 +13,15 @@ import Material.Table as Table
 import Material.Textfield as Textf
 import Material.Typography as Typo
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl, MultiMsg, SetDemocracy, SetPage))
-import Routes exposing (Route(DemocracyR))
+import Msgs exposing (Msg(Mdl))
 
 
 democracyListV : Model -> Html Msg
 democracyListV model =
     let
         listItem ( id, { name, logo } ) =
-            Table.tr [ Options.onClick (MultiMsg [ SetPage DemocracyR, SetDemocracy id ]) ]
+            Table.tr []
+                --            Table.tr [ Options.onClick (MultiMsg [ SetPage DemocracyR, SetDemocracy id ]) ]
                 [ Table.td [ cs "center tc" ] [ img [ src logo, height 50 ] [] ]
                 , Table.td [ cs "tl" ] [ styled span [ Typo.title ] [ text name ] ]
                 , Table.td [] [ Icon.view "add_circle_outline" [ Icon.size36 ] ]

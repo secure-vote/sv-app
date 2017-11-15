@@ -11,12 +11,13 @@ import Material.Slider as Slider
 import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
+import Models.Ballot exposing (BallotId)
 import Msgs exposing (Msg(SetDialog))
 import Routes exposing (DialogRoute(VoteConfirmationDialog))
 
 
-voteV : Model -> Html Msg
-voteV model =
+voteV : BallotId -> Model -> Html Msg
+voteV id model =
     let
         optionList =
             List.map optionListItem sampleBallot.options
@@ -79,8 +80,8 @@ voteV model =
         ]
 
 
-voteH : List (Html Msg)
-voteH =
+voteH : BallotId -> Model -> List (Html Msg)
+voteH id model =
     [ Layout.title [] [ text sampleBallot.name ]
     , Layout.spacer
     , Layout.navigation []

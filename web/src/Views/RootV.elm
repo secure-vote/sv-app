@@ -6,8 +6,7 @@ import Html.Attributes exposing (class, src, style)
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options exposing (cs, css, styled)
-import Maybe.Extra exposing ((?))
-import Models exposing (Democracy, Model)
+import Models exposing (Model)
 import Msgs exposing (Msg(Mdl))
 import Routes exposing (Route(..))
 import Views.DashboardV exposing (dashboardH, dashboardV)
@@ -65,13 +64,17 @@ page model =
         DemocracyListR ->
             democracyListV model
 
-        DemocracyR ->
-            democracyV model
+        DemocracyR id ->
+            democracyV id model
 
-        VoteR ->
-            voteV model
+        VoteR id ->
+            voteV id model
+
+        NotFoundRoute ->
+            notFoundView
 
 
+pageHeader : Model -> List (Html Msg)
 pageHeader model =
     case model.route of
         DashboardR ->
@@ -80,8 +83,18 @@ pageHeader model =
         DemocracyListR ->
             democracyListH model
 
-        DemocracyR ->
-            democracyH model
+        DemocracyR id ->
+            democracyH id model
 
-        VoteR ->
-            voteH
+        VoteR id ->
+            voteH id model
+
+        NotFoundRoute ->
+            [ notFoundView ]
+
+
+notFoundView : Html msg
+notFoundView =
+    div []
+        [ text "Not found"
+        ]

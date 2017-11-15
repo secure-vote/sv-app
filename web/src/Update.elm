@@ -2,9 +2,9 @@ module Update exposing (..)
 
 import Dict
 import Material
-import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
 import Msgs exposing (Msg(..))
+import Routing exposing (parseLocation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -22,14 +22,12 @@ update msg model =
         SetElevation id state ->
             { model | elevations = Dict.insert id state model.elevations } ! []
 
-        SetPage route ->
-            { model | route = route } ! []
-
-        SetDemocracy id ->
-            { model | currentDemocracy = Dict.get id model.democracies ? initModel.currentDemocracy } ! []
-
-        SetBallot ballot ->
-            { model | currentBallot = ballot } ! []
+        OnLocationChange location ->
+            let
+                newRoute =
+                    parseLocation location
+            in
+            ( { model | route = newRoute }, Cmd.none )
 
         MultiMsg msgs ->
             multiUpdate msgs model []

@@ -1,7 +1,9 @@
 module Views.DashboardV exposing (..)
 
 import Dict
-import Html exposing (Html, div, img, span, text)
+import Helpers exposing (getBallot)
+import Html exposing (Html, a, div, img, span, text)
+import Html.Attributes exposing (class, href)
 import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Icon as Icon
@@ -10,8 +12,7 @@ import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Msgs exposing (MouseState(..), Msg(MultiMsg, SetDemocracy, SetElevation, SetPage))
-import Routes exposing (Route(DemocracyListR, DemocracyR))
+import Msgs exposing (MouseState(..), Msg(SetElevation))
 
 
 dashboardV : Model -> Html Msg
@@ -33,7 +34,11 @@ dashboardV model =
                 Nothing ->
                     []
 
-                Just ballot ->
+                Just ballotId ->
+                    let
+                        ballot =
+                            getBallot ballotId model
+                    in
                     [ Card.actions [ Card.border ]
                         [ text ballot.name
                         , styled span
@@ -45,37 +50,27 @@ dashboardV model =
                     ]
 
         democracyCard ( id, { name, desc, ballots } ) =
-            Card.view
-                [ elevation id
-                , Options.onMouseOver (SetElevation id MouseOver)
-                , Options.onMouseDown (SetElevation id MouseDown)
-                , Options.onMouseLeave (SetElevation id MouseUp)
-                , Options.onMouseUp (SetElevation id MouseOver)
-                , Options.onClick (MultiMsg [ SetPage DemocracyR, SetDemocracy id ])
-                , Elevation.transition 50
-                , cs "ma4"
-                , css "width" "auto"
+            a [ href <| "#d/" ++ toString id, class "link black" ]
+                [ Card.view
+                    [ elevation id
+                    , Options.onMouseOver (SetElevation id MouseOver)
+                    , Options.onMouseDown (SetElevation id MouseDown)
+                    , Options.onMouseLeave (SetElevation id MouseUp)
+                    , Options.onMouseUp (SetElevation id MouseOver)
+                    , Elevation.transition 50
+                    , cs "ma4"
+                    , css "width" "auto"
+                    ]
+                  <|
+                    [ Card.title [] [ text name ]
+                    , Card.text [] [ text desc ]
+                    ]
+                        ++ showRecentBallot ballots
                 ]
-            <|
-                [ Card.title [] [ text name ]
-                , Card.text [] [ text desc ]
-                ]
-                    ++ showRecentBallot ballots
     in
     div [] <| List.map democracyCard <| Dict.toList model.democracies
 
 
 dashboardH : List (Html Msg)
 dashboardH =
-    [ Layout.title [] [ text "Your Democracies" ]
-    , Layout.spacer
-    , Layout.navigation []
-        [ Layout.link
-            [ Options.onClick <| SetPage DemocracyListR
-            , cs "ba br-pill"
-            ]
-            [ text "Join"
-            , Icon.i "add"
-            ]
-        ]
-    ]
+    [ Layout.title [] [ text "Your Democracies" ] ]

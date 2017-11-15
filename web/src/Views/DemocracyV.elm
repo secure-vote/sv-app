@@ -1,49 +1,55 @@
 module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Html exposing (Html, div, img, span, text)
-import Html.Attributes exposing (class)
+import Helpers exposing (getBallot, getDemocracy)
+import Html exposing (Html, a, div, img, span, text)
+import Html.Attributes exposing (class, href)
 import Material.Card as Card
 import Material.Elevation as Elevation
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
-import Models exposing (Democracy, Model)
-import Msgs exposing (Msg(MultiMsg, SetBallot, SetPage))
-import Routes exposing (Route(VoteR))
+import Models exposing (Model)
+import Models.Democracy exposing (DemocracyId)
+import Msgs exposing (Msg)
 
 
-democracyV : Model -> Html Msg
-democracyV model =
+democracyV : DemocracyId -> Model -> Html Msg
+democracyV id model =
     let
-        ballotCard ballot =
-            Card.view
-                [ Elevation.e4
-                , cs "ma4"
-                , css "width" "auto"
-                , Options.onClick (MultiMsg [ SetPage VoteR, SetBallot ballot ])
-                ]
-                [ Card.title [] [ text ballot.name ]
-                , Card.text [ cs "tl" ]
-                    [ text ballot.desc
-                    , styled span
-                        [ cs "tr pa2 absolute bottom-0 right-0"
-                        , Typo.caption
+        ballotCard ballotId =
+            let
+                ballot =
+                    getBallot ballotId model
+            in
+            a [ href <| "#v/" ++ toString ballotId, class "link black" ]
+                [ Card.view
+                    [ Elevation.e4
+                    , cs "ma4"
+                    , css "width" "auto"
+                    ]
+                    [ Card.title [] [ text ballot.name ]
+                    , Card.text [ cs "tl" ]
+                        [ text ballot.desc
+                        , styled span
+                            [ cs "tr pa2 absolute bottom-0 right-0"
+                            , Typo.caption
+                            ]
+                            [ text ballot.finish ]
                         ]
-                        [ text ballot.finish ]
                     ]
                 ]
     in
     div [ class "tc" ]
-        [ div [] <| List.map ballotCard model.currentDemocracy.ballots
+        [ div [] <| List.map ballotCard (getDemocracy id model).ballots
         , btn 348739845 model [ SecBtn ] [ text "Previous Votes" ]
         ]
 
 
-democracyH : Model -> List (Html m)
-democracyH model =
-    [ Layout.title [] [ text model.currentDemocracy.name ]
+democracyH : DemocracyId -> Model -> List (Html m)
+democracyH id model =
+    [ Layout.title [] [ text (getDemocracy id model).name ]
     , Layout.spacer
     , Layout.navigation []
         [ Layout.link []
