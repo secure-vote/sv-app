@@ -1,16 +1,14 @@
 module Views.DashboardV exposing (..)
 
+import Components.CardElevation as CardElevation
 import Dict
 import Helpers exposing (getBallot)
 import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
-import Material.Elevation as Elevation
-import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
-import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (MouseState(..), Msg(SetElevation))
 
@@ -18,17 +16,6 @@ import Msgs exposing (MouseState(..), Msg(SetElevation))
 dashboardV : Model -> Html Msg
 dashboardV model =
     let
-        elevation id =
-            case Dict.get id model.elevations ? MouseUp of
-                MouseUp ->
-                    Elevation.e4
-
-                MouseDown ->
-                    Elevation.e2
-
-                MouseOver ->
-                    Elevation.e8
-
         showRecentBallot ballots =
             case List.head ballots of
                 Nothing ->
@@ -52,15 +39,11 @@ dashboardV model =
         democracyCard ( id, { name, desc, ballots } ) =
             a [ href <| "#d/" ++ toString id, class "link black" ]
                 [ Card.view
-                    [ elevation id
-                    , Options.onMouseOver (SetElevation id MouseOver)
-                    , Options.onMouseDown (SetElevation id MouseDown)
-                    , Options.onMouseLeave (SetElevation id MouseUp)
-                    , Options.onMouseUp (SetElevation id MouseOver)
-                    , Elevation.transition 50
-                    , cs "ma4"
-                    , css "width" "auto"
-                    ]
+                    ([ cs "ma4"
+                     , css "width" "auto"
+                     ]
+                        ++ CardElevation.attr id model
+                    )
                   <|
                     [ Card.title [] [ text name ]
                     , Card.text [] [ text desc ]

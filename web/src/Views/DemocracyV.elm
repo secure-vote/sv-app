@@ -1,6 +1,7 @@
 module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.CardElevation as CardElevation
 import Helpers exposing (getBallot, getDemocracy)
 import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (class, href)
@@ -25,10 +26,11 @@ democracyV id model =
             in
             a [ href <| "#v/" ++ toString ballotId, class "link black" ]
                 [ Card.view
-                    [ Elevation.e4
-                    , cs "ma4"
-                    , css "width" "auto"
-                    ]
+                    ([ cs "ma4"
+                     , css "width" "auto"
+                     ]
+                        ++ CardElevation.attr ballotId model
+                    )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
                         [ text ballot.desc
