@@ -2,6 +2,7 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Dict exposing (Dict)
+import Helpers exposing (getBallot)
 import Html exposing (Html, div, p, span, text)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
@@ -13,14 +14,17 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Msgs exposing (Msg(SetDialog))
-import Routes exposing (DialogRoute(VoteConfirmationDialog))
+import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
 
 
 voteV : BallotId -> Model -> Html Msg
 voteV id model =
     let
+        ballot =
+            getBallot id model
+
         optionList =
-            List.map optionListItem sampleBallot.options
+            List.map optionListItem ballot.options
 
         optionListItem { id, name, desc } =
             div [ class "center mw-5 cf mb4 mt3 db w-100 bb bw1 b--silver" ]
@@ -60,8 +64,7 @@ voteV id model =
                     [ btn (id * 13 + 1)
                         model
                         [ SecBtn
-
-                        -- , Click (SetDialog (rSchedTitle ++ ": Details") (BallotDialog description))
+                        , Click (SetDialog (name ++ ": Details") (BallotOptionD desc))
                         , OpenDialog
                         ]
                         [ text "Details" ]
@@ -69,40 +72,30 @@ voteV id model =
                 ]
     in
     div [ class "tc pa3" ]
-        [ text sampleBallot.desc
+        [ text ballot.desc
         , styled p
             [ cs "tr pa2"
             , Typo.caption
             ]
-            [ text sampleBallot.finish ]
+            [ text ballot.finish ]
         , div [] optionList
-        , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationDialog), OpenDialog ] [ text "Continue" ]
+        , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationD), OpenDialog ] [ text "Continue" ]
         ]
 
 
 voteH : BallotId -> Model -> List (Html Msg)
 voteH id model =
-    [ Layout.title [] [ text sampleBallot.name ]
+    let
+        ballot =
+            getBallot id model
+    in
+    [ Layout.title [] [ text ballot.name ]
     , Layout.spacer
     , Layout.navigation []
         [ Layout.link []
-            [ Icon.view "info_outline" [ Icon.size36 ]
-            ]
+            [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
         ]
     ]
-
-
-sampleBallot =
-    { name = "Token Release Schedule"
-    , desc = "This vote is to determine the release schedule of the SWM token."
-    , options =
-        [ { id = 12341234123, name = "8 releases of 42 days", desc = "" }
-        , { id = 64564746345, name = "42 releases of 8 days", desc = "" }
-        , { id = 87967875645, name = "16 releases of 42 days", desc = "" }
-        , { id = 23457478556, name = "4 releases of 84 days", desc = "" }
-        ]
-    , finish = "Vote Ends in 42 minutes"
-    }
 
 
 sampleResults =

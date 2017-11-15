@@ -5,9 +5,9 @@ import Html exposing (Html, div, hr, img, span, text)
 import Html.Attributes exposing (class, src, style)
 import Material.Icon as Icon
 import Material.Layout as Layout
-import Material.Options exposing (cs, css, styled)
+import Material.Options exposing (cs, css, onClick, styled)
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl))
+import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome))
 import Routes exposing (Route(..))
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
@@ -22,8 +22,11 @@ rootView model =
             img [ src "/web/img/securevote-logo-side.svg", style [ ( "max-width", "55%" ) ] ] []
 
         header =
-            [ Layout.row [ cs "main-header" ]
-                [ Layout.title [] [ logo ]
+            [ Layout.row [ cs "main-header relative" ]
+                [ Layout.navigation [ cs "absolute left-0" ]
+                    [ Layout.link [ onClick NavigateHome ] [ Icon.view "home" [ Icon.size36 ] ]
+                    ]
+                , Layout.title [] [ logo ]
                 , Layout.spacer
                 , Layout.navigation []
                     [ Layout.link [] [ Icon.view "account_circle" [ Icon.size48 ] ]
@@ -31,7 +34,7 @@ rootView model =
                 ]
             , Layout.row [ cs "relative" ]
                 ([ Layout.navigation [ cs "absolute left-0" ]
-                    [ Layout.link [] [ Icon.view "arrow_back" [ Icon.size48 ] ]
+                    [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ]
                     ]
                  ]
                     ++ pageHeader model

@@ -6,7 +6,7 @@ import Html.Attributes exposing (class)
 import Material.Options exposing (cs, styled)
 import Material.Typography as Typo exposing (title)
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (Msg(NavigateBack))
 
 
 subhead : String -> Html Msg
@@ -33,9 +33,24 @@ confirmationDialogV model =
         , table [] <| List.map row sampleBallot.options
         , div [ class "tr mt3" ]
             [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2") ] [ text "Close" ]
-            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2") ] [ text "Yes" ]
+            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2"), Click NavigateBack ] [ text "Yes" ]
             ]
         ]
+
+
+ballotInfoDialogV : String -> Html Msg
+ballotInfoDialogV desc =
+    text desc
+
+
+ballotOptionDialogV : String -> Html Msg
+ballotOptionDialogV desc =
+    text desc
+
+
+democracyInfoDialogV : String -> Html Msg
+democracyInfoDialogV desc =
+    text desc
 
 
 sampleBallot =

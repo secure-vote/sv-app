@@ -5,7 +5,7 @@ import Material
 import Models.Ballot exposing (Ballot, BallotId, BallotOption)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
-import Routes exposing (DialogRoute(NotFoundDialog), Route(DashboardR))
+import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR))
 
 
 type alias Model =
@@ -23,7 +23,7 @@ initModel route =
     { mdl = Material.model
     , democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
-    , dialogHtml = { title = "", route = NotFoundDialog }
+    , dialogHtml = { title = "", route = NotFoundD }
     , route = route
     , elevations = Dict.empty
     }

@@ -42,7 +42,7 @@ dashboardV model =
                     ([ cs "ma4"
                      , css "width" "auto"
                      ]
-                        ++ CardElevation.attr id model
+                        ++ CardElevation.opts id model
                     )
                   <|
                     [ Card.title [] [ text name ]

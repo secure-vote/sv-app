@@ -13,12 +13,16 @@ import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg)
+import Msgs exposing (Msg(SetDialog))
+import Routes exposing (DialogRoute(DemocracyInfoD))
 
 
 democracyV : DemocracyId -> Model -> Html Msg
 democracyV id model =
     let
+        democracy =
+            getDemocracy id model
+
         ballotCard ballotId =
             let
                 ballot =
@@ -29,7 +33,7 @@ democracyV id model =
                     ([ cs "ma4"
                      , css "width" "auto"
                      ]
-                        ++ CardElevation.attr ballotId model
+                        ++ CardElevation.opts ballotId model
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
@@ -44,18 +48,21 @@ democracyV id model =
                 ]
     in
     div [ class "tc" ]
-        [ div [] <| List.map ballotCard (getDemocracy id model).ballots
+        [ div [] <| List.map ballotCard democracy.ballots
         , btn 348739845 model [ SecBtn ] [ text "Previous Votes" ]
         ]
 
 
-democracyH : DemocracyId -> Model -> List (Html m)
+democracyH : DemocracyId -> Model -> List (Html Msg)
 democracyH id model =
-    [ Layout.title [] [ text (getDemocracy id model).name ]
+    let
+        democracy =
+            getDemocracy id model
+    in
+    [ Layout.title [] [ text democracy.name ]
     , Layout.spacer
     , Layout.navigation []
         [ Layout.link []
-            [ Icon.view "info_outline" [ Icon.size36 ]
-            ]
+            [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Democracy Info" <| DemocracyInfoD democracy.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
         ]
     ]

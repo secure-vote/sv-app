@@ -4,6 +4,7 @@ import Dict
 import Material
 import Models exposing (Model, initModel)
 import Msgs exposing (Msg(..))
+import Navigation
 import Routing exposing (parseLocation)
 
 
@@ -28,6 +29,12 @@ update msg model =
                     parseLocation location
             in
             ( { model | route = newRoute }, Cmd.none )
+
+        NavigateBack ->
+            ( model, Navigation.back 1 )
+
+        NavigateHome ->
+            ( model, Navigation.newUrl "#" )
 
         MultiMsg msgs ->
             multiUpdate msgs model []

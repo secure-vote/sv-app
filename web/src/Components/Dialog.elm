@@ -9,7 +9,7 @@ import Material.Options as Options exposing (cs, css)
 import Models exposing (Model)
 import Msgs exposing (Msg)
 import Routes exposing (DialogRoute(..))
-import Views.DialogV exposing (confirmationDialogV)
+import Views.DialogV exposing (..)
 
 
 dialog : Model -> Html Msg
@@ -17,10 +17,19 @@ dialog model =
     let
         innerHtml =
             case model.dialogHtml.route of
-                VoteConfirmationDialog ->
+                VoteConfirmationD ->
                     confirmationDialogV model
 
-                NotFoundDialog ->
+                BallotInfoD desc ->
+                    ballotInfoDialogV desc
+
+                BallotOptionD desc ->
+                    ballotOptionDialogV desc
+
+                DemocracyInfoD desc ->
+                    democracyInfoDialogV desc
+
+                NotFoundD ->
                     h1 [ class "red" ] [ text "Not Found" ]
     in
     Dialog.view

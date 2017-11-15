@@ -13,5 +13,8 @@ type Route
 
 
 type DialogRoute msg
-    = VoteConfirmationDialog
-    | NotFoundDialog
+    = VoteConfirmationD
+    | BallotInfoD String
+    | BallotOptionD String
+    | DemocracyInfoD String
+    | NotFoundD
