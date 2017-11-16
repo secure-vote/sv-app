@@ -29,6 +29,9 @@ dialog model =
                 DemocracyInfoD desc ->
                     democracyInfoDialogV desc
 
+                UserInfoD ->
+                    userInfoDialogV
+
                 NotFoundD ->
                     h1 [ class "red" ] [ text "Not Found" ]
     in

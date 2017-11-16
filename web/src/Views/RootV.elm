@@ -1,5 +1,6 @@
 module Views.RootV exposing (..)
 
+import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
 import Html exposing (Html, div, hr, img, span, text)
 import Html.Attributes exposing (class, src, style)
@@ -7,8 +8,8 @@ import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options exposing (cs, css, onClick, styled)
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome))
-import Routes exposing (Route(..))
+import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog))
+import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
@@ -29,7 +30,7 @@ rootView model =
                 , Layout.title [] [ logo ]
                 , Layout.spacer
                 , Layout.navigation []
-                    [ Layout.link [] [ Icon.view "account_circle" [ Icon.size48 ] ]
+                    [ Layout.link [] [ btn 457467845632 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "User Info" <| UserInfoD) ] [ Icon.view "account_circle" [ Icon.size36 ] ] ]
                     ]
                 ]
             , Layout.row [ cs "relative" ]

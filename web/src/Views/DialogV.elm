@@ -53,6 +53,11 @@ democracyInfoDialogV desc =
     text desc
 
 
+userInfoDialogV : Html Msg
+userInfoDialogV =
+    text "Hello User"
+
+
 sampleBallot =
     { name = "Token Release Schedule"
     , desc = "This vote is to determine the release schedule of the SWM token."
