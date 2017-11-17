@@ -1,5 +1,6 @@
 module Views.RootV exposing (..)
 
+import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
 import Html exposing (Html, div, hr, img, span, text)
@@ -74,6 +75,9 @@ page model =
         VoteR id ->
             voteV id model
 
+        CreateDemocracyR ->
+            createDemocracyV model
+
         NotFoundRoute ->
             notFoundView
 
@@ -92,6 +96,9 @@ pageHeader model =
 
         VoteR id ->
             voteH id model
+
+        CreateDemocracyR ->
+            createDemocracyH
 
         NotFoundRoute ->
             [ notFoundView ]

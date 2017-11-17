@@ -14,6 +14,7 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , route : Route
+    , fields : Dict Int String
     , elevations : Dict Int MouseState
     }
 
@@ -25,6 +26,7 @@ initModel route =
     , ballots = Dict.fromList ballots
     , dialogHtml = { title = "", route = NotFoundD }
     , route = route
+    , fields = Dict.empty
     , elevations = Dict.empty
     }
 

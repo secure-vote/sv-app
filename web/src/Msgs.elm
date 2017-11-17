@@ -11,9 +11,11 @@ type Msg
     | Mdl (Material.Msg Msg)
     | SetDialog String (DialogRoute Msg)
     | SetElevation Int MouseState
+    | SetField Int String
     | OnLocationChange Location
     | NavigateBack
     | NavigateHome
+    | NavigateTo String
     | MultiMsg (List Msg)
 
 

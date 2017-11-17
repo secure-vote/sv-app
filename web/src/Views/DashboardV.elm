@@ -6,11 +6,13 @@ import Helpers exposing (getBallot)
 import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
+import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
-import Msgs exposing (MouseState(..), Msg(SetElevation))
+import Msgs exposing (MouseState(..), Msg(NavigateTo, SetElevation))
+import Routes exposing (Route(CreateDemocracyR))
 
 
 dashboardV : Model -> Html Msg
@@ -56,4 +58,15 @@ dashboardV model =
 
 dashboardH : List (Html Msg)
 dashboardH =
-    [ Layout.title [] [ text "Your Democracies" ] ]
+    [ Layout.title [] [ text "Your Democracies" ]
+    , Layout.spacer
+    , Layout.navigation []
+        [ Layout.link
+            [ Options.onClick <| NavigateTo "#create-democracy"
+            , cs "ba br-pill"
+            ]
+            [ text "New"
+            , Icon.i "add"
+            ]
+        ]
+    ]

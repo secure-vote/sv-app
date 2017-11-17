@@ -23,6 +23,9 @@ update msg model =
         SetElevation id state ->
             { model | elevations = Dict.insert id state model.elevations } ! []
 
+        SetField fieldId value ->
+            { model | fields = Dict.insert fieldId value model.fields } ! []
+
         OnLocationChange location ->
             let
                 newRoute =
@@ -35,6 +38,9 @@ update msg model =
 
         NavigateHome ->
             ( model, Navigation.newUrl "#" )
+
+        NavigateTo url ->
+            ( model, Navigation.newUrl url )
 
         MultiMsg msgs ->
             multiUpdate msgs model []
