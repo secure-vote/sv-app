@@ -7,8 +7,6 @@ import Html.Attributes exposing (class)
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, styled)
 import Material.Textfield as Textf
-import Material.Toggles as Toggles
-import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, SetField))
@@ -16,6 +14,7 @@ import Msgs exposing (Msg(Mdl, NavigateBack, SetField))
 
 -- Future Features
 -- - Upload Logo
+-- - Set who can propose votes
 
 
 createDemocracyV : Model -> Html Msg
