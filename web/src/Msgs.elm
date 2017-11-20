@@ -12,6 +12,7 @@ type Msg
     | SetDialog String (DialogRoute Msg)
     | SetElevation Int MouseState
     | SetField Int String
+    | SetIntField Int Int
     | OnLocationChange Location
     | NavigateBack
     | NavigateHome

@@ -19,7 +19,7 @@ import Msgs exposing (Msg(Mdl))
 democracyListV : Model -> Html Msg
 democracyListV model =
     let
-        listItem ( id, { name, logo } ) =
+        listItem { name, logo } =
             Table.tr []
                 --            Table.tr [ Options.onClick (MultiMsg [ SetPage DemocracyR, SetDemocracy id ]) ]
                 [ Table.td [ cs "center tc" ] [ img [ src logo, height 50 ] [] ]
@@ -28,7 +28,7 @@ democracyListV model =
                 ]
     in
     Table.table [ cs "w-100" ]
-        [ Table.tbody [] <| List.map listItem <| Dict.toList model.democracies
+        [ Table.tbody [] <| List.map listItem <| Dict.values model.democracies
         ]
 
 

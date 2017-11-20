@@ -12,7 +12,6 @@ import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
 import Msgs exposing (MouseState(..), Msg(NavigateTo, SetElevation))
-import Routes exposing (Route(CreateDemocracyR))
 
 
 dashboardV : Model -> Html Msg

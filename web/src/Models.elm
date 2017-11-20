@@ -12,9 +12,11 @@ type alias Model =
     { mdl : Material.Model
     , democracies : Dict DemocracyId Democracy
     , ballots : Dict BallotId Ballot
+    , members : Dict MemberId Member
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , route : Route
     , fields : Dict Int String
+    , intFields : Dict Int Int
     , elevations : Dict Int MouseState
     }
 
@@ -24,9 +26,11 @@ initModel route =
     { mdl = Material.model
     , democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
+    , members = Dict.fromList members
     , dialogHtml = { title = "", route = NotFoundD }
     , route = route
     , fields = Dict.empty
+    , intFields = Dict.empty
     , elevations = Dict.empty
     }
 
@@ -67,3 +71,29 @@ ballots =
     , ( 4578267564, Ballot "Should Everyone Get Free Money?" "Sounds like a good idea to me!" "300" "Vote Ends in 3 days" [] )
     , ( 8678457457, Ballot "Same Sex Marriage" "Should the law be changed to allow same-sex couples to marry" "100" "Vote Ends in 16 hours" [] )
     ]
+
+
+members : List ( MemberId, Member )
+members =
+    [ ( 68457345353, Member "John" "Howard" [ 3623456347, 3456346785 ] [] )
+    , ( 57657954674, Member "Kim" "Beazley" [ 3623456347 ] [] )
+    , ( 95434678684, Member "Julia" "Gillard" [ 3623456347 ] [] )
+    , ( 89679067456, Member "Kevin" "Rudd" [ 3456346785 ] [] )
+    , ( 76543578984, Member "Tony" "Abbott" [ 3456346785 ] [] )
+    ]
+
+
+type alias MemberId =
+    Int
+
+
+type alias Member =
+    { firstName : String
+    , lastName : String
+    , democracies : List DemocracyId
+    , results : List VoteResultId
+    }
+
+
+type alias VoteResultId =
+    Int

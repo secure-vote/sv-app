@@ -2,10 +2,9 @@ module Helpers exposing (..)
 
 import Dict
 import Maybe.Extra exposing ((?))
-import Models exposing (Model)
+import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(SetField))
 
 
 getDemocracy : DemocracyId -> Model -> Democracy
@@ -20,9 +19,16 @@ getBallot id model =
 
 getTab : Int -> Model -> Int
 getTab id model =
-    Result.withDefault 0 <| String.toInt <| Dict.get id model.fields ? "0"
+    Dict.get id model.intFields ? 0
 
 
-setTab : Int -> Int -> Msg
-setTab id value =
-    SetField id <| toString value
+getMembers : DemocracyId -> Model -> List Member
+getMembers id model =
+    let
+        filter member =
+            if List.member id member.democracies then
+                True
+            else
+                False
+    in
+    List.filter filter <| Dict.values model.members

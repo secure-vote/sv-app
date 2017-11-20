@@ -2,11 +2,11 @@
     background-color: #0f1924
 }
 
-.mdl-data-table td.tl {
+.mdl-data-table .tl {
     text-align: left;
 }
 
-.mdl-data-table td.tc {
+.mdl-data-table .tc {
     text-align: center;
 }
 

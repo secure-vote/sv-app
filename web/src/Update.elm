@@ -26,6 +26,9 @@ update msg model =
         SetField fieldId value ->
             { model | fields = Dict.insert fieldId value model.fields } ! []
 
+        SetIntField fieldId value ->
+            { model | intFields = Dict.insert fieldId value model.intFields } ! []
+
         OnLocationChange location ->
             let
                 newRoute =
