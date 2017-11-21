@@ -1,6 +1,7 @@
 module AdminViews.CreateDemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.TextF exposing (textF)
 import Dict
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
@@ -19,27 +20,12 @@ import Msgs exposing (Msg(Mdl, NavigateBack, SetField))
 
 createDemocracyV : Model -> Html Msg
 createDemocracyV model =
-    let
-        tf id label opts =
-            Textf.render Mdl
-                [ id ]
-                model.mdl
-                ([ Options.onInput <| SetField id
-                 , Textf.value <| Dict.get id model.fields ? ""
-                 , Textf.label label
-                 , Textf.floatingLabel
-                 , cs "db"
-                 ]
-                    ++ opts
-                )
-                []
-    in
     div [ class "pa4" ]
-        [ tf 23634563445 "Name" []
-        , tf 56745674563 "Description" [ Textf.textarea ]
+        [ textF 23634563445 "Name" [] model
+        , textF 56745674563 "Description" [ Textf.textarea ] model
         , div [ class "mt4" ]
-            [ btn 894823489 model [ SecBtn, Attr (class "ma3"), Click NavigateBack ] [ text "Cancel" ]
-            , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click NavigateBack ] [ text "Create" ]
+            [ btn 894823489 model [ SecBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Cancel" ]
+            , btn 894823489 model [ PriBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Create" ]
             ]
         ]
 

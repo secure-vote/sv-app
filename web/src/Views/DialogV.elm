@@ -1,6 +1,7 @@
 module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.TextF exposing (textF)
 import Html exposing (Html, div, p, table, td, text, tr)
 import Html.Attributes exposing (class)
 import Material.Options exposing (cs, styled)
@@ -32,8 +33,8 @@ confirmationDialogV model =
         [ p [] [ text "Please confirm that your vote details below are correct." ]
         , table [] <| List.map row sampleBallot.options
         , div [ class "tr mt3" ]
-            [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2") ] [ text "Close" ]
-            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2"), Click NavigateBack ] [ text "Yes" ]
+            [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
+            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click NavigateBack ] [ text "Yes" ]
             ]
         ]
 
@@ -56,6 +57,16 @@ democracyInfoDialogV desc =
 userInfoDialogV : Html Msg
 userInfoDialogV =
     text "Hello User"
+
+
+memberInviteDialogV : Model -> Html Msg
+memberInviteDialogV model =
+    div []
+        [ text "Invite via email"
+        , textF 788765454534 "Seperate addresses with a coma" [] model
+        , text "Or Upload a CSV"
+        , btn 4356373453 model [ SecBtn, Attr (class "db") ] [ text "Choose a file" ]
+        ]
 
 
 sampleBallot =

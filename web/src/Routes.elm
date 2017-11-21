@@ -19,4 +19,5 @@ type DialogRoute msg
     | BallotOptionD String
     | DemocracyInfoD String
     | UserInfoD
+    | MemberInviteD
     | NotFoundD

@@ -1,7 +1,7 @@
 module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Components.CardElevation as CardElevation
+import Components.CardElevation exposing (elevation)
 import Helpers exposing (getBallot, getDemocracy, getMembers, getTab)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
@@ -15,7 +15,7 @@ import Material.Typography as Typo
 import Models exposing (Model)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(Mdl, NavigateTo, SetDialog, SetField, SetIntField))
-import Routes exposing (DialogRoute(DemocracyInfoD))
+import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD))
 
 
 tabId : Int
@@ -42,7 +42,7 @@ democracyV id model =
             [ Options.center ]
             [ Icon.i "history"
             , Options.span [ css "width" "4px" ] []
-            , text "Past Results"
+            , text "Past"
             ]
         , Tabs.label
             [ Options.center ]
@@ -97,7 +97,7 @@ ballotList id model =
                     ([ cs "ma4"
                      , css "width" "auto"
                      ]
-                        ++ CardElevation.opts ballotId model
+                        ++ elevation ballotId model
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
@@ -130,12 +130,7 @@ memberList id model =
             [ Table.tr []
                 [ Table.th [ cs "tl" ] [ text "Name" ]
                 , Table.th []
-                    [ styled span
-                        [ Options.onClick <| NavigateTo "#invite-members"
-                        , cs "ba br-pill pa2"
-                        ]
-                        [ text "Invite +"
-                        ]
+                    [ btn 2345785562 model [ SecBtn, OpenDialog, Click (SetDialog "Invite Members" <| MemberInviteD) ] [ text "Invite +" ]
                     ]
                 ]
             ]

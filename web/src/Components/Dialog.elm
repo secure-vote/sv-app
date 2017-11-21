@@ -32,6 +32,9 @@ dialog model =
                 UserInfoD ->
                     userInfoDialogV
 
+                MemberInviteD ->
+                    memberInviteDialogV model
+
                 NotFoundD ->
                     h1 [ class "red" ] [ text "Not Found" ]
     in

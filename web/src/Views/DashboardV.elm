@@ -1,6 +1,6 @@
 module Views.DashboardV exposing (..)
 
-import Components.CardElevation as CardElevation
+import Components.CardElevation exposing (elevation)
 import Dict
 import Helpers exposing (getBallot)
 import Html exposing (Html, a, div, img, span, text)
@@ -43,7 +43,7 @@ dashboardV model =
                     ([ cs "ma4"
                      , css "width" "auto"
                      ]
-                        ++ CardElevation.opts id model
+                        ++ elevation id model
                     )
                   <|
                     [ Card.title [] [ text name ]

@@ -73,7 +73,7 @@ btn id model props inner =
             ( attrs ++ newAttrs, opts ++ newOpts )
 
         ( attrs, opts ) =
-            List.foldl f ( [ class "dib" ], [] ) props
+            List.foldl f ( [], [] ) props
     in
     div attrs
         [ Button.render Mdl [ id ] model.mdl opts inner

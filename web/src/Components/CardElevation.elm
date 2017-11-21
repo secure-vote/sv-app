@@ -8,8 +8,8 @@ import Models exposing (Model)
 import Msgs exposing (MouseState(..), Msg(SetElevation))
 
 
-opts : Int -> Model -> List (Options.Property a Msg)
-opts id model =
+elevation : Int -> Model -> List (Options.Property a Msg)
+elevation id model =
     let
         elevation id =
             case Dict.get id model.elevations ? MouseUp of
