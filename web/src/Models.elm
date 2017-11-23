@@ -18,6 +18,7 @@ type alias Model =
     , fields : Dict Int String
     , intFields : Dict Int Int
     , elevations : Dict Int MouseState
+    , isAdmin : Bool
     }
 
 
@@ -32,6 +33,7 @@ initModel route =
     , fields = Dict.empty
     , intFields = Dict.empty
     , elevations = Dict.empty
+    , isAdmin = False
     }
 
 

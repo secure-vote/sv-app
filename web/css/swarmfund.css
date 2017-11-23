@@ -1,9 +1,13 @@
-.main-header {
-    background-color: #0f1924
+.main-header a.mdl-navigation__link {
+    color: white;
+}
+
+.secondary-header {
+    background-color: #ffe082;
 }
 
 .main-logo {
-    background-image: url("/web/img/securevote-logo-side.svg");
+    background-image: url("/web/img/swarm-logo-white.svg");
     width: 55vw;
     height: 3rem;
     background-size: contain;

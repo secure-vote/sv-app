@@ -55,17 +55,24 @@ dashboardV model =
     div [] <| List.map democracyCard <| Dict.toList model.democracies
 
 
-dashboardH : List (Html Msg)
-dashboardH =
-    [ Layout.title [] [ text "Your Democracies" ]
-    , Layout.spacer
-    , Layout.navigation []
-        [ Layout.link
-            [ Options.onClick <| NavigateTo "#create-democracy"
-            , cs "ba br-pill"
-            ]
-            [ text "New"
-            , Icon.i "add"
-            ]
-        ]
-    ]
+dashboardH : Model -> List (Html Msg)
+dashboardH model =
+    let
+        adminOptions =
+            if model.isAdmin then
+                [ Layout.spacer
+                , Layout.navigation []
+                    [ Layout.link
+                        [ Options.onClick <| NavigateTo "#create-democracy"
+                        , cs "ba br-pill"
+                        ]
+                        [ text "New"
+                        , Icon.i "add"
+                        ]
+                    ]
+                ]
+            else
+                []
+    in
+    [ Layout.title [] [ text "Your Democracies" ] ]
+        ++ adminOptions

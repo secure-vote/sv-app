@@ -21,7 +21,7 @@ rootView : Model -> Html Msg
 rootView model =
     let
         logo =
-            img [ src "/web/img/securevote-logo-side.svg", style [ ( "max-width", "55%" ) ] ] []
+            div [ class "main-logo" ] []
 
         header =
             [ Layout.row [ cs "main-header relative" ]
@@ -34,7 +34,7 @@ rootView model =
                     [ Layout.link [] [ btn 457467845632 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "User Info" <| UserInfoD) ] [ Icon.view "account_circle" [ Icon.size36 ] ] ]
                     ]
                 ]
-            , Layout.row [ cs "relative" ]
+            , Layout.row [ cs "secondary-header relative" ]
                 ([ Layout.navigation [ cs "absolute left-0" ]
                     [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ]
                     ]
@@ -86,7 +86,7 @@ pageHeader : Model -> List (Html Msg)
 pageHeader model =
     case model.route of
         DashboardR ->
-            dashboardH
+            dashboardH model
 
         DemocracyListR ->
             democracyListH model

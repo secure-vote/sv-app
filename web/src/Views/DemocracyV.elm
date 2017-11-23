@@ -25,6 +25,19 @@ tabId =
 
 democracyV : DemocracyId -> Model -> Html Msg
 democracyV id model =
+    let
+        adminOptions =
+            if model.isAdmin then
+                [ Tabs.label
+                    [ Options.center ]
+                    [ Icon.i "group"
+                    , Options.span [ css "width" "4px" ] []
+                    , text "Members"
+                    ]
+                ]
+            else
+                []
+    in
     Tabs.render Mdl
         [ 0 ]
         model.mdl
@@ -32,25 +45,21 @@ democracyV id model =
         , Tabs.onSelectTab <| SetIntField tabId
         , Tabs.activeTab <| getTab tabId model
         ]
-        [ Tabs.label
+        ([ Tabs.label
             [ Options.center ]
             [ Icon.i "check_box"
             , Options.span [ css "width" "4px" ] []
             , text "Votes"
             ]
-        , Tabs.label
+         , Tabs.label
             [ Options.center ]
             [ Icon.i "history"
             , Options.span [ css "width" "4px" ] []
             , text "Past"
             ]
-        , Tabs.label
-            [ Options.center ]
-            [ Icon.i "group"
-            , Options.span [ css "width" "4px" ] []
-            , text "Members"
-            ]
-        ]
+         ]
+            ++ adminOptions
+        )
         [ case getTab tabId model of
             0 ->
                 ballotList id model
