@@ -17,8 +17,8 @@ type alias Model =
     , route : Route
     , fields : Dict Int String
     , intFields : Dict Int Int
+    , boolFields : Dict Int Bool
     , elevations : Dict Int MouseState
-    , isAdmin : Bool
     }
 
 
@@ -32,8 +32,8 @@ initModel route =
     , route = route
     , fields = Dict.empty
     , intFields = Dict.empty
+    , boolFields = Dict.empty
     , elevations = Dict.empty
-    , isAdmin = False
     }
 
 
@@ -99,3 +99,7 @@ type alias Member =
 
 type alias VoteResultId =
     Int
+
+
+adminToggleId =
+    245748734253

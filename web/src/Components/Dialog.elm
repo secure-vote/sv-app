@@ -30,7 +30,7 @@ dialog model =
                     democracyInfoDialogV desc
 
                 UserInfoD ->
-                    userInfoDialogV
+                    userInfoDialogV model
 
                 MemberInviteD ->
                     memberInviteDialogV model

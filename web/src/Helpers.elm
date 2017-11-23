@@ -2,7 +2,7 @@ module Helpers exposing (..)
 
 import Dict
 import Maybe.Extra exposing ((?))
-import Models exposing (Member, Model)
+import Models exposing (Member, Model, adminToggleId)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 
@@ -32,3 +32,8 @@ getMembers id model =
                 False
     in
     List.filter filter <| Dict.values model.members
+
+
+getAdminToggle : Model -> Bool
+getAdminToggle model =
+    Dict.get adminToggleId model.boolFields ? False

@@ -2,7 +2,7 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
-import Helpers exposing (getBallot, getDemocracy, getMembers, getTab)
+import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getTab)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
@@ -27,7 +27,7 @@ democracyV : DemocracyId -> Model -> Html Msg
 democracyV id model =
     let
         adminOptions =
-            if model.isAdmin then
+            if getAdminToggle model then
                 [ Tabs.label
                     [ Options.center ]
                     [ Icon.i "group"

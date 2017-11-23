@@ -2,12 +2,14 @@ module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.TextF exposing (textF)
+import Helpers exposing (getAdminToggle)
 import Html exposing (Html, div, p, table, td, text, tr)
 import Html.Attributes exposing (class)
-import Material.Options exposing (cs, styled)
+import Material.Options as Options exposing (cs, styled)
+import Material.Toggles as Toggles
 import Material.Typography as Typo exposing (title)
-import Models exposing (Model)
-import Msgs exposing (Msg(NavigateBack))
+import Models exposing (Model, adminToggleId)
+import Msgs exposing (Msg(Mdl, NavigateBack, ToggleBoolField))
 
 
 subhead : String -> Html Msg
@@ -54,9 +56,18 @@ democracyInfoDialogV desc =
     text desc
 
 
-userInfoDialogV : Html Msg
-userInfoDialogV =
-    text "Hello User"
+userInfoDialogV : Model -> Html Msg
+userInfoDialogV model =
+    div []
+        [ Toggles.switch Mdl
+            [ adminToggleId ]
+            model.mdl
+            [ Options.onToggle <| ToggleBoolField adminToggleId
+            , Toggles.ripple
+            , Toggles.value <| getAdminToggle model
+            ]
+            [ text "Admin User" ]
+        ]
 
 
 memberInviteDialogV : Model -> Html Msg

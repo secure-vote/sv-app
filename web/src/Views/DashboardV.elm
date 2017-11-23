@@ -2,7 +2,7 @@ module Views.DashboardV exposing (..)
 
 import Components.CardElevation exposing (elevation)
 import Dict
-import Helpers exposing (getBallot)
+import Helpers exposing (getAdminToggle, getBallot)
 import Html exposing (Html, a, div, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
@@ -59,7 +59,7 @@ dashboardH : Model -> List (Html Msg)
 dashboardH model =
     let
         adminOptions =
-            if model.isAdmin then
+            if getAdminToggle model then
                 [ Layout.spacer
                 , Layout.navigation []
                     [ Layout.link

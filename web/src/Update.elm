@@ -29,6 +29,18 @@ update msg model =
         SetIntField fieldId value ->
             { model | intFields = Dict.insert fieldId value model.intFields } ! []
 
+        ToggleBoolField fieldId ->
+            let
+                result =
+                    case Dict.get fieldId model.boolFields of
+                        Just True ->
+                            Dict.insert fieldId False model.boolFields
+
+                        _ ->
+                            Dict.insert fieldId True model.boolFields
+            in
+            { model | boolFields = result } ! []
+
         OnLocationChange location ->
             let
                 newRoute =
