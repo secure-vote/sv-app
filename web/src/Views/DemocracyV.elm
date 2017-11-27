@@ -80,13 +80,23 @@ democracyH id model =
     let
         democracy =
             getDemocracy id model
+
+        adminOptions =
+            if getAdminToggle model then
+                [ Layout.link []
+                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Link ("#create-vote/" ++ toString id) False ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
+                ]
+            else
+                []
     in
     [ Layout.title [] [ text democracy.name ]
     , Layout.spacer
     , Layout.navigation []
-        [ Layout.link []
+        ([ Layout.link []
             [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Democracy Info" <| DemocracyInfoD democracy.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
-        ]
+         ]
+            ++ adminOptions
+        )
     ]
 
 

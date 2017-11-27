@@ -15,7 +15,7 @@ type BtnProps
     | Flat
     | Icon
     | Click Msg
-    | Link String
+    | Link String Bool
     | Disabled
     | OpenDialog
     | CloseDialog
@@ -44,8 +44,15 @@ btn id model props inner =
                 Click msg ->
                     ( [], [ Options.onClick msg ] )
 
-                Link url ->
-                    ( [], [ Button.link url, Options.attribute <| target "_blank" ] )
+                Link url openNewTab ->
+                    let
+                        newTab =
+                            if openNewTab then
+                                [ Options.attribute <| target "_blank" ]
+                            else
+                                []
+                    in
+                    ( [], [ Button.link url ] ++ newTab )
 
                 Disabled ->
                     ( [], [ Button.disabled ] )

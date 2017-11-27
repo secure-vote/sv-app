@@ -2,11 +2,9 @@ module AdminViews.CreateDemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.TextF exposing (textF)
-import Dict
 import Html exposing (Html, div, span, text)
 import Html.Attributes exposing (class)
 import Material.Layout as Layout
-import Material.Options as Options exposing (cs, styled)
 import Material.Textfield as Textf
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, SetField))

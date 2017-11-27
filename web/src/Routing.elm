@@ -13,6 +13,7 @@ matchers =
         , map VoteR (s "v" </> int)
         , map DemocracyListR (s "d")
         , map CreateDemocracyR (s "create-democracy")
+        , map CreateVoteR (s "create-vote" </> int)
         ]
 
 

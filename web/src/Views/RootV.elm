@@ -11,6 +11,7 @@ import Material.Options exposing (cs, css, onClick, styled)
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog))
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
+import Views.CreateVoteV exposing (createVoteH, createVoteV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
@@ -78,6 +79,9 @@ page model =
         CreateDemocracyR ->
             createDemocracyV model
 
+        CreateVoteR id ->
+            createVoteV id model
+
         NotFoundRoute ->
             notFoundView
 
@@ -99,6 +103,9 @@ pageHeader model =
 
         CreateDemocracyR ->
             createDemocracyH
+
+        CreateVoteR id ->
+            createVoteH
 
         NotFoundRoute ->
             [ notFoundView ]
