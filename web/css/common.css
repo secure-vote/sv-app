@@ -1,0 +1,27 @@
+.main-logo {
+    width: 55vw;
+    height: 3rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: left center;
+}
+
+.mdl-data-table .tl {
+    text-align: left;
+}
+
+.mdl-data-table .tc {
+    text-align: center;
+}
+
+.sv-button-large button {
+    width: 48px;
+    height: 48px;
+}
+
+.sv-button-large i.material-icons {
+    transform: translate(-18px,-12px);
+}
+
+/* Fix for debug clicking issue */
+.elm-overlay { z-index: 999; }
