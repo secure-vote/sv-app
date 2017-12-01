@@ -149,7 +149,16 @@ ballotList status id model =
                 ]
     in
     div [ class "tc" ]
-        [ div [] <| List.map ballotCard ballots
+        [ div [] <|
+            if List.isEmpty ballots then
+                case status of
+                    Past ->
+                        [ text "There are no past ballots" ]
+
+                    _ ->
+                        [ text "There are no current or future ballots" ]
+            else
+                List.map ballotCard ballots
         ]
 
 

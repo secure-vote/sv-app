@@ -21,21 +21,19 @@ dashboardV model =
         showRecentBallot ballots =
             case List.head ballots of
                 Nothing ->
-                    []
+                    [ text "No Upcoming or Recent Votes" ]
 
                 Just ballotId ->
                     let
                         ballot =
                             getBallot ballotId model
                     in
-                    [ Card.actions [ Card.border ]
-                        [ text ballot.name
-                        , styled span
-                            [ cs "tr pa2 absolute bottom-0 right-0"
-                            , Typo.caption
-                            ]
-                            [ text <| toString <| Date.fromTime ballot.finish ]
+                    [ text ballot.name
+                    , styled span
+                        [ cs "tr pa2 absolute bottom-0 right-0"
+                        , Typo.caption
                         ]
+                        [ text <| toString <| Date.fromTime ballot.finish ]
                     ]
 
         democracyCard ( id, { name, desc, ballots } ) =
@@ -49,8 +47,9 @@ dashboardV model =
                   <|
                     [ Card.title [] [ text name ]
                     , Card.text [] [ text desc ]
+                    , Card.actions [ Card.border ]
+                        ([] ++ showRecentBallot ballots)
                     ]
-                        ++ showRecentBallot ballots
                 ]
     in
     div [] <| List.map democracyCard <| Dict.toList model.democracies
