@@ -1,6 +1,7 @@
 module Views.DashboardV exposing (..)
 
 import Components.CardElevation exposing (elevation)
+import Date
 import Dict
 import Helpers exposing (getAdminToggle, getBallot)
 import Html exposing (Html, a, div, img, span, text)
@@ -33,7 +34,7 @@ dashboardV model =
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
                             ]
-                            [ text ballot.finish ]
+                            [ text <| toString <| Date.fromTime ballot.finish ]
                         ]
                     ]
 

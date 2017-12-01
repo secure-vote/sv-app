@@ -2,6 +2,7 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
+import Date
 import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getTab)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
@@ -21,6 +22,12 @@ import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD))
 tabId : Int
 tabId =
     325645232456
+
+
+type BallotStatus
+    = Past
+    | Current
+    | Future
 
 
 democracyV : DemocracyId -> Model -> Html Msg
@@ -62,10 +69,10 @@ democracyV id model =
         )
         [ case getTab tabId model of
             0 ->
-                ballotList id model
+                ballotList Current id model
 
             1 ->
-                ballotList id model
+                ballotList Past id model
 
             2 ->
                 memberList id model
@@ -100,11 +107,22 @@ democracyH id model =
     ]
 
 
-ballotList : DemocracyId -> Model -> Html Msg
-ballotList id model =
+ballotList : BallotStatus -> DemocracyId -> Model -> Html Msg
+ballotList status id model =
     let
         democracy =
             getDemocracy id model
+
+        ballots =
+            List.filter checkStatus democracy.ballots
+
+        checkStatus id =
+            case status of
+                Past ->
+                    (getBallot id model).finish < model.now
+
+                _ ->
+                    (getBallot id model).finish > model.now
 
         ballotCard ballotId =
             let
@@ -125,13 +143,13 @@ ballotList id model =
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
                             ]
-                            [ text ballot.finish ]
+                            [ text <| toString <| Date.fromTime ballot.finish ]
                         ]
                     ]
                 ]
     in
     div [ class "tc" ]
-        [ div [] <| List.map ballotCard democracy.ballots
+        [ div [] <| List.map ballotCard ballots
         ]
 
 

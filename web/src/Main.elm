@@ -1,9 +1,11 @@
 module Main exposing (..)
 
 import Models exposing (Model, initModel)
-import Msgs exposing (Msg)
+import Msgs exposing (Msg(SetTime))
 import Navigation exposing (Location)
 import Routing
+import Task exposing (perform)
+import Time exposing (Time)
 import Update exposing (update)
 import Views.RootV exposing (rootView)
 
@@ -14,7 +16,14 @@ init location =
         currentRoute =
             Routing.parseLocation location
     in
-    ( initModel currentRoute, Cmd.none )
+    ( initModel currentRoute, initCmds )
+
+
+initCmds : Cmd Msg
+initCmds =
+    Cmd.batch <|
+        [ perform SetTime Time.now
+        ]
 
 
 subscriptions : Model -> Sub Msg

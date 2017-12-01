@@ -77,7 +77,7 @@ voteV id model =
             [ cs "tr pa2"
             , Typo.caption
             ]
-            [ text ballot.finish ]
+            [ text <| toString ballot.finish ]
         , div [] optionList
         , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationD), OpenDialog ] [ text "Continue" ]
         ]

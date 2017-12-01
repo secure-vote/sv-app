@@ -14,6 +14,9 @@ update msg model =
         Msgs.NoOp ->
             ( model, Cmd.none )
 
+        SetTime time ->
+            { model | now = time } ! []
+
         Mdl msg_ ->
             Material.update Mdl msg_ model
 
