@@ -72,7 +72,7 @@ ballots =
       , Ballot "Token Release Schedule"
             "This vote is to determine the release schedule of the SWM Token"
             1512000000000
-            1612200000000
+            1517707141000
             [ BallotOption 12341234123 "8 releases of 42 days" "Lorem Ipsum"
             , BallotOption 64564746345 "42 releases of 8 days" "Lorem Ipsum"
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum"
@@ -82,7 +82,7 @@ ballots =
     , ( 6345745845
       , Ballot "Another Important Vote"
             "Some very important details"
-            1612000000000
+            1552000000000
             1612200000000
             [ BallotOption 53674567345 "Option 1" "Lorem Ipsum"
             , BallotOption 67845784356 "Option 2" "Lorem Ipsum"
@@ -115,7 +115,7 @@ ballots =
     , ( 34574567233
       , Ballot "Another Vote 2"
             "Some very important details"
-            1712000000000
+            1612000000000
             1712200000000
             [ BallotOption 53674567345 "Option 1" "Lorem Ipsum"
             , BallotOption 67845784356 "Option 2" "Lorem Ipsum"
