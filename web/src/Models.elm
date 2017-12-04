@@ -105,7 +105,7 @@ ballots =
       , Ballot "Another Vote"
             "Lorem Ipsum"
             1512000000000
-            1612200000000
+            1712200000000
             [ BallotOption 12341234123 "8 releases of 42 days" "Lorem Ipsum"
             , BallotOption 64564746345 "42 releases of 8 days" "Lorem Ipsum"
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum"
@@ -115,8 +115,8 @@ ballots =
     , ( 34574567233
       , Ballot "Another Vote 2"
             "Some very important details"
-            1612000000000
-            1612200000000
+            1712000000000
+            1712200000000
             [ BallotOption 53674567345 "Option 1" "Lorem Ipsum"
             , BallotOption 67845784356 "Option 2" "Lorem Ipsum"
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
@@ -126,8 +126,8 @@ ballots =
     , ( 898732464567
       , Ballot "Another Vote 3"
             "Sounds like a good idea to me!"
-            1512000000000
-            1512100000000
+            1412000000000
+            1412100000000
             [ BallotOption 53674567345 "Option 1" "Lorem Ipsum"
             , BallotOption 67845784356 "Option 2" "Lorem Ipsum"
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"

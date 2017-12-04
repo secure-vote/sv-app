@@ -14,6 +14,7 @@ import Material.Table as Table
 import Material.Tabs as Tabs
 import Material.Typography as Typo
 import Models exposing (Model)
+import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(Mdl, NavigateTo, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD))
@@ -33,6 +34,9 @@ type BallotStatus
 democracyV : DemocracyId -> Model -> Html Msg
 democracyV id model =
     let
+        democracy =
+            getDemocracy id model
+
         adminOptions =
             if getAdminToggle model then
                 [ Tabs.label
@@ -67,19 +71,23 @@ democracyV id model =
          ]
             ++ adminOptions
         )
-        [ case getTab tabId model of
-            0 ->
-                ballotList Current id model
+        ([]
+            ++ (case getTab tabId model of
+                    0 ->
+                        [ currentBallotList democracy.ballots model
+                        , futureBallotList democracy.ballots model
+                        ]
 
-            1 ->
-                ballotList Past id model
+                    1 ->
+                        [ pastBallotList democracy.ballots model ]
 
-            2 ->
-                memberList id model
+                    2 ->
+                        [ memberList id model ]
 
-            _ ->
-                h1 [ class "red" ] [ text "Not Found" ]
-        ]
+                    _ ->
+                        [ h1 [ class "red" ] [ text "Not Found" ] ]
+               )
+        )
 
 
 democracyH : DemocracyId -> Model -> List (Html Msg)
@@ -107,22 +115,62 @@ democracyH id model =
     ]
 
 
-ballotList : BallotStatus -> DemocracyId -> Model -> Html Msg
-ballotList status id model =
+currentBallotList : List BallotId -> Model -> Html Msg
+currentBallotList ballots model =
     let
-        democracy =
-            getDemocracy id model
+        filteredBallots =
+            List.sortWith compareFinish <| List.filter filterStatus ballots
 
-        ballots =
-            List.filter checkStatus democracy.ballots
+        compareFinish a b =
+            compare (getBallot a model).finish (getBallot b model).finish
 
-        checkStatus id =
-            case status of
-                Past ->
-                    (getBallot id model).finish < model.now
+        filterStatus id =
+            (getBallot id model).finish > model.now && (getBallot id model).start <= model.now
 
-                _ ->
-                    (getBallot id model).finish > model.now
+        ballotCard ballotId =
+            let
+                ballot =
+                    getBallot ballotId model
+            in
+            a [ href <| "#v/" ++ toString ballotId, class "link black" ]
+                [ Card.view
+                    ([ cs "ma4"
+                     , css "width" "auto"
+                     ]
+                        ++ elevation ballotId model
+                    )
+                    [ Card.title [ cs "b" ] [ text <| "🔴 " ++ ballot.name ]
+                    , Card.text [ cs "tl" ]
+                        [ text ballot.desc
+                        , styled span
+                            [ cs "tr pa2 absolute bottom-0 right-0"
+                            , Typo.caption
+                            ]
+                            [ text <| toString <| Date.fromTime ballot.finish ]
+                        ]
+                    ]
+                ]
+    in
+    div [ class "tc" ]
+        [ div [] <|
+            if List.isEmpty ballots then
+                [ text "There are no current ballots" ]
+            else
+                List.map ballotCard filteredBallots
+        ]
+
+
+futureBallotList : List BallotId -> Model -> Html Msg
+futureBallotList ballots model =
+    let
+        filteredBallots =
+            List.sortWith checkStart <| List.filter filterStatus ballots
+
+        checkStart a b =
+            compare (getBallot a model).start (getBallot b model).start
+
+        filterStatus id =
+            (getBallot id model).finish > model.now && (getBallot id model).start >= model.now
 
         ballotCard ballotId =
             let
@@ -151,14 +199,54 @@ ballotList status id model =
     div [ class "tc" ]
         [ div [] <|
             if List.isEmpty ballots then
-                case status of
-                    Past ->
-                        [ text "There are no past ballots" ]
-
-                    _ ->
-                        [ text "There are no current or future ballots" ]
+                [ text "There are no future ballots" ]
             else
-                List.map ballotCard ballots
+                List.map ballotCard filteredBallots
+        ]
+
+
+pastBallotList : List BallotId -> Model -> Html Msg
+pastBallotList ballots model =
+    let
+        filteredBallots =
+            List.sortWith compareFinish <| List.filter filterStatus ballots
+
+        compareFinish a b =
+            compare (getBallot b model).finish (getBallot a model).finish
+
+        filterStatus id =
+            (getBallot id model).finish < model.now
+
+        ballotCard ballotId =
+            let
+                ballot =
+                    getBallot ballotId model
+            in
+            a [ href <| "#v/" ++ toString ballotId, class "link black" ]
+                [ Card.view
+                    ([ cs "ma4"
+                     , css "width" "auto"
+                     ]
+                        ++ elevation ballotId model
+                    )
+                    [ Card.title [] [ text ballot.name ]
+                    , Card.text [ cs "tl" ]
+                        [ text ballot.desc
+                        , styled span
+                            [ cs "tr pa2 absolute bottom-0 right-0"
+                            , Typo.caption
+                            ]
+                            [ text <| toString <| Date.fromTime ballot.finish ]
+                        ]
+                    ]
+                ]
+    in
+    div [ class "tc" ]
+        [ div [] <|
+            if List.isEmpty ballots then
+                [ text "There are no past ballots" ]
+            else
+                List.map ballotCard filteredBallots
         ]
 
 
