@@ -78,6 +78,7 @@ ballots =
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum"
             , BallotOption 23457478556 "4 releases of 84 days" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 6345745845
       , Ballot "Another Important Vote"
@@ -89,6 +90,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 4578267564
       , Ballot "Should Everyone Get Free Money?"
@@ -100,6 +102,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "62% Yes, 31% No, 7% Undecided"
       )
     , ( 5745672345
       , Ballot "Another Vote"
@@ -111,6 +114,7 @@ ballots =
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum"
             , BallotOption 23457478556 "4 releases of 84 days" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 34574567233
       , Ballot "Another Vote 2"
@@ -122,6 +126,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 898732464567
       , Ballot "Another Vote 3"
@@ -133,6 +138,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "6% Option 1, 18% Option 2, 2% Option 3, 74% Option 4"
       )
 
     --    Democracy 1 Ballots
@@ -146,6 +152,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 4367845333
       , Ballot "Ballot 2"
@@ -157,6 +164,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 7896767563
       , Ballot "Ballot 3"
@@ -168,6 +176,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "100% Yes"
       )
 
     --    Democracy 2 Ballots
@@ -181,6 +190,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 8654355233
       , Ballot "Ballot 5"
@@ -192,6 +202,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "100% Yes"
       )
     , ( 3578876545
       , Ballot "Ballot 6"
@@ -203,6 +214,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "50% Yes, 50% No"
       )
 
     --    Democracy 3 Ballots
@@ -216,6 +228,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            ""
       )
     , ( 7342132479
       , Ballot "Ballot 8"
@@ -227,6 +240,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "100% Yes"
       )
 
     --    Democracy 4 Ballots
@@ -240,6 +254,7 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum"
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum"
             ]
+            "100% Yes"
       )
 
     --    Democracy 5 Ballots

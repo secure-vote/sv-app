@@ -2,7 +2,7 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Dict exposing (Dict)
-import Helpers exposing (getBallot)
+import Helpers exposing (getBallot, readableTime)
 import Html exposing (Html, div, p, span, text)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
@@ -77,7 +77,7 @@ voteV id model =
             [ cs "tr pa2"
             , Typo.caption
             ]
-            [ text <| toString ballot.finish ]
+            [ text <| "Vote closes in " ++ readableTime ballot.finish model ]
         , div [] optionList
         , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationD), OpenDialog ] [ text "Continue" ]
         ]

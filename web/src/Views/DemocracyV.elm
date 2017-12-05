@@ -231,7 +231,7 @@ pastBallotList ballots model =
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
-                        [ text ballot.desc
+                        [ text <| "Results: " ++ ballot.results
                         , styled span
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
