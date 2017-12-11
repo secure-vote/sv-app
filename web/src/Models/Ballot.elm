@@ -21,4 +21,5 @@ type alias BallotOption =
     { id : Int
     , name : String
     , desc : String
+    , result : Maybe Float
     }

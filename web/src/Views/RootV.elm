@@ -15,6 +15,7 @@ import Views.CreateVoteV exposing (createVoteH, createVoteV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
+import Views.ResultsV exposing (resultsH, resultsV)
 import Views.VoteV exposing (voteH, voteV)
 
 
@@ -76,6 +77,9 @@ page model =
         VoteR id ->
             voteV id model
 
+        ResultsR id ->
+            resultsV id model
+
         CreateDemocracyR ->
             createDemocracyV model
 
@@ -100,6 +104,9 @@ pageHeader model =
 
         VoteR id ->
             voteH id model
+
+        ResultsR id ->
+            resultsH id model
 
         CreateDemocracyR ->
             createDemocracyH

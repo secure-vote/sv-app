@@ -9,6 +9,7 @@ type Route
     | DemocracyListR
     | DemocracyR DemocracyId
     | VoteR BallotId
+    | ResultsR BallotId
     | CreateDemocracyR
     | CreateVoteR DemocracyId
     | NotFoundRoute

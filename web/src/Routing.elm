@@ -11,6 +11,7 @@ matchers =
         [ map DashboardR top
         , map DemocracyR (s "d" </> int)
         , map VoteR (s "v" </> int)
+        , map ResultsR (s "r" </> int)
         , map DemocracyListR (s "d")
         , map CreateDemocracyR (s "create-democracy")
         , map CreateVoteR (s "create-vote" </> int)

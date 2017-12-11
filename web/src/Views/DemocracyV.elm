@@ -222,7 +222,7 @@ pastBallotList ballots model =
                 ballot =
                     getBallot ballotId model
             in
-            a [ href <| "#v/" ++ toString ballotId, class "link black" ]
+            a [ href <| "#r/" ++ toString ballotId, class "link black" ]
                 [ Card.view
                     ([ cs "ma4"
                      , css "width" "auto"
