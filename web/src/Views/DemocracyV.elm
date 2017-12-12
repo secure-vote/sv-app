@@ -2,7 +2,6 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
-import Date
 import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getTab, readableTime)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)

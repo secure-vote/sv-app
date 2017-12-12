@@ -1,7 +1,7 @@
 module Views.ResultsV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Helpers exposing (getBallot)
+import Helpers exposing (getBallot, getResultPercent)
 import Html exposing (Html, div, h2, table, td, text, tr)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
@@ -25,17 +25,13 @@ resultsV id model =
         tableRow ( desc, value ) =
             tr []
                 [ td [ class "b tr" ] [ text <| desc ++ ": " ]
-                , td [ class "tl", style [ ( "word-wrap", "break-word" ) ] ] [ text <| toString value ]
+                , td [ class "", style [ ( "word-wrap", "break-word" ) ] ] [ text <| toString value ]
+                , td [ class "tl" ] [ text <| "(" ++ (toString <| getResultPercent ballot value) ++ "%)" ]
                 ]
 
         getResults { name, result } =
             ( name
-            , case result of
-                Just num ->
-                    num
-
-                Nothing ->
-                    0
+            , result ? 0
               -- Error
             )
 

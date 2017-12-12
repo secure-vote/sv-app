@@ -99,8 +99,8 @@ ballots =
             1512100000000
             [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 56
             , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 3
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 45
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 2
+            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just -45
+            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 28
             ]
             "62% Yes, 31% No, 7% Undecided"
       )

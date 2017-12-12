@@ -5,7 +5,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model, adminToggleId)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Time
+import Time exposing (Time)
 
 
 getDemocracy : DemocracyId -> Model -> Democracy
@@ -40,6 +40,7 @@ getAdminToggle model =
     Dict.get adminToggleId model.boolFields ? False
 
 
+readableTime : Time -> Model -> String
 readableTime time model =
     let
         difference =
@@ -57,3 +58,12 @@ readableTime time model =
         (toString <| floor <| Time.inHours difference / 24 / 30) ++ " months"
     else
         "error reading number"
+
+
+getResultPercent : Ballot -> Float -> Int
+getResultPercent ballot value =
+    let
+        getResults { result } =
+            abs <| result ? 0
+    in
+    round <| value * 100 / (List.sum <| List.map getResults ballot.options)
