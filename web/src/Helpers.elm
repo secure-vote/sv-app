@@ -15,7 +15,7 @@ getDemocracy id model =
 
 getBallot : BallotId -> Model -> Ballot
 getBallot id model =
-    Dict.get id model.ballots ? Ballot "" "" 0 0 [] ""
+    Dict.get id model.ballots ? Ballot "" "" 0 0 []
 
 
 getTab : Int -> Model -> Int

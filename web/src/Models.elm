@@ -78,7 +78,6 @@ ballots =
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum" Nothing
             , BallotOption 23457478556 "4 releases of 84 days" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 6345745845
       , Ballot "Another Important Vote"
@@ -90,7 +89,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 4578267564
       , Ballot "Should Everyone Get Free Money?"
@@ -102,7 +100,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just -45
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 28
             ]
-            "62% Yes, 31% No, 7% Undecided"
       )
     , ( 5745672345
       , Ballot "Another Vote"
@@ -114,7 +111,6 @@ ballots =
             , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum" Nothing
             , BallotOption 23457478556 "4 releases of 84 days" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 34574567233
       , Ballot "Another Vote 2"
@@ -126,7 +122,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 898732464567
       , Ballot "Another Vote 3"
@@ -138,7 +133,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 2
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 7
             ]
-            "6% Option 1, 18% Option 2, 2% Option 3, 74% Option 4"
       )
 
     --    Democracy 1 Ballots
@@ -152,7 +146,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 4367845333
       , Ballot "Ballot 2"
@@ -164,7 +157,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 7896767563
       , Ballot "Ballot 3"
@@ -176,7 +168,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 0
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 4
             ]
-            "100% Yes"
       )
 
     --    Democracy 2 Ballots
@@ -190,7 +181,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 8654355233
       , Ballot "Ballot 5"
@@ -202,7 +192,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            "100% Yes"
       )
     , ( 3578876545
       , Ballot "Ballot 6"
@@ -214,7 +203,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 34
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 13
             ]
-            "50% Yes, 50% No"
       )
 
     --    Democracy 3 Ballots
@@ -228,7 +216,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
             ]
-            ""
       )
     , ( 7342132479
       , Ballot "Ballot 8"
@@ -240,7 +227,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 1
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 43
             ]
-            "100% Yes"
       )
 
     --    Democracy 4 Ballots
@@ -254,7 +240,6 @@ ballots =
             , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 65
             , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 86
             ]
-            "100% Yes"
       )
 
     --    Democracy 5 Ballots

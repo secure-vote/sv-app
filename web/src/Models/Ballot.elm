@@ -13,7 +13,6 @@ type alias Ballot =
     , start : Time
     , finish : Time
     , options : List BallotOption
-    , results : String
     }
 
 

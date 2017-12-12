@@ -2,7 +2,7 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
-import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getTab, readableTime)
+import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getResultPercent, getTab, readableTime)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
@@ -12,6 +12,7 @@ import Material.Options as Options exposing (cs, css, styled)
 import Material.Table as Table
 import Material.Tabs as Tabs
 import Material.Typography as Typo
+import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
@@ -220,6 +221,12 @@ pastBallotList ballots model =
             let
                 ballot =
                     getBallot ballotId model
+
+                resultString { name, result } =
+                    name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
+
+                displayResults =
+                    "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.options)
             in
             a [ href <| "#r/" ++ toString ballotId, class "link black" ]
                 [ Card.view
@@ -230,7 +237,7 @@ pastBallotList ballots model =
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
-                        [ text <| "Results: " ++ ballot.results
+                        [ text displayResults
                         , styled span
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
