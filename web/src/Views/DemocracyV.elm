@@ -2,7 +2,7 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
-import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getMembers, getResultPercent, getTab, readableTime)
+import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
@@ -54,7 +54,7 @@ democracyV id model =
         model.mdl
         [ Tabs.ripple
         , Tabs.onSelectTab <| SetIntField tabId
-        , Tabs.activeTab <| getTab tabId model
+        , Tabs.activeTab <| getIntField tabId model
         ]
         ([ Tabs.label
             [ Options.center ]
@@ -72,7 +72,7 @@ democracyV id model =
             ++ adminOptions
         )
         ([]
-            ++ (case getTab tabId model of
+            ++ (case getIntField tabId model of
                     0 ->
                         [ currentBallotList democracy.ballots model
                         , futureBallotList democracy.ballots model

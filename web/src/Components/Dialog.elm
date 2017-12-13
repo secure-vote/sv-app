@@ -17,8 +17,8 @@ dialog model =
     let
         innerHtml =
             case model.dialogHtml.route of
-                VoteConfirmationD ->
-                    confirmationDialogV model
+                VoteConfirmationD ballotId ->
+                    confirmationDialogV ballotId model
 
                 BallotInfoD desc ->
                     ballotInfoDialogV desc

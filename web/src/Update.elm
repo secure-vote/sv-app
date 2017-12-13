@@ -32,6 +32,9 @@ update msg model =
         SetIntField fieldId value ->
             { model | intFields = Dict.insert fieldId value model.intFields } ! []
 
+        SetFloatField fieldId value ->
+            { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
+
         ToggleBoolField fieldId ->
             let
                 result =

@@ -18,6 +18,7 @@ type alias Model =
     , route : Route
     , fields : Dict Int String
     , intFields : Dict Int Int
+    , floatFields : Dict Int Float
     , boolFields : Dict Int Bool
     , elevations : Dict Int MouseState
     , now : Time
@@ -34,6 +35,7 @@ initModel route =
     , route = route
     , fields = Dict.empty
     , intFields = Dict.empty
+    , floatFields = Dict.empty
     , boolFields = Dict.empty
     , elevations = Dict.empty
     , now = 0
@@ -274,5 +276,6 @@ type alias VoteResultId =
     Int
 
 
+adminToggleId : Int
 adminToggleId =
     245748734253

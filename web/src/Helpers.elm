@@ -18,11 +18,6 @@ getBallot id model =
     Dict.get id model.ballots ? Ballot "" "" 0 0 []
 
 
-getTab : Int -> Model -> Int
-getTab id model =
-    Dict.get id model.intFields ? 0
-
-
 getMembers : DemocracyId -> Model -> List Member
 getMembers id model =
     let
@@ -33,6 +28,16 @@ getMembers id model =
                 False
     in
     List.filter filter <| Dict.values model.members
+
+
+getIntField : Int -> Model -> Int
+getIntField id model =
+    Dict.get id model.intFields ? 0
+
+
+getFloatField : Int -> Model -> Float
+getFloatField id model =
+    Dict.get id model.floatFields ? 0
 
 
 getAdminToggle : Model -> Bool

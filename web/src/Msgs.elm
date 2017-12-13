@@ -14,6 +14,7 @@ type Msg
     | SetElevation Int MouseState
     | SetField Int String
     | SetIntField Int Int
+    | SetFloatField Int Float
     | ToggleBoolField Int
     | OnLocationChange Location
     | NavigateBack

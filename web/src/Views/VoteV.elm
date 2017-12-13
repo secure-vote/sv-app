@@ -1,8 +1,7 @@
 module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Dict exposing (Dict)
-import Helpers exposing (getBallot, readableTime)
+import Helpers exposing (getBallot, getFloatField, readableTime)
 import Html exposing (Html, div, p, span, text)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
@@ -10,10 +9,9 @@ import Material.Layout as Layout
 import Material.Options exposing (cs, styled)
 import Material.Slider as Slider
 import Material.Typography as Typo
-import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
-import Msgs exposing (Msg(SetDialog))
+import Msgs exposing (Msg(SetDialog, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
 
 
@@ -26,6 +24,27 @@ voteV id model =
         optionList =
             List.map optionListItem ballot.options
 
+        isFutureVote =
+            model.now < ballot.start
+
+        sliderOptions =
+            if isFutureVote then
+                [ Slider.disabled ]
+            else
+                []
+
+        continueBtnOptions =
+            if isFutureVote then
+                [ Disabled ]
+            else
+                []
+
+        voteTime =
+            if isFutureVote then
+                "Vote opens in " ++ readableTime ballot.start model
+            else
+                "Vote closes in " ++ readableTime ballot.finish model
+
         optionListItem { id, name, desc } =
             div [ class "center mw-5 cf mb4 mt3 db w-100 bb bw1 b--silver" ]
                 [ div [ class "h-100 w-100 w-100-m w-30-l fl mt2 mb3 tl-l v-mid" ]
@@ -34,7 +53,7 @@ voteV id model =
                     -- &nbsp;
                     [ text " " ]
                 , div [ class "cf v-mid w-100 w-70-m w-40-l fl mb2" ]
-                    [ div [] [ text <| "Your vote: " ++ toString (Dict.get id sampleResults ? 0) ]
+                    [ div [] [ text <| "Your vote: " ++ (toString <| getFloatField id model) ]
                     , div [ class "center" ]
                         [ div [ class "inline-flex flex-row content-center cf relative w-100", style [ ( "top", "-10px" ) ] ]
                             [ span
@@ -44,13 +63,14 @@ voteV id model =
                                 [ text "👎" ]
                             , div [ class "dib w-100" ]
                                 [ Slider.view
-                                    [ Slider.value <| toFloat <| Dict.get id sampleResults ? 0
-                                    , Slider.min -3
-                                    , Slider.max 3
-                                    , Slider.step 1
-
-                                    -- , Slider.onChange <| SetBallotRange id
-                                    ]
+                                    ([ Slider.value <| getFloatField id model
+                                     , Slider.min -3
+                                     , Slider.max 3
+                                     , Slider.step 1
+                                     , Slider.onChange <| SetFloatField id
+                                     ]
+                                        ++ sliderOptions
+                                    )
                                 ]
                             , span
                                 [ class "f3 relative"
@@ -77,9 +97,9 @@ voteV id model =
             [ cs "tr pa2"
             , Typo.caption
             ]
-            [ text <| "Vote closes in " ++ readableTime ballot.finish model ]
+            [ text voteTime ]
         , div [] optionList
-        , btn 894823489 model [ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" VoteConfirmationD), OpenDialog ] [ text "Continue" ]
+        , btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD id)), OpenDialog ] ++ continueBtnOptions) [ text "Continue" ]
         ]
 
 
@@ -96,7 +116,3 @@ voteH id model =
             [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
         ]
     ]
-
-
-sampleResults =
-    Dict.empty
