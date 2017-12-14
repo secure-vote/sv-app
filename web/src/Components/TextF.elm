@@ -4,7 +4,7 @@ import Dict
 import Material.Options as Options exposing (cs, styled)
 import Material.Textfield as Textf
 import Maybe.Extra exposing ((?))
-import Msgs exposing (Msg(Mdl, SetField))
+import Msgs exposing (Msg(Mdl, SetField, SetIntField))
 
 
 --textF : Int -> String -> List (Options.Property (Textf.Config Msg) Msg) -> Model -> Html Msg

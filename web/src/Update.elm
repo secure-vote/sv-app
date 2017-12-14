@@ -1,8 +1,11 @@
 module Update exposing (..)
 
 import Dict
+import Helpers exposing (getDemocracy)
 import Material
 import Models exposing (Model, initModel)
+import Models.Ballot exposing (BallotId)
+import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(..))
 import Navigation
 import Routing exposing (parseLocation)
@@ -63,6 +66,12 @@ update msg model =
         NavigateTo url ->
             ( model, Navigation.newUrl url )
 
+        CreateBallot ballot ballotId ->
+            { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
+
+        AddBallotToDemocracy ballotId democracyId ->
+            { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
+
         MultiMsg msgs ->
             multiUpdate msgs model []
 
@@ -82,3 +91,12 @@ multiUpdate msgs model cmds =
 
         [] ->
             ( model, Cmd.batch cmds )
+
+
+addBallot : BallotId -> DemocracyId -> Model -> Democracy
+addBallot ballotId democracyId model =
+    let
+        democracy =
+            getDemocracy democracyId model
+    in
+    { democracy | ballots = ballotId :: democracy.ballots }

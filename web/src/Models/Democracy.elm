@@ -1,6 +1,6 @@
 module Models.Democracy exposing (..)
 
-import Models.Ballot exposing (Ballot, BallotId)
+import Models.Ballot exposing (BallotId)
 
 
 type alias DemocracyId =

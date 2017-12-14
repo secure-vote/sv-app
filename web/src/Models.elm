@@ -44,18 +44,18 @@ initModel route =
 
 democracies : List ( comparable, Democracy )
 democracies =
-    [ ( 3623456347
+    [ ( 31
       , Democracy
             "Swarm Fund"
             "Cooperative Ownership Platform for Real Assets"
             "web/img/SwarmFund.svg"
             [ 1234531245, 6345745845, 4578267564, 5745672345, 34574567233, 898732464567 ]
       )
-    , ( 4678546564, Democracy "Democracy 1" "Lorem Ipsum" "" [ 4357435345, 4367845333, 7896767563 ] )
-    , ( 8567453454, Democracy "Democracy 2" "Lorem Ipsum" "" [ 9065445766, 8654355233, 3578876545 ] )
-    , ( 5686543234, Democracy "Democracy 3" "Lorem Ipsum" "" [ 9069546534, 7342132479 ] )
-    , ( 8455477864, Democracy "Democracy 4" "Lorem Ipsum" "" [ 8956378645 ] )
-    , ( 4567847345, Democracy "Democracy 5" "Lorem Ipsum" "" [] )
+    , ( 37, Democracy "Democracy 1" "Lorem Ipsum" "" [ 4357435345, 4367845333, 7896767563 ] )
+    , ( 41, Democracy "Democracy 2" "Lorem Ipsum" "" [ 9065445766, 8654355233, 3578876545 ] )
+    , ( 43, Democracy "Democracy 3" "Lorem Ipsum" "" [ 9069546534, 7342132479 ] )
+    , ( 47, Democracy "Democracy 4" "Lorem Ipsum" "" [ 8956378645 ] )
+    , ( 53, Democracy "Democracy 5" "Lorem Ipsum" "" [] )
 
     --    , ( 3456346785
     --      , Democracy

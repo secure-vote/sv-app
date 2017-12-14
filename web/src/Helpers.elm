@@ -30,6 +30,11 @@ getMembers id model =
     List.filter filter <| Dict.values model.members
 
 
+getField : Int -> Model -> String
+getField id model =
+    Dict.get id model.fields ? ""
+
+
 getIntField : Int -> Model -> Int
 getIntField id model =
     Dict.get id model.intFields ? 0
@@ -59,8 +64,10 @@ readableTime time model =
         (toString <| floor <| Time.inHours difference) ++ " hours"
     else if Time.inHours difference < 60 * 24 && Time.inHours difference > 24 then
         (toString <| floor <| Time.inHours difference / 24) ++ " days"
-    else if Time.inHours difference > 30 * 24 then
+    else if Time.inHours difference < 730 * 24 && Time.inHours difference > 30 * 24 then
         (toString <| floor <| Time.inHours difference / 24 / 30) ++ " months"
+    else if Time.inHours difference > 365 * 24 then
+        (toString <| floor <| Time.inHours difference / 24 / 365) ++ " years"
     else
         "error reading number"
 
@@ -72,3 +79,12 @@ getResultPercent ballot value =
             abs <| result ? 0
     in
     round <| value * 100 / (List.sum <| List.map getResults ballot.options)
+
+
+
+{- | Generate a new id based on a previous id and nonce; possibly wraps due to JS integer limitations -}
+
+
+genNewId : Int -> Int -> Int
+genNewId parentId nonce =
+    1033 * (parentId + nonce * 17)

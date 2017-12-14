@@ -71,20 +71,20 @@ page model =
         DemocracyListR ->
             democracyListV model
 
-        DemocracyR id ->
-            democracyV id model
+        DemocracyR democracyId ->
+            democracyV democracyId model
 
-        VoteR id ->
-            voteV id model
+        VoteR ballotId ->
+            voteV ballotId model
 
-        ResultsR id ->
-            resultsV id model
+        ResultsR ballotId ->
+            resultsV ballotId model
 
         CreateDemocracyR ->
             createDemocracyV model
 
-        CreateVoteR id ->
-            createVoteV id model
+        CreateVoteR democracyId ->
+            createVoteV democracyId model
 
         NotFoundRoute ->
             notFoundView
@@ -99,20 +99,20 @@ pageHeader model =
         DemocracyListR ->
             democracyListH model
 
-        DemocracyR id ->
-            democracyH id model
+        DemocracyR democracyId ->
+            democracyH democracyId model
 
-        VoteR id ->
-            voteH id model
+        VoteR ballotId ->
+            voteH ballotId model
 
-        ResultsR id ->
-            resultsH id model
+        ResultsR ballotId ->
+            resultsH ballotId model
 
         CreateDemocracyR ->
             createDemocracyH
 
-        CreateVoteR id ->
-            createVoteH
+        CreateVoteR democracyId ->
+            createVoteH democracyId model
 
         NotFoundRoute ->
             [ notFoundView ]
