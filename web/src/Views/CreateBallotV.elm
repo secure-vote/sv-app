@@ -1,12 +1,13 @@
-module Views.CreateVoteV exposing (..)
+module Views.CreateBallotV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.TextF exposing (textF)
 import Dict
-import Helpers exposing (genNewId, getDemocracy, getField)
+import Helpers exposing (genNewId, getDemocracy, getField, getIntField)
 import Html exposing (Html, div, hr, p, span, text)
 import Html.Attributes exposing (class)
-import List exposing (map, map2)
+import List exposing (map)
+import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, styled)
 import Material.Textfield as Textf
@@ -15,7 +16,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, Mdl, MultiMsg, NavigateBack, NavigateTo, SetField))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField))
 import Result as Result
 
 
@@ -23,8 +24,8 @@ import Result as Result
 -- TODO: Check that vote is not in the past
 
 
-createVoteV : DemocracyId -> Model -> Html Msg
-createVoteV democracyId model =
+createBallotV : DemocracyId -> Model -> Html Msg
+createBallotV democracyId model =
     let
         democracy =
             getDemocracy democracyId model
@@ -47,47 +48,49 @@ createVoteV democracyId model =
         finishId =
             idG 4
 
-        voteOptionId x =
-            idG (1327 + x * 23)
+        numBallotOptionsId =
+            idG 5
 
-        voteOptionNameId x =
-            voteOptionId x + 1 * 857
+        ballotOptionId x =
+            idG <| 6 + x * 3
 
-        voteOptionDescId x =
-            voteOptionId x + 2 * 857
+        ballotOptionNameId x =
+            idG <| 6 + x * 3 + 1
 
-        ballotOptions =
-            [ 1, 2 ]
+        ballotOptionDescId x =
+            idG <| 6 + x * 3 + 2
 
-        voteOption id num =
+        ballotOptionView x =
             div [ class "ba pa3 ma3" ]
-                [ styled p [ Typo.subhead ] [ text <| "Option " ++ toString num ]
-                , textF (voteOptionNameId id) "Name" [] model
-                , textF (voteOptionDescId id) "Description" [ Textf.textarea ] model
+                [ styled p [ Typo.subhead ] [ text <| "Option " ++ (toString <| x + 1) ]
+                , textF (ballotOptionNameId x) "Name" [] model
+                , textF (ballotOptionDescId x) "Description" [ Textf.textarea ] model
                 ]
 
-        -- TODO: Dynamically load number of options
-        allVoteOptions =
-            map2 voteOption (map voteOptionId ballotOptions) ballotOptions
+        numBallotOptions =
+            List.range 0 <| getIntField numBallotOptionsId model + 1
 
-        ballotOption id =
+        allBallotOptions =
+            map ballotOptionView numBallotOptions
+
+        ballotOptionModel id =
             BallotOption
                 id
-                (getField (voteOptionNameId id) model)
-                (getField (voteOptionDescId id) model)
+                (getField (ballotOptionNameId id) model)
+                (getField (ballotOptionDescId id) model)
                 Nothing
 
-        ballot =
+        ballotModel =
             Ballot
                 (getField nameId model)
                 (getField descId model)
                 (Result.withDefault 0 <| String.toFloat <| getField startId model)
                 (Result.withDefault 0 <| String.toFloat <| getField finishId model)
-                (map ballotOption <| map voteOptionId ballotOptions)
+                (map ballotOptionModel numBallotOptions)
 
         completeMsg =
             MultiMsg
-                [ CreateBallot ballot ballotId
+                [ CreateBallot ballotModel ballotId
                 , AddBallotToDemocracy ballotId democracyId
                 , NavigateTo <| "#/d/" ++ toString democracyId
                 ]
@@ -102,23 +105,37 @@ createVoteV democracyId model =
                         Ok val ->
                             False
                     )
+
+        removeDisabled =
+            if getIntField numBallotOptionsId model < 1 then
+                [ Disabled ]
+            else
+                []
+
+        addBallotOption =
+            SetIntField numBallotOptionsId <| getIntField numBallotOptionsId model + 1
+
+        removeBallotOption =
+            SetIntField numBallotOptionsId <| getIntField numBallotOptionsId model - 1
     in
     div [ class "pa4" ] <|
-        [ styled p [ Typo.subhead ] [ text "Vote Details:" ]
+        [ styled p [ Typo.subhead ] [ text "Ballot Details:" ]
         , textF nameId "Name" [] model
         , textF descId "Description" [ Textf.textarea ] model
         , textF startId "Start Time" [ errorTimeFormat startId ] model
         , textF finishId "Finish Time" [ errorTimeFormat finishId ] model
-        , styled p [ cs "mt4", Typo.subhead ] [ text "Vote Options:" ]
+        , styled p [ cs "mt4", Typo.subhead ] [ text "Ballot Options:" ]
         ]
-            ++ allVoteOptions
-            ++ [ div [ class "mt4" ]
+            ++ allBallotOptions
+            ++ [ btn 574567456755 model [ Icon, Attr (class "sv-button-large dib"), Click addBallotOption ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
+               , btn 347584445667 model ([ Icon, Attr (class "sv-button-large dib"), Click removeBallotOption ] ++ removeDisabled) [ Icon.view "remove_circle_outline" [ Icon.size36 ] ]
+               , div [ class "mt4" ]
                     [ btn 97546756756 model [ SecBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Cancel" ]
                     , btn 85687456456 model [ PriBtn, Attr (class "ma3 dib"), Click completeMsg ] [ text "Create" ]
                     ]
                ]
 
 
-createVoteH : DemocracyId -> Model -> List (Html msg)
-createVoteH democracyId model =
-    [ Layout.title [] [ text <| "Create a new vote for " ++ (getDemocracy democracyId model).name ] ]
+createBallotH : DemocracyId -> Model -> List (Html msg)
+createBallotH democracyId model =
+    [ Layout.title [] [ text <| "Create a new ballot for " ++ (getDemocracy democracyId model).name ] ]
