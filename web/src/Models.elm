@@ -2,7 +2,7 @@ module Models exposing (..)
 
 import Dict exposing (Dict)
 import Material
-import Models.Ballot exposing (Ballot, BallotId, BallotOption)
+import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteId, VoteOption)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR))
@@ -13,6 +13,7 @@ type alias Model =
     { mdl : Material.Model
     , democracies : Dict DemocracyId Democracy
     , ballots : Dict BallotId Ballot
+    , votes : Dict VoteId Vote
     , members : Dict MemberId Member
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , route : Route
@@ -31,6 +32,7 @@ initModel route =
     , democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
+    , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
     , route = route
     , fields = Dict.empty
@@ -250,13 +252,26 @@ ballots =
     ]
 
 
+votes : List ( VoteId, Vote )
+votes =
+    [ ( 63634563243
+      , Vote 1234531245
+            [ VoteOption 12341234123 2
+            , VoteOption 64564746345 -3
+            , VoteOption 87967875645 0
+            , VoteOption 23457478556 3
+            ]
+      )
+    ]
+
+
 members : List ( MemberId, Member )
 members =
-    [ ( 68457345353, Member "John" "Howard" [ 3623456347, 3456346785 ] [] )
-    , ( 57657954674, Member "Kim" "Beazley" [ 3623456347 ] [] )
-    , ( 95434678684, Member "Julia" "Gillard" [ 3623456347 ] [] )
-    , ( 89679067456, Member "Kevin" "Rudd" [ 3456346785 ] [] )
-    , ( 76543578984, Member "Tony" "Abbott" [ 3456346785 ] [] )
+    [ ( 68457345353, Member "John" "Howard" [ 3623456347, 3456346785 ] )
+    , ( 57657954674, Member "Kim" "Beazley" [ 3623456347 ] )
+    , ( 95434678684, Member "Julia" "Gillard" [ 3623456347 ] )
+    , ( 89679067456, Member "Kevin" "Rudd" [ 3456346785 ] )
+    , ( 76543578984, Member "Tony" "Abbott" [ 3456346785 ] )
     ]
 
 
@@ -268,12 +283,7 @@ type alias Member =
     { firstName : String
     , lastName : String
     , democracies : List DemocracyId
-    , results : List VoteResultId
     }
-
-
-type alias VoteResultId =
-    Int
 
 
 adminToggleId : Int

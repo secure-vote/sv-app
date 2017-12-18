@@ -226,7 +226,7 @@ pastBallotList ballots model =
                     name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
 
                 displayResults =
-                    "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.options)
+                    "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.ballotOptions)
             in
             a [ href <| "#r/" ++ toString ballotId, class "link black" ]
                 [ Card.view

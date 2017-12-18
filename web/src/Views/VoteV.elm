@@ -22,7 +22,7 @@ voteV id model =
             getBallot id model
 
         optionList =
-            List.map optionListItem ballot.options
+            List.map optionListItem ballot.ballotOptions
 
         isFutureVote =
             model.now < ballot.start

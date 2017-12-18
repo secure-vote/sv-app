@@ -37,7 +37,7 @@ confirmationDialogV ballotId model =
     in
     div []
         [ p [] [ text "Please confirm that your vote details below are correct." ]
-        , table [] <| List.map row ballot.options
+        , table [] <| List.map row ballot.ballotOptions
         , div [ class "tr mt3" ]
             [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
             , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click NavigateBack ] [ text "Yes" ]

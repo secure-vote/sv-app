@@ -78,7 +78,7 @@ getResultPercent ballot value =
         getResults { result } =
             abs <| result ? 0
     in
-    round <| value * 100 / (List.sum <| List.map getResults ballot.options)
+    round <| value * 100 / (List.sum <| List.map getResults ballot.ballotOptions)
 
 
 

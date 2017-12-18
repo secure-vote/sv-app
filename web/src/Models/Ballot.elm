@@ -12,13 +12,33 @@ type alias Ballot =
     , desc : String
     , start : Time
     , finish : Time
-    , options : List BallotOption
+    , ballotOptions : List BallotOption
     }
 
 
+type alias BallotOptionId =
+    Int
+
+
 type alias BallotOption =
-    { id : Int
+    { id : BallotOptionId
     , name : String
     , desc : String
     , result : Maybe Float
+    }
+
+
+type alias VoteId =
+    Int
+
+
+type alias Vote =
+    { ballotId : BallotId
+    , voteOptions : List VoteOption
+    }
+
+
+type alias VoteOption =
+    { id : BallotOptionId
+    , value : Float
     }

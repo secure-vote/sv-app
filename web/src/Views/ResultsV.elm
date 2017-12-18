@@ -46,11 +46,11 @@ resultsV id model =
             <|
                 List.map
                     getResults
-                    ballot.options
+                    ballot.ballotOptions
         , div [ class "w-90 w-50-l" ]
             [ Plot.viewBars
                 (Plot.groups <| List.map plotGroup)
-                (List.map getResults ballot.options)
+                (List.map getResults ballot.ballotOptions)
             ]
         ]
 
