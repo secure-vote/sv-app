@@ -8,14 +8,23 @@ import Models.Democracy exposing (Democracy, DemocracyId)
 import Time exposing (Time)
 
 
+findDemocracy : BallotId -> Model -> ( DemocracyId, Democracy )
+findDemocracy ballotId model =
+    let
+        containsBallot ( democracyId, democracy ) =
+            List.member ballotId democracy.ballots
+    in
+    List.head (List.filter containsBallot <| Dict.toList model.democracies) ? ( 0, Democracy "Missing Democracy" "" "" [] )
+
+
 getDemocracy : DemocracyId -> Model -> Democracy
 getDemocracy id model =
-    Dict.get id model.democracies ? Democracy "" "" "" []
+    Dict.get id model.democracies ? Democracy "Missing Democracy" "" "" []
 
 
 getBallot : BallotId -> Model -> Ballot
 getBallot id model =
-    Dict.get id model.ballots ? Ballot "" "" 0 0 []
+    Dict.get id model.ballots ? Ballot "Missing Ballot" "" 0 0 []
 
 
 getMembers : DemocracyId -> Model -> List Member

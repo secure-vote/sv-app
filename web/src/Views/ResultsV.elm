@@ -2,7 +2,7 @@ module Views.ResultsV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Helpers exposing (getBallot, getResultPercent)
-import Html exposing (Html, div, h2, table, td, text, tr)
+import Html exposing (Html, div, h2, p, table, td, text, tr)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
 import Material.Layout as Layout
@@ -39,7 +39,10 @@ resultsV id model =
             Plot.group desc [ value ]
     in
     div [ class "ma4" ]
-        [ styled h2 [ Typo.headline ] [ text "Results:" ]
+        [ p [] [ text ballot.desc ]
+        , p [] [ text <| "Start Time: " ++ toString ballot.start ]
+        , p [] [ text <| "Finish Time: " ++ toString ballot.finish ]
+        , styled h2 [ Typo.headline ] [ text "Results:" ]
         , table [ class "ba pa3 mt2" ] <|
             List.map
                 tableRow

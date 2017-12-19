@@ -73,24 +73,24 @@ createBallotV democracyId model =
         allBallotOptions =
             map ballotOptionView numBallotOptions
 
-        ballotOptionModel id =
+        newBallotOption id =
             BallotOption
                 id
                 (getField (ballotOptionNameId id) model)
                 (getField (ballotOptionDescId id) model)
                 Nothing
 
-        ballotModel =
+        newBallot =
             Ballot
                 (getField nameId model)
                 (getField descId model)
                 (Result.withDefault 0 <| String.toFloat <| getField startId model)
                 (Result.withDefault 0 <| String.toFloat <| getField finishId model)
-                (map ballotOptionModel numBallotOptions)
+                (map newBallotOption numBallotOptions)
 
         completeMsg =
             MultiMsg
-                [ CreateBallot ballotModel ballotId
+                [ CreateBallot newBallot ballotId
                 , AddBallotToDemocracy ballotId democracyId
                 , NavigateTo <| "#/d/" ++ toString democracyId
                 ]

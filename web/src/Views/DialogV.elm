@@ -2,15 +2,15 @@ module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.TextF exposing (textF)
-import Helpers exposing (getAdminToggle, getBallot, getFloatField)
+import Helpers exposing (findDemocracy, getAdminToggle, getBallot, getFloatField)
 import Html exposing (Html, div, p, table, td, text, tr)
 import Html.Attributes exposing (class)
 import Material.Options as Options exposing (cs, styled)
 import Material.Toggles as Toggles
 import Material.Typography as Typo exposing (title)
 import Models exposing (Model, adminToggleId)
-import Models.Ballot exposing (BallotId)
-import Msgs exposing (Msg(Mdl, NavigateBack, ToggleBoolField))
+import Models.Ballot exposing (BallotId, Vote, VoteId)
+import Msgs exposing (Msg(CreateVote, Mdl, MultiMsg, NavigateBack, NavigateTo, ToggleBoolField))
 
 
 subhead : String -> Html Msg
@@ -23,8 +23,8 @@ subsubhead s =
     styled div [ Typo.subhead, cs "black db mv3" ] [ text s ]
 
 
-confirmationDialogV : BallotId -> Model -> Html Msg
-confirmationDialogV ballotId model =
+voteConfirmDialogV : Vote -> VoteId -> Model -> Html Msg
+voteConfirmDialogV vote voteId model =
     let
         row item =
             tr []
@@ -33,14 +33,23 @@ confirmationDialogV ballotId model =
                 ]
 
         ballot =
-            getBallot ballotId model
+            getBallot vote.ballotId model
+
+        democracyId =
+            Tuple.first <| findDemocracy vote.ballotId model
+
+        completeMsg =
+            MultiMsg
+                [ CreateVote vote voteId
+                , NavigateTo <| "#/d/" ++ toString democracyId
+                ]
     in
     div []
         [ p [] [ text "Please confirm that your vote details below are correct." ]
         , table [] <| List.map row ballot.ballotOptions
         , div [ class "tr mt3" ]
             [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
-            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click NavigateBack ] [ text "Yes" ]
+            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click completeMsg ] [ text "Yes" ]
             ]
         ]
 

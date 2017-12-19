@@ -66,6 +66,9 @@ update msg model =
         NavigateTo url ->
             ( model, Navigation.newUrl url )
 
+        CreateVote vote voteId ->
+            { model | votes = Dict.insert voteId vote model.votes } ! []
+
         CreateBallot ballot ballotId ->
             { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
 

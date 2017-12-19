@@ -1,7 +1,7 @@
 module Msgs exposing (..)
 
 import Material
-import Models.Ballot exposing (Ballot, BallotId)
+import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
 import Models.Democracy exposing (DemocracyId)
 import Navigation exposing (Location)
 import Routes exposing (DialogRoute, Route)
@@ -22,6 +22,7 @@ type Msg
     | NavigateBack
     | NavigateHome
     | NavigateTo String
+    | CreateVote Vote VoteId
     | CreateBallot Ballot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
     | MultiMsg (List Msg)

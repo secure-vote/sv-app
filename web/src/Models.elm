@@ -88,10 +88,10 @@ ballots =
             "Some very important details"
             1552000000000
             1612200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 835957160 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 425037868 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 935616461 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 571023541 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 4578267564
@@ -99,10 +99,10 @@ ballots =
             "Sounds like a good idea to me!"
             1512000000000
             1512100000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 56
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 3
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just -45
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 28
+            [ BallotOption 140807079 "Option 1" "Lorem Ipsum" <| Just 56
+            , BallotOption 185109319 "Option 2" "Lorem Ipsum" <| Just 3
+            , BallotOption 411788625 "Option 3" "Lorem Ipsum" <| Just -45
+            , BallotOption 541178496 "Option 4" "Lorem Ipsum" <| Just 28
             ]
       )
     , ( 5745672345
@@ -110,10 +110,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1712200000000
-            [ BallotOption 12341234123 "8 releases of 42 days" "Lorem Ipsum" Nothing
-            , BallotOption 64564746345 "42 releases of 8 days" "Lorem Ipsum" Nothing
-            , BallotOption 87967875645 "16 releases of 42 days" "Lorem Ipsum" Nothing
-            , BallotOption 23457478556 "4 releases of 84 days" "Lorem Ipsum" Nothing
+            [ BallotOption 930099084 "8 releases of 42 days" "Lorem Ipsum" Nothing
+            , BallotOption 207817966 "42 releases of 8 days" "Lorem Ipsum" Nothing
+            , BallotOption 823702175 "16 releases of 42 days" "Lorem Ipsum" Nothing
+            , BallotOption 508428413 "4 releases of 84 days" "Lorem Ipsum" Nothing
             ]
       )
     , ( 34574567233
@@ -121,10 +121,10 @@ ballots =
             "Some very important details"
             1612000000000
             1712200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 821621025 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 784842911 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 466772458 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 347005445 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 898732464567
@@ -132,10 +132,10 @@ ballots =
             "Sounds like a good idea to me!"
             1412000000000
             1412100000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 4
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 6
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 2
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 7
+            [ BallotOption 663625795 "Option 1" "Lorem Ipsum" <| Just 4
+            , BallotOption 640544893 "Option 2" "Lorem Ipsum" <| Just 6
+            , BallotOption 401833762 "Option 3" "Lorem Ipsum" <| Just 2
+            , BallotOption 900899269 "Option 4" "Lorem Ipsum" <| Just 7
             ]
       )
 
@@ -145,10 +145,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1612200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 224275794 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 478275981 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 541189738 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 486581765 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 4367845333
@@ -156,10 +156,10 @@ ballots =
             "Lorem Ipsum"
             1612000000000
             1612200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 538092582 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 559408735 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 490932278 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 647860056 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 7896767563
@@ -167,10 +167,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1512100000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 1
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 0
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 0
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 4
+            [ BallotOption 709173604 "Option 1" "Lorem Ipsum" <| Just 1
+            , BallotOption 206973721 "Option 2" "Lorem Ipsum" <| Just 0
+            , BallotOption 141835804 "Option 3" "Lorem Ipsum" <| Just 0
+            , BallotOption 813648825 "Option 4" "Lorem Ipsum" <| Just 4
             ]
       )
 
@@ -180,10 +180,10 @@ ballots =
             "Lorem Ipsum"
             1612000000000
             1612200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 316654166 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 312499893 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 385986258 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 149124977 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 8654355233
@@ -191,10 +191,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1512200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 599409902 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 815947266 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 928514180 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 378184496 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 3578876545
@@ -202,10 +202,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1512200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 43
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 43
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 34
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 13
+            [ BallotOption 499458533 "Option 1" "Lorem Ipsum" <| Just 43
+            , BallotOption 931278671 "Option 2" "Lorem Ipsum" <| Just 43
+            , BallotOption 544083422 "Option 3" "Lorem Ipsum" <| Just 34
+            , BallotOption 442394343 "Option 4" "Lorem Ipsum" <| Just 13
             ]
       )
 
@@ -215,10 +215,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1612200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" Nothing
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" Nothing
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" Nothing
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" Nothing
+            [ BallotOption 409173097 "Option 1" "Lorem Ipsum" Nothing
+            , BallotOption 114144673 "Option 2" "Lorem Ipsum" Nothing
+            , BallotOption 669948220 "Option 3" "Lorem Ipsum" Nothing
+            , BallotOption 912386093 "Option 4" "Lorem Ipsum" Nothing
             ]
       )
     , ( 7342132479
@@ -226,10 +226,10 @@ ballots =
             "Lorem Ipsum"
             1512000000000
             1512200000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 4
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 43
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 1
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 43
+            [ BallotOption 698581880 "Option 1" "Lorem Ipsum" <| Just 4
+            , BallotOption 246697343 "Option 2" "Lorem Ipsum" <| Just 43
+            , BallotOption 292648287 "Option 3" "Lorem Ipsum" <| Just 1
+            , BallotOption 951412388 "Option 4" "Lorem Ipsum" <| Just 43
             ]
       )
 
@@ -239,10 +239,10 @@ ballots =
             "Lorem Ipsum"
             1511900000000
             1512000000000
-            [ BallotOption 53674567345 "Option 1" "Lorem Ipsum" <| Just 64
-            , BallotOption 67845784356 "Option 2" "Lorem Ipsum" <| Just 34
-            , BallotOption 89432575544 "Option 3" "Lorem Ipsum" <| Just 65
-            , BallotOption 75684568455 "Option 4" "Lorem Ipsum" <| Just 86
+            [ BallotOption 666944030 "Option 1" "Lorem Ipsum" <| Just 64
+            , BallotOption 278272143 "Option 2" "Lorem Ipsum" <| Just 34
+            , BallotOption 177875907 "Option 3" "Lorem Ipsum" <| Just 65
+            , BallotOption 597943144 "Option 4" "Lorem Ipsum" <| Just 86
             ]
       )
 

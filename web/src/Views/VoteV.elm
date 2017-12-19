@@ -1,7 +1,7 @@
 module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Helpers exposing (getBallot, getFloatField, readableTime)
+import Helpers exposing (genNewId, getBallot, getFloatField, readableTime)
 import Html exposing (Html, div, p, span, text)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
@@ -10,16 +10,16 @@ import Material.Options exposing (cs, styled)
 import Material.Slider as Slider
 import Material.Typography as Typo
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
 
 
 voteV : BallotId -> Model -> Html Msg
-voteV id model =
+voteV ballotId model =
     let
         ballot =
-            getBallot id model
+            getBallot ballotId model
 
         optionList =
             List.map optionListItem ballot.ballotOptions
@@ -90,6 +90,18 @@ voteV id model =
                         [ text "Details" ]
                     ]
                 ]
+
+        newVoteOption { id } =
+            VoteOption id <| getFloatField id model
+
+        newVote =
+            Vote ballotId <| List.map newVoteOption ballot.ballotOptions
+
+        newVoteId =
+            genNewId ballotId <| Result.withDefault 0 <| String.toInt <| List.foldl (++) "" <| List.map toString <| List.map genNonce newVote.voteOptions
+
+        genNonce { value } =
+            value
     in
     div [ class "tc pa3" ]
         [ text ballot.desc
@@ -99,7 +111,7 @@ voteV id model =
             ]
             [ text voteTime ]
         , div [] optionList
-        , btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD id)), OpenDialog ] ++ continueBtnOptions) [ text "Continue" ]
+        , btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), OpenDialog ] ++ continueBtnOptions) [ text "Continue" ]
         ]
 
 

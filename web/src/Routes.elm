@@ -1,6 +1,6 @@
 module Routes exposing (..)
 
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (BallotId, Vote, VoteId)
 import Models.Democracy exposing (DemocracyId)
 
 
@@ -16,7 +16,7 @@ type Route
 
 
 type DialogRoute msg
-    = VoteConfirmationD BallotId
+    = VoteConfirmationD Vote VoteId
     | BallotInfoD String
     | BallotOptionD String
     | DemocracyInfoD String
