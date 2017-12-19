@@ -254,14 +254,14 @@ ballots =
 
 votes : List ( VoteId, Vote )
 votes =
-    [ ( 63634563243
-      , Vote 1234531245
-            [ VoteOption 12341234123 2
-            , VoteOption 64564746345 -3
-            , VoteOption 87967875645 0
-            , VoteOption 23457478556 3
-            ]
-      )
+    [--    ( 63634563243
+     --      , Vote 1234531245
+     --            [ VoteOption 12341234123 2
+     --            , VoteOption 64564746345 -3
+     --            , VoteOption 87967875645 0
+     --            , VoteOption 23457478556 3
+     --            ]
+     --      )
     ]
 
 

@@ -17,6 +17,15 @@ findDemocracy ballotId model =
     List.head (List.filter containsBallot <| Dict.toList model.democracies) ? ( 0, Democracy "Missing Democracy" "" "" [] )
 
 
+findVoteExists : BallotId -> Model -> Bool
+findVoteExists ballotId model =
+    let
+        containsBallot vote =
+            ballotId == vote.ballotId
+    in
+    not <| List.isEmpty <| List.filter containsBallot <| Dict.values model.votes
+
+
 getDemocracy : DemocracyId -> Model -> Democracy
 getDemocracy id model =
     Dict.get id model.democracies ? Democracy "Missing Democracy" "" "" []

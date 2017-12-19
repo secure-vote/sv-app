@@ -2,10 +2,11 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
-import Helpers exposing (getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
+import Helpers exposing (findVoteExists, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
+import Material.Color as Color
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, css, styled)
@@ -20,11 +21,6 @@ import Msgs exposing (Msg(Mdl, NavigateTo, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD))
 
 
-tabId : Int
-tabId =
-    325645232456
-
-
 type BallotStatus
     = Past
     | Current
@@ -32,10 +28,13 @@ type BallotStatus
 
 
 democracyV : DemocracyId -> Model -> Html Msg
-democracyV id model =
+democracyV democracyId model =
     let
         democracy =
-            getDemocracy id model
+            getDemocracy democracyId model
+
+        tabId =
+            genNewId democracyId 3
 
         adminOptions =
             if getAdminToggle model then
@@ -82,7 +81,7 @@ democracyV id model =
                         [ pastBallotList democracy.ballots model ]
 
                     2 ->
-                        [ memberList id model ]
+                        [ memberList democracyId model ]
 
                     _ ->
                         [ h1 [ class "red" ] [ text "Not Found" ] ]
@@ -131,11 +130,24 @@ currentBallotList ballots model =
             let
                 ballot =
                     getBallot ballotId model
+
+                cardColor =
+                    if findVoteExists ballotId model then
+                        Color.color Color.Amber Color.S50
+                    else
+                        Color.color Color.Amber Color.S300
+
+                voteStatus =
+                    if findVoteExists ballotId model then
+                        "✅ You have voted in this ballot"
+                    else
+                        "❗ You have not voted in this ballot yet"
             in
             a [ href <| "#v/" ++ toString ballotId, class "link black" ]
                 [ Card.view
                     ([ cs "ma4"
                      , css "width" "auto"
+                     , Color.background cardColor
                      ]
                         ++ elevation ballotId model
                     )
@@ -148,6 +160,7 @@ currentBallotList ballots model =
                             ]
                             [ text <| "Vote closes in " ++ readableTime ballot.finish model ]
                         ]
+                    , Card.actions [ Card.border, cs "tl" ] [ styled span [ Typo.caption ] [ text voteStatus ] ]
                     ]
                 ]
     in
@@ -181,6 +194,7 @@ futureBallotList ballots model =
                 [ Card.view
                     ([ cs "ma4"
                      , css "width" "auto"
+                     , Color.background (Color.color Color.Grey Color.S200)
                      ]
                         ++ elevation ballotId model
                     )
@@ -232,6 +246,7 @@ pastBallotList ballots model =
                 [ Card.view
                     ([ cs "ma4"
                      , css "width" "auto"
+                     , Color.background (Color.color Color.Grey Color.S200)
                      ]
                         ++ elevation ballotId model
                     )
