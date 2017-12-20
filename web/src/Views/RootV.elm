@@ -15,6 +15,7 @@ import Views.CreateBallotV exposing (createBallotH, createBallotV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
+import Views.EditBallotV exposing (editBallotH, editBallotV)
 import Views.ResultsV exposing (resultsH, resultsV)
 import Views.VoteV exposing (voteH, voteV)
 
@@ -86,6 +87,9 @@ page model =
         CreateVoteR democracyId ->
             createBallotV democracyId model
 
+        EditVoteR ballotId ->
+            editBallotV ballotId model
+
         NotFoundRoute ->
             notFoundView
 
@@ -113,6 +117,9 @@ pageHeader model =
 
         CreateVoteR democracyId ->
             createBallotH democracyId model
+
+        EditVoteR ballotId ->
+            editBallotH ballotId model
 
         NotFoundRoute ->
             [ notFoundView ]

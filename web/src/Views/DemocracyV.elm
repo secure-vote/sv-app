@@ -90,15 +90,15 @@ democracyV democracyId model =
 
 
 democracyH : DemocracyId -> Model -> List (Html Msg)
-democracyH id model =
+democracyH democracyId model =
     let
         democracy =
-            getDemocracy id model
+            getDemocracy democracyId model
 
         adminOptions =
             if getAdminToggle model then
                 [ Layout.link []
-                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Link ("#create-vote/" ++ toString id) False ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
+                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Link ("#create-vote/" ++ toString democracyId) False ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
                 ]
             else
                 []
@@ -142,6 +142,15 @@ currentBallotList ballots model =
                         "✅ You have voted in this ballot"
                     else
                         "❗ You have not voted in this ballot yet"
+
+                adminOptions =
+                    if getAdminToggle model then
+                        [ div [ class "pa2 absolute top-0 right-0" ]
+                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            ]
+                        ]
+                    else
+                        []
             in
             a [ href <| "#v/" ++ toString ballotId, class "link black" ]
                 [ Card.view
@@ -153,13 +162,15 @@ currentBallotList ballots model =
                     )
                     [ Card.title [ cs "b" ] [ text <| "🔴 " ++ ballot.name ]
                     , Card.text [ cs "tl" ]
-                        [ text ballot.desc
-                        , styled span
+                        ([ text ballot.desc
+                         , styled span
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
                             ]
                             [ text <| "Vote closes in " ++ readableTime ballot.finish model ]
-                        ]
+                         ]
+                            ++ adminOptions
+                        )
                     , Card.actions [ Card.border, cs "tl" ] [ styled span [ Typo.caption ] [ text voteStatus ] ]
                     ]
                 ]
@@ -189,6 +200,15 @@ futureBallotList ballots model =
             let
                 ballot =
                     getBallot ballotId model
+
+                adminOptions =
+                    if getAdminToggle model then
+                        [ div [ class "pa2 absolute top-0 right-0" ]
+                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            ]
+                        ]
+                    else
+                        []
             in
             a [ href <| "#v/" ++ toString ballotId, class "link black" ]
                 [ Card.view
@@ -200,13 +220,15 @@ futureBallotList ballots model =
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
-                        [ text ballot.desc
-                        , styled span
+                        ([ text ballot.desc
+                         , styled span
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
                             ]
                             [ text <| "Vote opens in " ++ readableTime ballot.start model ]
-                        ]
+                         ]
+                            ++ adminOptions
+                        )
                     ]
                 ]
     in
@@ -241,6 +263,15 @@ pastBallotList ballots model =
 
                 displayResults =
                     "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.ballotOptions)
+
+                adminOptions =
+                    if getAdminToggle model then
+                        [ div [ class "pa2 absolute top-0 right-0" ]
+                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            ]
+                        ]
+                    else
+                        []
             in
             a [ href <| "#r/" ++ toString ballotId, class "link black" ]
                 [ Card.view
@@ -252,13 +283,15 @@ pastBallotList ballots model =
                     )
                     [ Card.title [] [ text ballot.name ]
                     , Card.text [ cs "tl" ]
-                        [ text displayResults
-                        , styled span
+                        ([ text displayResults
+                         , styled span
                             [ cs "tr pa2 absolute bottom-0 right-0"
                             , Typo.caption
                             ]
                             [ text <| "Vote closed " ++ readableTime ballot.finish model ++ " ago" ]
-                        ]
+                         ]
+                            ++ adminOptions
+                        )
                     ]
                 ]
     in

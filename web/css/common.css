@@ -14,7 +14,8 @@
     text-align: center;
 }
 
-.sv-button-large button {
+.sv-button-large button,
+.sv-button-large a {
     width: 48px;
     height: 48px;
 }

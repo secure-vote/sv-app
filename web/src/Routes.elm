@@ -12,6 +12,7 @@ type Route
     | ResultsR BallotId
     | CreateDemocracyR
     | CreateVoteR DemocracyId
+    | EditVoteR BallotId
     | NotFoundRoute
 
 
