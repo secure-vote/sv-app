@@ -2,6 +2,7 @@ module Models exposing (..)
 
 import Dict exposing (Dict)
 import Material
+import Material.Snackbar
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteId, VoteOption)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
@@ -22,6 +23,7 @@ type alias Model =
     , floatFields : Dict Int Float
     , boolFields : Dict Int Bool
     , elevations : Dict Int MouseState
+    , snack : Material.Snackbar.Model String
     , now : Time
     }
 
@@ -40,6 +42,7 @@ initModel route =
     , floatFields = Dict.empty
     , boolFields = Dict.empty
     , elevations = Dict.empty
+    , snack = Material.Snackbar.model
     , now = 0
     }
 

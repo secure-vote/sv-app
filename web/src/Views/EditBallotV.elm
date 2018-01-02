@@ -15,7 +15,7 @@ import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetDialog, SetField, SetIntField, ShowToast))
 import Result as Result
 import Routes exposing (DialogRoute(BallotDeleteConfirmD))
 import Tuple exposing (first)
@@ -95,6 +95,7 @@ editBallotV ballotId model =
             MultiMsg
                 [ CreateBallot newBallot ballotId
                 , NavigateTo <| "#/d/" ++ (toString <| democracyId)
+                , ShowToast <| "Your changes to " ++ newBallot.name ++ " have been saved."
                 ]
 
         errorTimeFormat timeId =

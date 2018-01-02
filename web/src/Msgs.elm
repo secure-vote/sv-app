@@ -1,6 +1,7 @@
 module Msgs exposing (..)
 
 import Material
+import Material.Snackbar as Snackbar
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
 import Models.Democracy exposing (DemocracyId)
 import Navigation exposing (Location)
@@ -26,6 +27,8 @@ type Msg
     | CreateBallot Ballot BallotId
     | DeleteBallot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
+    | ShowToast String
+    | Snackbar (Snackbar.Msg String)
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
 

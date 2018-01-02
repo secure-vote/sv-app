@@ -8,8 +8,9 @@ import Html.Attributes exposing (class, src, style)
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options exposing (cs, css, onClick, styled)
+import Material.Snackbar as Snackbar
 import Models exposing (Model)
-import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog))
+import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog, Snackbar))
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Views.CreateBallotV exposing (createBallotH, createBallotV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
@@ -49,6 +50,7 @@ rootView model =
         main =
             [ page model
             , dialog model
+            , Snackbar.view model.snack |> Html.map Snackbar
             ]
     in
     Layout.render Mdl

@@ -3,6 +3,8 @@ module Update exposing (..)
 import Dict
 import Helpers exposing (getDemocracy)
 import Material
+import Material.Helpers as MHelp exposing (map1st, map2nd)
+import Material.Snackbar as Snackbar
 import Models exposing (Model, initModel)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
@@ -78,6 +80,14 @@ update msg model =
         AddBallotToDemocracy ballotId democracyId ->
             { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
 
+        ShowToast string ->
+            addSnack string model
+
+        Snackbar msg_ ->
+            Snackbar.update msg_ model.snack
+                |> map1st (\s -> { model | snack = s })
+                |> map2nd (Cmd.map Snackbar)
+
         MultiMsg msgs ->
             multiUpdate msgs model []
 
@@ -117,3 +127,16 @@ addBallot ballotId democracyId model =
             getDemocracy democracyId model
     in
     { democracy | ballots = ballotId :: democracy.ballots }
+
+
+addSnack : String -> Model -> ( Model, Cmd Msg )
+addSnack string model =
+    let
+        ( snackbar_, effect ) =
+            Snackbar.add (Snackbar.toast "some payload" string) model.snack
+                |> map2nd (Cmd.map Snackbar)
+
+        model_ =
+            { model | snack = snackbar_ }
+    in
+    ( model_, Cmd.batch [ effect ] )

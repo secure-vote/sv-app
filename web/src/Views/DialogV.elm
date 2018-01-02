@@ -10,7 +10,7 @@ import Material.Toggles as Toggles
 import Material.Typography as Typo exposing (title)
 import Models exposing (Model, adminToggleId)
 import Models.Ballot exposing (BallotId, Vote, VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateTo, ToggleBoolField))
+import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateTo, ShowToast, ToggleBoolField))
 
 
 subhead : String -> Html Msg
@@ -42,6 +42,7 @@ voteConfirmDialogV vote voteId model =
             MultiMsg
                 [ CreateVote vote voteId
                 , NavigateTo <| "#/d/" ++ toString democracyId
+                , ShowToast "Your vote has been recorded"
                 ]
     in
     div []
@@ -67,6 +68,7 @@ ballotDeleteConfirmDialogV ballotId model =
             MultiMsg
                 [ DeleteBallot ballotId
                 , NavigateTo <| "#/d/" ++ toString democracyId
+                , ShowToast <| ballot.name ++ " has been deleted"
                 ]
     in
     div []

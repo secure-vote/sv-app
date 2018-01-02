@@ -16,7 +16,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField, ShowToast))
 import Result as Result
 
 
@@ -98,6 +98,7 @@ createBallotV democracyId model =
                 [ CreateBallot newBallot ballotId
                 , AddBallotToDemocracy ballotId democracyId
                 , NavigateTo <| "#/d/" ++ toString democracyId
+                , ShowToast <| newBallot.name ++ " has been created."
                 ]
 
         errorTimeFormat timeId =
