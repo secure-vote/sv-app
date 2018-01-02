@@ -26,3 +26,7 @@
 
 /* Fix for debug clicking issue */
 .elm-overlay { z-index: 999; }
+
+.btn-warning button {
+    background: #FF5722;
+}

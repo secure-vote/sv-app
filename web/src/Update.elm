@@ -72,6 +72,9 @@ update msg model =
         CreateBallot ballot ballotId ->
             { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
 
+        DeleteBallot ballotId ->
+            { model | ballots = Dict.remove ballotId model.ballots } ! []
+
         AddBallotToDemocracy ballotId democracyId ->
             { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
 

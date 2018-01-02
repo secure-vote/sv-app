@@ -15,8 +15,9 @@ import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetDialog, SetField, SetIntField))
 import Result as Result
+import Routes exposing (DialogRoute(BallotDeleteConfirmD))
 import Tuple exposing (first)
 
 
@@ -87,10 +88,13 @@ editBallotV ballotId model =
             , ballotOptions = map newBallotOption numBallotOptions
             }
 
+        democracyId =
+            first <| findDemocracy ballotId model
+
         completeMsg =
             MultiMsg
                 [ CreateBallot newBallot ballotId
-                , NavigateTo <| "#/d/" ++ (toString <| first <| findDemocracy ballotId model)
+                , NavigateTo <| "#/d/" ++ (toString <| democracyId)
                 ]
 
         errorTimeFormat timeId =
@@ -130,6 +134,7 @@ editBallotV ballotId model =
                , div [ class "mt4" ]
                     [ btn 97546756756 model [ SecBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Cancel" ]
                     , btn 85687456456 model [ PriBtn, Attr (class "ma3 dib"), Click completeMsg ] [ text "Save" ]
+                    , btn 85687456456 model [ SecBtn, Attr (class "ma3 dib btn-warning fr"), OpenDialog, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] [ text "Delete" ]
                     ]
                ]
 

@@ -10,7 +10,7 @@ import Material.Toggles as Toggles
 import Material.Typography as Typo exposing (title)
 import Models exposing (Model, adminToggleId)
 import Models.Ballot exposing (BallotId, Vote, VoteId)
-import Msgs exposing (Msg(CreateVote, Mdl, MultiMsg, NavigateBack, NavigateTo, ToggleBoolField))
+import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateTo, ToggleBoolField))
 
 
 subhead : String -> Html Msg
@@ -50,6 +50,30 @@ voteConfirmDialogV vote voteId model =
         , div [ class "tr mt3" ]
             [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
             , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click completeMsg ] [ text "Yes" ]
+            ]
+        ]
+
+
+ballotDeleteConfirmDialogV : BallotId -> Model -> Html Msg
+ballotDeleteConfirmDialogV ballotId model =
+    let
+        ballot =
+            getBallot ballotId model
+
+        democracyId =
+            Tuple.first <| findDemocracy ballotId model
+
+        completeMsg =
+            MultiMsg
+                [ DeleteBallot ballotId
+                , NavigateTo <| "#/d/" ++ toString democracyId
+                ]
+    in
+    div []
+        [ p [] [ text <| "Are you sure you want to delete " ++ ballot.name ]
+        , div [ class "tr mt3" ]
+            [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Cancel" ]
+            , btn 463467465 model [ SecBtn, CloseDialog, Attr (class "ma2 dib btn-warning"), Click completeMsg ] [ text "Delete" ]
             ]
         ]
 

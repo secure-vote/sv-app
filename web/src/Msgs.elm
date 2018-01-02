@@ -24,6 +24,7 @@ type Msg
     | NavigateTo String
     | CreateVote Vote VoteId
     | CreateBallot Ballot BallotId
+    | DeleteBallot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)

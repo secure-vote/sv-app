@@ -20,6 +20,9 @@ dialog model =
                 VoteConfirmationD vote voteId ->
                     voteConfirmDialogV vote voteId model
 
+                BallotDeleteConfirmD ballotId ->
+                    ballotDeleteConfirmDialogV ballotId model
+
                 BallotInfoD desc ->
                     ballotInfoDialogV desc
 
