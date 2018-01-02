@@ -78,6 +78,17 @@ update msg model =
         MultiMsg msgs ->
             multiUpdate msgs model []
 
+        ChainMsgs msgs ->
+            let
+                chain msg1 ( model1, cmds ) =
+                    let
+                        ( model2, cmds1 ) =
+                            update msg1 model1
+                    in
+                    model2 ! [ cmds, cmds1 ]
+            in
+            List.foldl chain (model ! []) msgs
+
 
 multiUpdate : List Msg -> Model -> List (Cmd Msg) -> ( Model, Cmd Msg )
 multiUpdate msgs model cmds =

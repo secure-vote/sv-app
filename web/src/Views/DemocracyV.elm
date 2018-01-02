@@ -19,6 +19,7 @@ import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(Mdl, NavigateTo, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD))
+import Views.EditBallotV exposing (populateFromModel)
 
 
 type BallotStatus
@@ -98,7 +99,7 @@ democracyH democracyId model =
         adminOptions =
             if getAdminToggle model then
                 [ Layout.link []
-                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Link ("#create-vote/" ++ toString democracyId) False ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
+                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Link ("#create-ballot/" ++ toString democracyId) False ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
                 ]
             else
                 []
@@ -146,7 +147,7 @@ currentBallotList ballots model =
                 adminOptions =
                     if getAdminToggle model then
                         [ div [ class "pa2 absolute top-0 right-0" ]
-                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            [ btn 367463463456 model [ Icon, Click (populateFromModel ballotId model), Link ("#edit-ballot/" ++ toString ballotId) False ] [ Icon.i "edit" ]
                             ]
                         ]
                     else
@@ -204,7 +205,7 @@ futureBallotList ballots model =
                 adminOptions =
                     if getAdminToggle model then
                         [ div [ class "pa2 absolute top-0 right-0" ]
-                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            [ btn 367463463456 model [ Icon, Click (populateFromModel ballotId model), Link ("#edit-ballot/" ++ toString ballotId) False ] [ Icon.i "edit" ]
                             ]
                         ]
                     else
@@ -267,7 +268,7 @@ pastBallotList ballots model =
                 adminOptions =
                     if getAdminToggle model then
                         [ div [ class "pa2 absolute top-0 right-0" ]
-                            [ btn 367463463456 model [ Icon, Link ("#edit-vote/" ++ toString ballotId) False ] [ Icon.i "edit" ]
+                            [ btn 367463463456 model [ Icon, Click (populateFromModel ballotId model), Link ("#edit-ballot/" ++ toString ballotId) False ] [ Icon.i "edit" ]
                             ]
                         ]
                     else

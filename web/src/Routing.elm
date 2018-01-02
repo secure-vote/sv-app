@@ -14,8 +14,8 @@ matchers =
         , map ResultsR (s "r" </> int)
         , map DemocracyListR (s "d")
         , map CreateDemocracyR (s "create-democracy")
-        , map CreateVoteR (s "create-vote" </> int)
-        , map EditVoteR (s "edit-vote" </> int)
+        , map CreateVoteR (s "create-ballot" </> int)
+        , map EditVoteR (s "edit-ballot" </> int)
         ]
 
 

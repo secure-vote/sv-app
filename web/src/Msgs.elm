@@ -26,6 +26,7 @@ type Msg
     | CreateBallot Ballot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
     | MultiMsg (List Msg)
+    | ChainMsgs (List Msg)
 
 
 type MouseState

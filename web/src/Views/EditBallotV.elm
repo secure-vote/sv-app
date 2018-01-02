@@ -3,10 +3,10 @@ module Views.EditBallotV exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.TextF exposing (textF)
 import Dict
-import Helpers exposing (genNewId, getBallot, getDemocracy, getField, getIntField)
+import Helpers exposing (findDemocracy, genNewId, getBallot, getDemocracy, getField, getIntField)
 import Html exposing (Html, div, hr, p, span, text)
 import Html.Attributes exposing (class)
-import List exposing (map)
+import List exposing (foldr, length, map, map2, range)
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, styled)
@@ -17,6 +17,7 @@ import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField))
 import Result as Result
+import Tuple exposing (first)
 
 
 -- TODO: Add validation to all text fields etc.
@@ -66,7 +67,7 @@ editBallotV ballotId model =
                 ]
 
         numBallotOptions =
-            List.range 0 <| getIntField ballotField.numOpts model + 1
+            range 0 <| max (getIntField ballotField.numOpts model - 1) 1
 
         allBallotOptions =
             map ballotOptionView numBallotOptions
@@ -86,12 +87,12 @@ editBallotV ballotId model =
             , ballotOptions = map newBallotOption numBallotOptions
             }
 
-        --        completeMsg =
-        --            MultiMsg
-        --                [ CreateBallot newBallot ballotId
-        --                , AddBallotToDemocracy ballotId democracyId
-        --                , NavigateTo <| "#/d/" ++ toString democracyId
-        --                ]
+        completeMsg =
+            MultiMsg
+                [ CreateBallot newBallot ballotId
+                , NavigateTo <| "#/d/" ++ (toString <| first <| findDemocracy ballotId model)
+                ]
+
         errorTimeFormat timeId =
             Textf.error "Please enter an Epoch time"
                 |> Options.when
@@ -128,7 +129,7 @@ editBallotV ballotId model =
                , btn 347584445667 model ([ Icon, Attr (class "sv-button-large dib"), Click removeBallotOption ] ++ removeDisabled) [ Icon.view "remove_circle_outline" [ Icon.size36 ] ]
                , div [ class "mt4" ]
                     [ btn 97546756756 model [ SecBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Cancel" ]
-                    , btn 85687456456 model [ PriBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Create" ]
+                    , btn 85687456456 model [ PriBtn, Attr (class "ma3 dib"), Click completeMsg ] [ text "Save" ]
                     ]
                ]
 
@@ -153,11 +154,23 @@ populateFromModel ballotId model =
 
         ballot =
             getBallot ballotId model
+
+        numBallotOptions =
+            length ballot.ballotOptions
+
+        ballotOptionMsgs ballotOption num =
+            [ SetField (ballotOptionField num).name ballotOption.name
+            , SetField (ballotOptionField num).desc ballotOption.desc
+            ]
     in
     MultiMsg <|
         [ SetField ballotField.name ballot.name
         , SetField ballotField.desc ballot.desc
         , SetField ballotField.start <| toString ballot.start
         , SetField ballotField.finish <| toString ballot.finish
-        , SetField ballotField.numOpts <| toString <| List.length ballot.ballotOptions
+        , SetIntField ballotField.numOpts numBallotOptions
         ]
+            ++ (foldr (++) [] <|
+                    map2 ballotOptionMsgs ballot.ballotOptions <|
+                        range 0 (numBallotOptions - 1)
+               )
