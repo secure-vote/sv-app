@@ -55,7 +55,7 @@ update msg model =
                 newRoute =
                     parseLocation location
             in
-            ( { model | route = newRoute }, Cmd.none )
+            { model | route = newRoute } ! []
 
         NavigateBack ->
             ( model, Navigation.back 1 )

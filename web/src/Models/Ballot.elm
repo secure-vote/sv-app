@@ -42,3 +42,19 @@ type alias VoteOption =
     { id : BallotOptionId
     , value : Float
     }
+
+
+type alias BallotFieldIds =
+    { name : Int
+    , desc : Int
+    , start : Int
+    , finish : Int
+    , numOpts : Int
+    }
+
+
+type alias BallotOptionFieldIds =
+    { id : Int
+    , name : Int
+    , desc : Int
+    }

@@ -14,8 +14,7 @@ import Material.Textfield as Textf
 import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Models.Ballot exposing (Ballot, BallotId, BallotOption)
-import Models.Democracy exposing (DemocracyId)
+import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField))
 import Result as Result
 
@@ -24,63 +23,68 @@ import Result as Result
 -- TODO: Check that vote is not in the past
 
 
-editBallotV : BallotId -> Model -> Html Msg
-editBallotV ballotId model =
+ballotFieldIds : BallotId -> BallotFieldIds
+ballotFieldIds ballotId =
     let
         idG x =
             genNewId ballotId x
+    in
+    { name = idG 1
+    , desc = idG 2
+    , start = idG 3
+    , finish = idG 4
+    , numOpts = idG 5
+    }
 
-        nameId =
-            idG 1
 
-        descId =
-            idG 2
+ballotOptionFieldIds : BallotId -> Int -> BallotOptionFieldIds
+ballotOptionFieldIds ballotId num =
+    let
+        idG x =
+            genNewId ballotId <| 6 + num * 3 + x
+    in
+    { id = idG 0
+    , name = idG 1
+    , desc = idG 2
+    }
 
-        startId =
-            idG 3
 
-        finishId =
-            idG 4
+editBallotV : BallotId -> Model -> Html Msg
+editBallotV ballotId model =
+    let
+        ballotField =
+            ballotFieldIds ballotId
 
-        numBallotOptionsId =
-            idG 5
-
-        ballotOptionId x =
-            idG <| 6 + x * 3
-
-        ballotOptionNameId x =
-            idG <| 6 + x * 3 + 1
-
-        ballotOptionDescId x =
-            idG <| 6 + x * 3 + 2
+        ballotOptionField num =
+            ballotOptionFieldIds ballotId num
 
         ballotOptionView x =
             div [ class "ba pa3 ma3" ]
                 [ styled p [ Typo.subhead ] [ text <| "Option " ++ (toString <| x + 1) ]
-                , textF (ballotOptionNameId x) "Name" [] model
-                , textF (ballotOptionDescId x) "Description" [ Textf.textarea ] model
+                , textF (ballotOptionField x).name "Name" [] model
+                , textF (ballotOptionField x).desc "Description" [ Textf.textarea ] model
                 ]
 
         numBallotOptions =
-            List.range 0 <| getIntField numBallotOptionsId model + 1
+            List.range 0 <| getIntField ballotField.numOpts model + 1
 
         allBallotOptions =
             map ballotOptionView numBallotOptions
 
-        newBallotOption id =
-            BallotOption
-                id
-                (getField (ballotOptionNameId id) model)
-                (getField (ballotOptionDescId id) model)
-                Nothing
+        newBallotOption x =
+            { id = (ballotOptionField x).id
+            , name = getField (ballotOptionField x).name model
+            , desc = getField (ballotOptionField x).desc model
+            , result = Nothing
+            }
 
         newBallot =
-            Ballot
-                (getField nameId model)
-                (getField descId model)
-                (Result.withDefault 0 <| String.toFloat <| getField startId model)
-                (Result.withDefault 0 <| String.toFloat <| getField finishId model)
-                (map newBallotOption numBallotOptions)
+            { name = getField ballotField.name model
+            , desc = getField ballotField.desc model
+            , start = Result.withDefault 0 <| String.toFloat <| getField ballotField.start model
+            , finish = Result.withDefault 0 <| String.toFloat <| getField ballotField.finish model
+            , ballotOptions = map newBallotOption numBallotOptions
+            }
 
         --        completeMsg =
         --            MultiMsg
@@ -100,23 +104,23 @@ editBallotV ballotId model =
                     )
 
         removeDisabled =
-            if getIntField numBallotOptionsId model < 1 then
+            if getIntField ballotField.numOpts model < 1 then
                 [ Disabled ]
             else
                 []
 
         addBallotOption =
-            SetIntField numBallotOptionsId <| getIntField numBallotOptionsId model + 1
+            SetIntField ballotField.numOpts <| getIntField ballotField.numOpts model + 1
 
         removeBallotOption =
-            SetIntField numBallotOptionsId <| getIntField numBallotOptionsId model - 1
+            SetIntField ballotField.numOpts <| getIntField ballotField.numOpts model - 1
     in
     div [ class "pa4" ] <|
         [ styled p [ Typo.subhead ] [ text "Ballot Details:" ]
-        , textF nameId "Name" [] model
-        , textF descId "Description" [ Textf.textarea ] model
-        , textF startId "Start Time" [ errorTimeFormat startId ] model
-        , textF finishId "Finish Time" [ errorTimeFormat finishId ] model
+        , textF ballotField.name "Name" [] model
+        , textF ballotField.desc "Description" [ Textf.textarea ] model
+        , textF ballotField.start "Start Time" [ errorTimeFormat ballotField.start ] model
+        , textF ballotField.finish "Finish Time" [ errorTimeFormat ballotField.finish ] model
         , styled p [ cs "mt4", Typo.subhead ] [ text "Ballot Options:" ]
         ]
             ++ allBallotOptions
@@ -136,3 +140,24 @@ editBallotH ballotId model =
             getBallot ballotId model
     in
     [ Layout.title [] [ text <| "Edit " ++ ballot.name ] ]
+
+
+populateFromModel : BallotId -> Model -> Msg
+populateFromModel ballotId model =
+    let
+        ballotField =
+            ballotFieldIds ballotId
+
+        ballotOptionField num =
+            ballotOptionFieldIds ballotId num
+
+        ballot =
+            getBallot ballotId model
+    in
+    MultiMsg <|
+        [ SetField ballotField.name ballot.name
+        , SetField ballotField.desc ballot.desc
+        , SetField ballotField.start <| toString ballot.start
+        , SetField ballotField.finish <| toString ballot.finish
+        , SetField ballotField.numOpts <| toString <| List.length ballot.ballotOptions
+        ]
