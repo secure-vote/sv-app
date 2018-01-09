@@ -16,6 +16,7 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
+    , currentDemocracy : DemocracyId
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , route : Route
     , fields : Dict Int String
@@ -35,6 +36,7 @@ initModel route =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , currentDemocracy = 31
     , dialogHtml = { title = "", route = NotFoundD }
     , route = route
     , fields = Dict.empty
@@ -292,3 +294,17 @@ type alias Member =
 adminToggleId : Int
 adminToggleId =
     245748734253
+
+
+type alias BallotCategory =
+    -- ( Name, Parent ) --
+    ( String, String )
+
+
+ballotCategories : List BallotCategory
+ballotCategories =
+    [ ( "Financial", "SwarmFoundation" )
+    , ( "Budgeting", "Financial" )
+    , ( "Projects", "SwarmFoundation" )
+    , ( "GreenLighting", "Projects" )
+    ]

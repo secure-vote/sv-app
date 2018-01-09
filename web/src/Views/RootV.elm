@@ -74,8 +74,10 @@ page model =
         DemocracyListR ->
             democracyListV model
 
-        DemocracyR democracyId ->
-            democracyV democracyId model
+        --        DemocracyR democracyId ->
+        --            democracyV democracyId model
+        DemocracyR ->
+            democracyV model.currentDemocracy model
 
         VoteR ballotId ->
             voteV ballotId model
@@ -105,8 +107,10 @@ pageHeader model =
         DemocracyListR ->
             democracyListH model
 
-        DemocracyR democracyId ->
-            democracyH democracyId model
+        --        DemocracyR democracyId ->
+        --            democracyH democracyId model
+        DemocracyR ->
+            democracyH model.currentDemocracy model
 
         VoteR ballotId ->
             voteH ballotId model

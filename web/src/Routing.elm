@@ -8,8 +8,10 @@ import UrlParser exposing (..)
 matchers : Parser (Route -> a) a
 matchers =
     oneOf
-        [ map DashboardR top
-        , map DemocracyR (s "d" </> int)
+        --        Set DemocracyR as top for Swarm Demo.
+        --        [ map DashboardR top
+        --        , map DemocracyR (s "d" </> int)
+        [ map DemocracyR top
         , map VoteR (s "v" </> int)
         , map ResultsR (s "r" </> int)
         , map DemocracyListR (s "d")
