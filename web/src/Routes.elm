@@ -7,8 +7,7 @@ import Models.Democracy exposing (DemocracyId)
 type Route
     = DashboardR
     | DemocracyListR
-      --    | DemocracyR DemocracyId
-    | DemocracyR
+    | DemocracyR DemocracyId
     | VoteR BallotId
     | ResultsR BallotId
     | CreateDemocracyR

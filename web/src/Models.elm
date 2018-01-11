@@ -16,7 +16,6 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
-    , currentDemocracy : DemocracyId
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , route : Route
     , fields : Dict Int String
@@ -36,7 +35,6 @@ initModel route =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
-    , currentDemocracy = 31
     , dialogHtml = { title = "", route = NotFoundD }
     , route = route
     , fields = Dict.empty
@@ -46,6 +44,31 @@ initModel route =
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
     , now = 0
+    }
+
+
+initModelWithFlags : Flags -> Route -> Model
+initModelWithFlags flags route =
+    { mdl = Material.model
+    , democracies = Dict.fromList democracies
+    , ballots = Dict.fromList ballots
+    , members = Dict.fromList members
+    , votes = Dict.fromList votes
+    , dialogHtml = { title = "", route = NotFoundD }
+    , route = route
+    , fields = Dict.empty
+    , intFields = Dict.empty
+    , floatFields = Dict.empty
+    , boolFields = Dict.empty
+    , elevations = Dict.empty
+    , snack = Material.Snackbar.model
+    , now = 0
+    }
+
+
+type alias Flags =
+    { votingPrivKey : String
+    , democracyId : String
     }
 
 
