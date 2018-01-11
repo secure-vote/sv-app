@@ -69,6 +69,7 @@ initModelWithFlags flags route =
 type alias Flags =
     { votingPrivKey : String
     , democracyId : String
+    , admin : Bool
     }
 
 

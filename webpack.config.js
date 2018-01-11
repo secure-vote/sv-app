@@ -12,9 +12,12 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin([
 
 module.exports = {
   entry: {
-    app: [
-      './web/index.js'
-    ]
+      app: [
+          './web/index.js'
+      ],
+      demo: [
+          './web/index-demo.js'
+      ]
   },
 
   output: {
