@@ -1,6 +1,27 @@
-var path = require("path");
+const webpack = require('webpack');
+const path = require("path");
+const merge = require('webpack-merge');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+
+var TARGET_ENV = function () {
+    console.log('Generating TARGET_ENV');
+    switch (process.env.npm_lifecycle_event) {
+        case 'build-web':
+            return 'production';
+        case 'web':
+            return 'development';
+        case 'demo':
+            return 'demo';
+        case 'build-demo':
+            return 'demo';
+        default:
+            return 'development'
+    }
+}();
+var filename = (TARGET_ENV === 'production') ? '[name]-[hash].js' : '[name].js';
 
 const _dist = '_dist';
 const outputPath = path.join(__dirname, _dist);
@@ -10,16 +31,9 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin([
   {from: './web/img', to: outputPath + '/img'}
 ]);
 
-module.exports = {
-  entry: {
-      app: [
-          './web/index.js'
-      ],
-      demo: [
-          './web/index-demo.js'
-      ]
-  },
+// module.exports = {
 
+const common = {
   output: {
     path: path.resolve(__dirname + '/_dist'),
     filename: '[name].js',
@@ -70,6 +84,59 @@ module.exports = {
     inline: true,
     stats: { colors: true },
   },
-
-
 };
+
+
+if (TARGET_ENV === 'development') {
+    console.log('Building for dev...');
+    module.exports = merge(common, {
+        entry: {
+            app: [
+                './web/index.js'
+            ]
+        },
+        plugins: [
+            // Suggested for hot-loading
+            new webpack.NamedModulesPlugin(),
+            // Prevents compilation errors causing the hot loader to lose state
+            new webpack.NoEmitOnErrorsPlugin(),
+            new webpack.HotModuleReplacementPlugin()
+        ]
+    });
+}
+
+
+if (TARGET_ENV === 'production') {
+    console.log('Building for production...');
+    module.exports = merge(common, {
+        entry: {
+            app: [
+                './web/index.js'
+            ]
+        },
+        plugins: [
+            // Delete everything from output directory and report to user
+            new CleanWebpackPlugin([_dist], {
+                root: __dirname,
+                exclude: [],
+                verbose: true,
+                dry: false
+            }),
+            CopyWebpackPluginConfig,
+            new UglifyJSPlugin()
+        ]
+    });
+}
+
+
+if (TARGET_ENV === 'demo') {
+    console.log('Building for demo...');
+    module.exports = merge(common, {
+
+        entry: {
+            demo: [
+                './web/index-demo.js'
+            ]
+        }
+    });
+}

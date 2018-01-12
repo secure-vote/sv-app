@@ -10,6 +10,7 @@ import Models exposing (Model, initModel)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(..))
+import Routes exposing (Route(NotFoundRoute))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,10 +53,10 @@ update msg model =
             { model | boolFields = result } ! []
 
         NavigateBack ->
-            { model | routeStack = List.tail model.routeStack ? initModel.routeStack } ! []
+            { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
 
         NavigateHome ->
-            { model | routeStack = initModel.routeStack } ! []
+            { model | routeStack = List.drop (List.length model.routeStack - 1) model.routeStack } ! []
 
         NavigateTo newRoute ->
             { model | routeStack = newRoute :: model.routeStack } ! []
