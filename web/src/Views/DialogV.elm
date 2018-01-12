@@ -1,16 +1,17 @@
 module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.LoadingSpinner exposing (spinner)
 import Components.TextF exposing (textF)
 import Helpers exposing (findDemocracy, getAdminToggle, getBallot, getFloatField)
-import Html exposing (Html, div, p, table, td, text, tr)
+import Html exposing (Html, div, h2, h3, p, table, td, text, tr)
 import Html.Attributes exposing (class)
 import Material.Options as Options exposing (cs, styled)
 import Material.Toggles as Toggles
 import Material.Typography as Typo exposing (title)
 import Models exposing (Model, adminToggleId)
-import Models.Ballot exposing (BallotId, Vote, VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateBackTo, ShowToast, ToggleBoolField))
+import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
+import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
 import Routes exposing (Route(DemocracyR))
 
 
@@ -39,21 +40,46 @@ voteConfirmDialogV vote voteId model =
         democracyId =
             Tuple.first <| findDemocracy vote.ballotId model
 
-        completeMsg =
+        createVoteMsg =
             MultiMsg
                 [ CreateVote vote voteId
-                , NavigateBackTo <| DemocracyR democracyId
-                , ShowToast "Your vote has been recorded"
+                , SetVoteConfirmStatus Processing
+                ]
+
+        completeMsg =
+            MultiMsg
+                [ NavigateBackTo <| DemocracyR democracyId
+                , SetVoteConfirmStatus AwaitingConfirmation
                 ]
     in
-    div []
-        [ p [] [ text "Please confirm that your vote details below are correct." ]
-        , table [] <| List.map row ballot.ballotOptions
-        , div [ class "tr mt3" ]
-            [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
-            , btn 463467465 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click completeMsg ] [ text "Yes" ]
-            ]
-        ]
+    div [] <|
+        case model.voteConfirmStatus of
+            AwaitingConfirmation ->
+                [ p [] [ text "Please confirm that your vote details below are correct." ]
+                , table [] <| List.map row ballot.ballotOptions
+                , div [ class "tr mt3" ]
+                    [ btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ text "Close" ]
+                    , btn 463467465 model [ PriBtn, Attr (class "ma2 dib"), Click createVoteMsg ] [ text "Yes" ]
+                    ]
+                ]
+
+            Processing ->
+                [ h3 [ class "tc" ] [ text "Processing..." ]
+                , spinner
+                ]
+
+            Validating ->
+                [ h3 [ class "tc" ] [ text "Validating..." ]
+                , spinner
+                ]
+
+            Complete ->
+                [ h3 [ class "tc" ] [ text "Your vote has been cast successfully!" ]
+                , p [ class "tc f-6 mv5" ] [ text "✅" ]
+                , div [ class "tr mt3" ]
+                    [ btn 784584356234 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click completeMsg ] [ text "Close" ]
+                    ]
+                ]
 
 
 ballotDeleteConfirmDialogV : BallotId -> Model -> Html Msg

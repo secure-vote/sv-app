@@ -7,10 +7,13 @@ import Material.Helpers as MHelp exposing (map1st, map2nd)
 import Material.Snackbar as Snackbar
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (BallotId, VoteConfirmStatus(..))
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(..))
+import Process
 import Routes exposing (Route(NotFoundRoute))
+import Task
+import Time exposing (Time)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -83,6 +86,24 @@ update msg model =
         AddBallotToDemocracy ballotId democracyId ->
             { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
 
+        SetVoteConfirmStatus status ->
+            let
+                cmd =
+                    case status of
+                        AwaitingConfirmation ->
+                            []
+
+                        Processing ->
+                            [ delay (Time.second * 3) <| SetVoteConfirmStatus Validating ]
+
+                        Validating ->
+                            [ delay (Time.second * 3) <| SetVoteConfirmStatus Complete ]
+
+                        Complete ->
+                            []
+            in
+            { model | voteConfirmStatus = status } ! cmd
+
         ShowToast string ->
             addSnack string model
 
@@ -143,3 +164,10 @@ addSnack string model =
             { model | snack = snackbar_ }
     in
     ( model_, Cmd.batch [ effect ] )
+
+
+delay : Time -> msg -> Cmd msg
+delay time msg =
+    Process.sleep time
+        |> Task.andThen (always <| Task.succeed msg)
+        |> Task.perform identity

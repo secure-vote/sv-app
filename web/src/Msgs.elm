@@ -2,7 +2,7 @@ module Msgs exposing (..)
 
 import Material
 import Material.Snackbar as Snackbar
-import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
+import Models.Ballot exposing (Ballot, BallotId, Vote, VoteConfirmStatus, VoteId)
 import Models.Democracy exposing (DemocracyId)
 import Routes exposing (DialogRoute, Route)
 import Time exposing (Time)
@@ -26,6 +26,7 @@ type Msg
     | CreateBallot Ballot BallotId
     | DeleteBallot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
+    | SetVoteConfirmStatus VoteConfirmStatus
     | ShowToast String
     | Snackbar (Snackbar.Msg String)
     | MultiMsg (List Msg)

@@ -58,3 +58,10 @@ type alias BallotOptionFieldIds =
     , name : Int
     , desc : Int
     }
+
+
+type VoteConfirmStatus
+    = AwaitingConfirmation
+    | Processing
+    | Validating
+    | Complete

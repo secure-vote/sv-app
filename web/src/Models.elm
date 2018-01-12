@@ -3,10 +3,10 @@ module Models exposing (..)
 import Dict exposing (Dict)
 import Material
 import Material.Snackbar
-import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteId, VoteOption)
+import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteConfirmStatus(AwaitingConfirmation), VoteId, VoteOption)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
-import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR))
+import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Time exposing (Time)
 
 
@@ -17,6 +17,7 @@ type alias Model =
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
     , dialogHtml : { title : String, route : DialogRoute Msg }
+    , voteConfirmStatus : VoteConfirmStatus
     , routeStack : List Route
     , fields : Dict Int String
     , intFields : Dict Int Int
@@ -36,6 +37,7 @@ initModel =
     , members = Dict.fromList members
     , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
+    , voteConfirmStatus = AwaitingConfirmation
     , routeStack = [ DashboardR ]
     , fields = Dict.empty
     , intFields = Dict.empty
@@ -55,7 +57,8 @@ initModelWithFlags flags =
     , members = Dict.fromList members
     , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
-    , routeStack = [ DashboardR ]
+    , voteConfirmStatus = AwaitingConfirmation
+    , routeStack = [ DemocracyR flags.democracyId ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
