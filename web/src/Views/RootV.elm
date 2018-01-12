@@ -9,6 +9,7 @@ import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options exposing (cs, css, onClick, styled)
 import Material.Snackbar as Snackbar
+import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog, Snackbar))
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
@@ -27,6 +28,12 @@ rootView model =
         logo =
             div [ class "main-logo" ] []
 
+        navBack =
+            if List.length model.routeStack > 1 then
+                [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ] ]
+            else
+                []
+
         header =
             [ Layout.row [ cs "main-header relative" ]
                 [ Layout.navigation [ cs "absolute left-0" ]
@@ -40,8 +47,7 @@ rootView model =
                 ]
             , Layout.row [ cs "secondary-header relative" ]
                 ([ Layout.navigation [ cs "absolute left-0" ]
-                    [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ]
-                    ]
+                    navBack
                  ]
                     ++ pageHeader model
                 )
@@ -67,7 +73,7 @@ rootView model =
 
 page : Model -> Html Msg
 page model =
-    case model.route of
+    case List.head model.routeStack ? NotFoundRoute of
         DashboardR ->
             dashboardV model
 
@@ -98,7 +104,7 @@ page model =
 
 pageHeader : Model -> List (Html Msg)
 pageHeader model =
-    case model.route of
+    case List.head model.routeStack ? NotFoundRoute of
         DashboardR ->
             dashboardH model
 

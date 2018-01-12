@@ -15,9 +15,9 @@ import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetDialog, SetField, SetIntField, ShowToast))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField, ShowToast))
 import Result as Result
-import Routes exposing (DialogRoute(BallotDeleteConfirmD))
+import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR))
 import Tuple exposing (first)
 
 
@@ -94,7 +94,7 @@ editBallotV ballotId model =
         completeMsg =
             MultiMsg
                 [ CreateBallot newBallot ballotId
-                , NavigateTo <| "#/d/" ++ (toString <| democracyId)
+                , NavigateBackTo <| DemocracyR democracyId
                 , ShowToast <| "Your changes to " ++ newBallot.name ++ " have been saved."
                 ]
 
@@ -133,7 +133,7 @@ editBallotV ballotId model =
             ++ [ btn 574567456755 model [ Icon, Attr (class "sv-button-large dib"), Click addBallotOption ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ]
                , btn 347584445667 model ([ Icon, Attr (class "sv-button-large dib"), Click removeBallotOption ] ++ removeDisabled) [ Icon.view "remove_circle_outline" [ Icon.size36 ] ]
                , div [ class "mt4" ]
-                    [ btn 97546756756 model [ SecBtn, Attr (class "ma3 dib"), Click NavigateBack ] [ text "Cancel" ]
+                    [ btn 97546756756 model [ SecBtn, Attr (class "ma3 dib"), Click <| NavigateBackTo <| DemocracyR democracyId ] [ text "Cancel" ]
                     , btn 85687456456 model [ PriBtn, Attr (class "ma3 dib"), Click completeMsg ] [ text "Save" ]
                     , btn 85687456456 model [ SecBtn, Attr (class "ma3 dib btn-warning fr"), OpenDialog, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] [ text "Delete" ]
                     ]

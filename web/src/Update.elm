@@ -5,12 +5,11 @@ import Helpers exposing (getDemocracy)
 import Material
 import Material.Helpers as MHelp exposing (map1st, map2nd)
 import Material.Snackbar as Snackbar
+import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(..))
-import Navigation
-import Routing exposing (parseLocation)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -52,21 +51,24 @@ update msg model =
             in
             { model | boolFields = result } ! []
 
-        OnLocationChange location ->
-            let
-                newRoute =
-                    parseLocation location
-            in
-            { model | route = newRoute } ! []
-
         NavigateBack ->
-            ( model, Navigation.back 1 )
+            { model | routeStack = List.tail model.routeStack ? initModel.routeStack } ! []
 
         NavigateHome ->
-            ( model, Navigation.newUrl "#" )
+            { model | routeStack = initModel.routeStack } ! []
 
-        NavigateTo url ->
-            ( model, Navigation.newUrl url )
+        NavigateTo newRoute ->
+            { model | routeStack = newRoute :: model.routeStack } ! []
+
+        NavigateBackTo oldRoute ->
+            let
+                findRoute routeStack =
+                    if List.head routeStack == Just oldRoute then
+                        routeStack
+                    else
+                        findRoute <| List.tail routeStack ? []
+            in
+            { model | routeStack = findRoute model.routeStack } ! []
 
         CreateVote vote voteId ->
             { model | votes = Dict.insert voteId vote model.votes } ! []

@@ -13,6 +13,7 @@ import Material.Options as Options exposing (cs, css, styled)
 import Material.Typography as Typo
 import Models exposing (Model)
 import Msgs exposing (MouseState(..), Msg(NavigateTo, SetElevation))
+import Routes exposing (Route(CreateDemocracyR, DemocracyR))
 
 
 dashboardV : Model -> Html Msg
@@ -37,19 +38,18 @@ dashboardV model =
                     ]
 
         democracyCard ( id, { name, desc, ballots } ) =
-            a [ href <| "#d/" ++ toString id, class "link black" ]
-                [ Card.view
-                    ([ cs "ma4"
-                     , css "width" "auto"
-                     ]
-                        ++ elevation id model
-                    )
-                  <|
-                    [ Card.title [] [ text name ]
-                    , Card.text [] [ text desc ]
-                    , Card.actions [ Card.border ]
-                        ([] ++ showRecentBallot ballots)
-                    ]
+            Card.view
+                ([ cs "ma4"
+                 , css "width" "auto"
+                 , Options.onClick <| NavigateTo <| DemocracyR id
+                 ]
+                    ++ elevation id model
+                )
+            <|
+                [ Card.title [] [ text name ]
+                , Card.text [] [ text desc ]
+                , Card.actions [ Card.border ]
+                    ([] ++ showRecentBallot ballots)
                 ]
     in
     div [] <| List.map democracyCard <| Dict.toList model.democracies
@@ -63,7 +63,7 @@ dashboardH model =
                 [ Layout.spacer
                 , Layout.navigation []
                     [ Layout.link
-                        [ Options.onClick <| NavigateTo "#create-democracy"
+                        [ Options.onClick <| NavigateTo CreateDemocracyR
                         , cs "ba br-pill"
                         ]
                         [ text "New"

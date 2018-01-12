@@ -16,8 +16,9 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateTo, SetField, SetIntField, ShowToast))
+import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField, ShowToast))
 import Result as Result
+import Routes exposing (Route(DemocracyR))
 
 
 -- TODO: Add validation to all text fields etc.
@@ -97,7 +98,7 @@ createBallotV democracyId model =
             MultiMsg
                 [ CreateBallot newBallot ballotId
                 , AddBallotToDemocracy ballotId democracyId
-                , NavigateTo <| "#/d/" ++ toString democracyId
+                , NavigateBackTo <| DemocracyR democracyId
                 , ShowToast <| newBallot.name ++ " has been created."
                 ]
 

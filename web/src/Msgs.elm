@@ -4,7 +4,6 @@ import Material
 import Material.Snackbar as Snackbar
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
 import Models.Democracy exposing (DemocracyId)
-import Navigation exposing (Location)
 import Routes exposing (DialogRoute, Route)
 import Time exposing (Time)
 
@@ -19,10 +18,10 @@ type Msg
     | SetIntField Int Int
     | SetFloatField Int Float
     | ToggleBoolField Int
-    | OnLocationChange Location
     | NavigateBack
     | NavigateHome
-    | NavigateTo String
+    | NavigateTo Route
+    | NavigateBackTo Route
     | CreateVote Vote VoteId
     | CreateBallot Ballot BallotId
     | DeleteBallot BallotId

@@ -17,7 +17,7 @@ type alias Model =
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
     , dialogHtml : { title : String, route : DialogRoute Msg }
-    , route : Route
+    , routeStack : List Route
     , fields : Dict Int String
     , intFields : Dict Int Int
     , floatFields : Dict Int Float
@@ -28,15 +28,15 @@ type alias Model =
     }
 
 
-initModel : Route -> Model
-initModel route =
+initModel : Model
+initModel =
     { mdl = Material.model
     , democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
-    , route = route
+    , routeStack = [ DashboardR ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
@@ -55,7 +55,7 @@ initModelWithFlags flags route =
     , members = Dict.fromList members
     , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
-    , route = route
+    , routeStack = [ route ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
