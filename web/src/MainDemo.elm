@@ -1,22 +1,17 @@
 module MainDemo exposing (..)
 
+import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags)
 import Msgs exposing (Msg(SetTime))
-import Navigation exposing (Location)
-import Routing
 import Task exposing (perform)
 import Time exposing (Time)
 import Update exposing (update)
 import Views.RootV exposing (rootView)
 
 
-init : Flags -> Location -> ( Model, Cmd Msg )
-init flags location =
-    let
-        currentRoute =
-            Routing.parseLocation location
-    in
-    ( initModelWithFlags flags currentRoute, initCmds )
+init : Flags -> ( Model, Cmd Msg )
+init flags =
+    ( initModelWithFlags flags, initCmds )
 
 
 initCmds : Cmd Msg
@@ -37,7 +32,7 @@ subscriptions model =
 
 main : Program Flags Model Msg
 main =
-    Navigation.programWithFlags Msgs.OnLocationChange
+    Html.programWithFlags
         { init = init
         , view = rootView
         , update = update

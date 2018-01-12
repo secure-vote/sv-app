@@ -2,11 +2,17 @@
 
 setTimeout(() => {
     const Elm = require('./src/MainDemo.elm');
-const app = Elm.Main.embed(document.getElementById('sv-fullscreen'));
+    var node = document.getElementById('sv-fullscreen');
+    var flags = {
+        votingPrivKey: "test",
+        democracyId: 31,
+        admin: false
+    };
+    const app = Elm.MainDemo.embed(node,flags);
 
-// Remove Loading Spinner
-var element = document.getElementById("loading-screen");
-element.parentNode.removeChild(element);
+    // Remove Loading Spinner
+    var element = document.getElementById("loading-screen");
+    element.parentNode.removeChild(element);
 
 }, 400);
 

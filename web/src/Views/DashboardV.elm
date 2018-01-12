@@ -5,7 +5,6 @@ import Date
 import Dict
 import Helpers exposing (getAdminToggle, getBallot)
 import Html exposing (Html, a, div, img, span, text)
-import Html.Attributes exposing (class, href)
 import Material.Card as Card
 import Material.Icon as Icon
 import Material.Layout as Layout

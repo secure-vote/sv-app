@@ -47,15 +47,15 @@ initModel =
     }
 
 
-initModelWithFlags : Flags -> Route -> Model
-initModelWithFlags flags route =
+initModelWithFlags : Flags -> Model
+initModelWithFlags flags =
     { mdl = Material.model
     , democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
     , dialogHtml = { title = "", route = NotFoundD }
-    , routeStack = [ route ]
+    , routeStack = [ DashboardR ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
@@ -68,7 +68,7 @@ initModelWithFlags flags route =
 
 type alias Flags =
     { votingPrivKey : String
-    , democracyId : String
+    , democracyId : Int
     , admin : Bool
     }
 
