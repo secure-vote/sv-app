@@ -28,17 +28,41 @@ const outputPath = path.join(__dirname, _dist);
 const CopyWebpackPluginConfig = new CopyWebpackPlugin([
   {from: './web/css', to: outputPath + '/css'},
   {from: './web/js', to: outputPath + '/js'},
-  {from: './web/img', to: outputPath + '/img'}
+  {from: './web/img', to: outputPath + '/img'},
+  {from: './web/_headers', to: outputPath}
 ]);
 
-// module.exports = {
+
+const genOutput = () => {
+    let extra_dir = '';
+    if (TARGET_ENV == 'demo') {
+        extra_dir = '/demo';
+    }
+    return {
+        output: {
+            path: path.resolve(__dirname + '/_dist' + extra_dir),
+            filename,  // set above dependent on whether it's production or not
+        }
+    };
+}
+
+
+const genElmLoader = () => {
+    let extra = '';
+
+    if (TARGET_ENV !== 'production') {
+        extra += "&debug=true"
+    }
+
+    return {
+        test:    /\.elm$/,
+        exclude: [/elm-stuff/, /node_modules/],
+        loader:  'elm-webpack-loader?verbose=true&warn=true' + extra,
+    }
+}
+
 
 const common = {
-  output: {
-    path: path.resolve(__dirname + '/_dist'),
-    filename: '[name].js',
-  },
-
   module: {
     rules: [
       {
@@ -53,11 +77,7 @@ const common = {
         exclude: /node_modules/,
         loader:  'file-loader?name=[name].[ext]',
       },
-      {
-        test:    /\.elm$/,
-        exclude: [/elm-stuff/, /node_modules/],
-        loader:  'elm-webpack-loader?verbose=true&warn=true&debug=true',
-      },
+      genElmLoader(),
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
         loader: 'url-loader?limit=10000&mimetype=application/font-woff',
@@ -87,9 +107,16 @@ const common = {
 };
 
 
+
+const genExports = (customConf) => {
+    return merge(common, genOutput(), customConf);
+}
+
+
+
 if (TARGET_ENV === 'development') {
     console.log('Building for dev...');
-    module.exports = merge(common, {
+    module.exports = genExports({
         entry: {
             app: [
                 './web/index.js'
@@ -108,7 +135,7 @@ if (TARGET_ENV === 'development') {
 
 if (TARGET_ENV === 'production') {
     console.log('Building for production...');
-    module.exports = merge(common, {
+    module.exports = genExports({
         entry: {
             app: [
                 './web/index.js'
@@ -116,12 +143,14 @@ if (TARGET_ENV === 'production') {
         },
         plugins: [
             // Delete everything from output directory and report to user
-            new CleanWebpackPlugin([_dist], {
-                root: __dirname,
-                exclude: [],
-                verbose: true,
-                dry: false
-            }),
+            // NOTE: disabled for the moment - deploys through netlify are always clean anyway.
+            // The reason it's disabled is that we can clean manually with `rm -r _dist`
+            // new CleanWebpackPlugin([_dist], {
+            //     root: __dirname,
+            //     exclude: [],
+            //     verbose: true,
+            //     dry: false
+            // }),
             CopyWebpackPluginConfig,
             new UglifyJSPlugin()
         ]
@@ -131,7 +160,7 @@ if (TARGET_ENV === 'production') {
 
 if (TARGET_ENV === 'demo') {
     console.log('Building for demo...');
-    module.exports = merge(common, {
+    module.exports = genExports({
 
         entry: {
             demo: [
