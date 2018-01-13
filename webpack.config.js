@@ -62,6 +62,35 @@ const genElmLoader = () => {
 }
 
 
+const genPlugins = () => {
+    const extras = [];
+
+    if (TARGET_ENV === 'demo') {
+        extras.push(new webpack.ProvidePlugin({
+            // "window.Elm": 'Elm',
+            // 'Elm': 'Elm'
+        }));
+
+        extras.push(new HTMLWebpackPlugin({
+            template: 'web/index-demo.ejs',
+            inject: 'body',
+        }))
+    } else {
+        extras.push(new HTMLWebpackPlugin({
+                // using .ejs prevents other loaders causing errors
+                template: 'web/index.ejs',
+                // inject details of output file at end of body
+                inject: 'body'
+            }))
+    }
+
+    return [
+        CopyWebpackPluginConfig,
+        ...extras
+    ];
+}
+
+
 const common = {
   module: {
     rules: [
@@ -90,15 +119,7 @@ const common = {
 
     noParse: /\.elm$/,
   },
-  plugins: [
-      CopyWebpackPluginConfig,
-      new HTMLWebpackPlugin({
-          // using .ejs prevents other loaders causing errors
-          template: 'web/index.ejs',
-          // inject details of output file at end of body
-          inject: 'body'
-      })
-  ],
+  plugins: genPlugins(),
 
   devServer: {
     inline: true,
@@ -161,7 +182,6 @@ if (TARGET_ENV === 'production') {
 if (TARGET_ENV === 'demo') {
     console.log('Building for demo...');
     module.exports = genExports({
-
         entry: {
             demo: [
                 './web/index-demo.js'

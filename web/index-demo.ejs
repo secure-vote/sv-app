@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SecureVote App</title>
+
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!--<link rel="stylesheet" href="./css/vendor/material.blue_grey-deep_orange.min.css" />-->
+    <link rel="stylesheet" href="css/vendor/material.amber-light_blue.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="css/vendor/dialog-polyfill.css" />
+    <link rel="stylesheet" href="css/vendor/tachyons.min.css">
+    <link rel="stylesheet" href="css/cssload-spinner.css">
+    <link rel="stylesheet" href="css/common.css">
+    <!--<link rel="stylesheet" href="css/securevote.css">-->
+    <link rel="stylesheet" href="css/swarmfund.css">
+  </head>
+  <body>
+    <div id="sv-fullscreen" class="w-100">
+      <!-- Free Loading Spinner from icons8.com/cssload -->
+      <!-- https://icons8.com/cssload/en/terms_of_use -->
+      <div id='loading-screen' class="w-100 overflow-x-hidden">
+        <div class="cssload-container">
+          <ul class="cssload-flex-container cssload-orange vh-100">
+            <li>
+              <span class="cssload-loading cssload-one"></span>
+              <span class="cssload-loading cssload-two"></span>
+              <span class="cssload-loading-center"></span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <script src="js/vendor/dialog-polyfill.js"></script>
+    <script>
+      setTimeout(() => {
+        var node = document.getElementById('sv-fullscreen');
+        var flags = {
+            votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
+            democracyId: 31,
+            admin: false
+        };
+        const app = Elm.MainDemo.embed(node,flags);
+
+        // Remove Loading Spinner
+        var element = document.getElementById("loading-screen");
+        element.parentNode.removeChild(element);
+      }, 400);
+    </script>
+  </body>
+</html>
