@@ -86,6 +86,8 @@ const genPlugins = () => {
     if (__DEV__) {
         extras.push(new webpack.NamedModulesPlugin())
         extras.push(new webpack.HotModuleReplacementPlugin())
+    } else {
+        extras.push(new UglifyJSPlugin())
     }
 
     return [
@@ -173,8 +175,6 @@ if (TARGET_ENV === 'production') {
             //     verbose: true,
             //     dry: false
             // }),
-            CopyWebpackPluginConfig,
-            new UglifyJSPlugin()
         ]
     });
 }

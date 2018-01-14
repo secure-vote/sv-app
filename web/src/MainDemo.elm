@@ -6,7 +6,7 @@ import Msgs exposing (Msg(SetTime))
 import Task exposing (perform)
 import Time exposing (Time)
 import Update exposing (update)
-import Views.RootV exposing (rootView)
+import Views.RootDemoV exposing (rootDemoView)
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -34,7 +34,7 @@ main : Program Flags Model Msg
 main =
     Html.programWithFlags
         { init = init
-        , view = rootView
+        , view = rootDemoView
         , update = update
         , subscriptions = subscriptions
         }
