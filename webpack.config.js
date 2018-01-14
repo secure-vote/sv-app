@@ -6,18 +6,22 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
+var __DEV__ = false;
 var TARGET_ENV = function () {
     console.log('Generating TARGET_ENV');
     switch (process.env.npm_lifecycle_event) {
         case 'build-web':
             return 'production';
         case 'web':
+            __DEV__ = true;
             return 'development';
         case 'demo':
+            __DEV__ = true;
             return 'demo';
         case 'build-demo':
             return 'demo';
         default:
+            __DEV__ = true;
             return 'development'
     }
 }();
@@ -35,7 +39,7 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin([
 
 const genOutput = () => {
     let extra_dir = '';
-    if (TARGET_ENV == 'demo') {
+    if (TARGET_ENV == 'demo' && !__DEV__) {
         extra_dir = '/demo';
     }
     return {
@@ -66,11 +70,6 @@ const genPlugins = () => {
     const extras = [];
 
     if (TARGET_ENV === 'demo') {
-        extras.push(new webpack.ProvidePlugin({
-            // "window.Elm": 'Elm',
-            // 'Elm': 'Elm'
-        }));
-
         extras.push(new HTMLWebpackPlugin({
             template: 'web/index-demo.ejs',
             inject: 'body',
@@ -82,6 +81,11 @@ const genPlugins = () => {
                 // inject details of output file at end of body
                 inject: 'body'
             }))
+    }
+
+    if (__DEV__) {
+        extras.push(new webpack.NamedModulesPlugin())
+        extras.push(new webpack.HotModuleReplacementPlugin())
     }
 
     return [
@@ -144,11 +148,8 @@ if (TARGET_ENV === 'development') {
             ]
         },
         plugins: [
-            // Suggested for hot-loading
-            new webpack.NamedModulesPlugin(),
             // Prevents compilation errors causing the hot loader to lose state
-            new webpack.NoEmitOnErrorsPlugin(),
-            new webpack.HotModuleReplacementPlugin()
+            new webpack.NoEmitOnErrorsPlugin()
         ]
     });
 }
