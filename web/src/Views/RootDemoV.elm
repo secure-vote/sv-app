@@ -28,6 +28,9 @@ rootDemoView model =
         logo =
             div [ class "main-logo" ] []
 
+        isLoading =
+            model.isLoading
+
         navBack =
             if List.length model.routeStack > 1 then
                 [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ] ]

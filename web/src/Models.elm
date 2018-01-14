@@ -26,6 +26,8 @@ type alias Model =
     , elevations : Dict Int MouseState
     , snack : Material.Snackbar.Model String
     , now : Time
+    , isLoading : Bool
+    , isDemocracyLevel : Bool
     }
 
 
@@ -46,6 +48,8 @@ initModel =
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
     , now = 0
+    , isLoading = True
+    , isDemocracyLevel = False
     }
 
 
@@ -66,6 +70,8 @@ initModelWithFlags flags =
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
     , now = 0
+    , isLoading = True
+    , isDemocracyLevel = True
     }
 
 
