@@ -3,12 +3,12 @@ module Views.DemocracyV exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
 import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
-import Components.Tabs exposing (mkTabBtn, mkTabRow)
-import Element exposing (Element, button, column, html, row)
-import Element.Attributes exposing (center, padding, paddingTop, spacing, verticalCenter)
+import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
+import Element exposing (Element, button, column, el, html, row, text)
+import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
 import Element.Events exposing (onClick)
 import Helpers exposing (findVoteExists, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
-import Html exposing (Html, a, div, h1, img, span, text)
+import Html as H exposing (Html, a, div, h1, img, span)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
 import Material.Color as Color
@@ -26,7 +26,7 @@ import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, SetDialog, SetField, SetInt
 import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD), Route(CreateVoteR, EditVoteR, ResultsR, VoteR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation)
+import Styles.Variations exposing (Variation(NoTabRowBorder))
 import Views.EditBallotV exposing (populateFromModel)
 import Views.ViewHelpers exposing (SvElement, notFoundView)
 
@@ -37,14 +37,34 @@ type BallotStatus
     | Future
 
 
+democTabs : DemocracyId -> Model -> List TabRec
+democTabs democId model =
+    [ { id = 0
+      , elem = mkIconWLabel "Votes" "checkbox-marked" I18
+      , view = mainVotesV model democId
+      }
+    , { id = 1
+      , elem = mkIconWLabel "Past" "history" I18
+      , view = pastVotesV model democId
+      }
+    ]
+
+
+tabGroupId : DemocracyId -> Int
+tabGroupId democId =
+    genNewId democId 3
+
+
+activeTab : DemocracyId -> Model -> Int
+activeTab democId model =
+    getIntField (tabGroupId democId) model
+
+
 democracyV : DemocracyId -> Model -> SvElement
 democracyV democId model =
     let
         democracy =
             getDemocracy democId model
-
-        tabGroupId =
-            genNewId democId 3
 
         adminOptions =
             if getAdminToggle model then
@@ -52,41 +72,23 @@ democracyV democId model =
                     [ Options.center ]
                     [ Icon.i "group"
                     , Options.span [ css "width" "4px" ] []
-                    , text "Members"
+                    , H.text "Members"
                     ]
                 ]
             else
                 []
 
         tabs =
-            [ { id = 0
-              , elem = mkIconWLabel "Votes" "checkbox-marked" I18
-              , view = mainVotesV model democId
-              }
-            , { id = 1
-              , elem = mkIconWLabel "Past" "history" I18
-              , view = pastVotesV model democId
-              }
-            ]
-
-        activeTab =
-            getIntField tabGroupId model
-
-        tabRow tabs =
-            mkTabRow model
-                (\i -> i == activeTab)
-                (SetIntField tabGroupId)
-                tabs
+            democTabs democId model
 
         tabContent tabs =
-            List.head (List.filter (\{ id } -> id == activeTab) tabs)
+            List.head (List.filter (\{ id } -> id == activeTab democId model) tabs)
                 |> Maybe.map .view
                 |> Maybe.withDefault notFoundView
     in
     column NilS
         []
-        [ tabRow tabs
-        , tabContent tabs
+        [ tabContent tabs
         ]
 
 
@@ -117,7 +119,7 @@ democracyV democId model =
 --        )
 
 
-democracyH : DemocracyId -> Model -> List (Html Msg)
+democracyH : DemocracyId -> Model -> ( List SvElement, List SvElement, List SvElement )
 democracyH democracyId model =
     let
         democracy =
@@ -130,16 +132,36 @@ democracyH democracyId model =
                 ]
             else
                 []
+
+        tabs =
+            democTabs democracyId model
+
+        tabGId =
+            tabGroupId democracyId
+
+        tabRow tabs =
+            mkTabRow
+                (\i -> i == activeTab democracyId model)
+                (SetIntField tabGId)
+                tabs
+                [ vary NoTabRowBorder True ]
     in
-    [ Layout.title [] [ text democracy.name ]
-    , Layout.spacer
-    , Layout.navigation []
-        ([ Layout.link []
-            [ btn 95679345644 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Democracy Info" <| DemocracyInfoD democracy.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
-         ]
-            ++ adminOptions
-        )
-    ]
+    ( []
+    , [ text democracy.name ]
+    , [ tabRow tabs ]
+    )
+
+
+
+--    [ Layout.title [] [ text democracy.name ]
+--    , Layout.spacer
+--    , Layout.navigation []
+--        ([ Layout.link []
+--            [ btn 95679345644 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Democracy Info" <| DemocracyInfoD democracy.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
+--         ]
+--            ++ adminOptions
+--        )
+--    ]
 
 
 mainVotesV : Model -> DemocracyId -> SvElement
@@ -217,17 +239,17 @@ currentBallotList ballots model =
                  ]
                     ++ elevation ballotId model
                 )
-                [ Card.title [ cs "b" ] [ text <| "🔴 " ++ ballot.name ]
+                [ Card.title [ cs "b" ] [ H.text <| "🔴 " ++ ballot.name ]
                 , Card.text [ cs "tl" ]
-                    [ text ballot.desc
+                    [ H.text ballot.desc
                     , styled span
                         [ cs "tr pa2 absolute bottom-0 right-0"
                         , Typo.caption
                         ]
-                        [ text <| "Vote closes in " ++ readableTime ballot.finish model ]
+                        [ H.text <| "Vote closes in " ++ readableTime ballot.finish model ]
                     ]
                 , Card.actions [ Card.border, cs "tl" ]
-                    ([ styled span [ Typo.caption ] [ text voteStatus ]
+                    ([ styled span [ Typo.caption ] [ H.text voteStatus ]
                      ]
                         ++ adminOptions
                     )
@@ -236,7 +258,7 @@ currentBallotList ballots model =
     div [ class "tc" ]
         [ div [] <|
             if List.isEmpty ballots then
-                [ text "There are no current ballots" ]
+                [ H.text "There are no current ballots" ]
             else
                 List.map ballotCard filteredBallots
         ]
@@ -285,14 +307,14 @@ futureBallotList ballots model =
                  ]
                     ++ elevation ballotId model
                 )
-                ([ Card.title [] [ text ballot.name ]
+                ([ Card.title [] [ H.text ballot.name ]
                  , Card.text [ cs "tl" ]
-                    [ text ballot.desc
+                    [ H.text ballot.desc
                     , styled span
                         [ cs "tr pa2 absolute bottom-0 right-0"
                         , Typo.caption
                         ]
-                        [ text <| "Vote opens in " ++ readableTime ballot.start model ]
+                        [ H.text <| "Vote opens in " ++ readableTime ballot.start model ]
                     ]
                  ]
                     ++ adminOptions
@@ -301,7 +323,7 @@ futureBallotList ballots model =
     div [ class "tc" ]
         [ div [] <|
             if List.isEmpty ballots then
-                [ text "There are no future ballots" ]
+                [ H.text "There are no future ballots" ]
             else
                 List.map ballotCard filteredBallots
         ]
@@ -356,14 +378,14 @@ pastBallotList ballots model =
                  ]
                     ++ elevation ballotId model
                 )
-                ([ Card.title [] [ text ballot.name ]
+                ([ Card.title [] [ H.text ballot.name ]
                  , Card.text [ cs "tl" ]
-                    [ text displayResults
+                    [ H.text displayResults
                     , styled span
                         [ cs "tr pa2 absolute bottom-0 right-0"
                         , Typo.caption
                         ]
-                        [ text <| "Vote closed " ++ readableTime ballot.finish model ++ " ago" ]
+                        [ H.text <| "Vote closed " ++ readableTime ballot.finish model ++ " ago" ]
                     ]
                  ]
                     ++ adminOptions
@@ -372,7 +394,7 @@ pastBallotList ballots model =
     div [ class "tc" ]
         [ div [] <|
             if List.isEmpty ballots then
-                [ text "There are no past ballots" ]
+                [ H.text "There are no past ballots" ]
             else
                 List.map ballotCard filteredBallots
         ]
@@ -383,16 +405,16 @@ memberList id model =
     let
         listItem { firstName, lastName } =
             Table.tr []
-                [ Table.td [ cs "tl" ] [ text <| firstName ++ " " ++ lastName ]
+                [ Table.td [ cs "tl" ] [ H.text <| firstName ++ " " ++ lastName ]
                 , Table.td [] [ Icon.i "edit" ]
                 ]
     in
     Table.table [ cs "w-100" ]
         [ Table.thead []
             [ Table.tr []
-                [ Table.th [ cs "tl" ] [ text "Name" ]
+                [ Table.th [ cs "tl" ] [ H.text "Name" ]
                 , Table.th []
-                    [ btn 945674563456 model [ SecBtn, OpenDialog, Click (SetDialog "Invite Members" <| MemberInviteD) ] [ text "Invite +" ]
+                    [ btn 945674563456 model [ SecBtn, OpenDialog, Click (SetDialog "Invite Members" <| MemberInviteD) ] [ H.text "Invite +" ]
                     ]
                 ]
             ]

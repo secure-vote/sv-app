@@ -11,7 +11,7 @@ import Styles.Variations exposing (Variation(..))
 
 
 scaled =
-    Scale.modular 16 1.618
+    Scale.modular 10 1.618
 
 
 swmHltColor =
@@ -35,10 +35,15 @@ swmStylesheet =
             [ Font.size <| scaled 4
             ]
                 ++ textColorVars
+        , style MenuBarHeading
+            [ Font.size <| scaled 3
+            ]
         , style TabRow
             [ bottom 1.0
             , solid
             , C.border lightGray
+            , variation NoTabRowBorder
+                [ bottom 0 ]
             ]
         , style TabBtn
             [ Font.size 24

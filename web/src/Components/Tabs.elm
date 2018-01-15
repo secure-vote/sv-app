@@ -8,7 +8,11 @@ import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(TabBtnActive))
-import Views.ViewHelpers exposing (SvElement)
+import Views.ViewHelpers exposing (SvAttribute, SvElement)
+
+
+type alias TabRec =
+    { id : Int, elem : SvElement, view : SvElement }
 
 
 mkTabBtn : (Int -> Bool) -> (Int -> Msg) -> Int -> SvElement -> SvElement
@@ -16,10 +20,12 @@ mkTabBtn isActiveTab msgF tabId innerElem =
     button TabBtn [ onClick <| msgF tabId, vary TabBtnActive (isActiveTab tabId) ] innerElem
 
 
-mkTabRow : Model -> (Int -> Bool) -> (Int -> Msg) -> List { b | id : Int, elem : SvElement } -> SvElement
-mkTabRow model isActiveTab msgF pairs =
+mkTabRow : (Int -> Bool) -> (Int -> Msg) -> List TabRec -> List SvAttribute -> SvElement
+mkTabRow isActiveTab msgF pairs attrs =
     row TabRow
-        [ spacing (scaled 1), center, verticalCenter, paddingTop (scaled 1) ]
+        ([ spacing (scaled 1), center, verticalCenter, paddingTop (scaled 1) ]
+            ++ attrs
+        )
     <|
         List.map
             (\{ id, elem } -> mkTabBtn isActiveTab msgF id elem)

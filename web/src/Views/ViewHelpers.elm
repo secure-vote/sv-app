@@ -17,6 +17,10 @@ type alias SvElement =
     Element SvClass Variation Msg
 
 
+type alias SvAttribute =
+    Attribute Variation Msg
+
+
 notFoundView : Element SvClass Variation m
 notFoundView =
     el Heading [ vary (VarColor red) True ] (text "Not Found")

@@ -3,11 +3,11 @@ module Views.RootDemoV exposing (..)
 import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
-import Components.Icons exposing (IconSize(I36), mkIcon)
+import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (Element, column, el, empty, html, layout, row, text)
-import Element.Attributes exposing (alignLeft, fill, spacing, width)
+import Element.Attributes exposing (alignBottom, alignLeft, center, fill, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
-import Html exposing (Html, i, span)
+import Html exposing (Html, div, i, span)
 import Html.Attributes exposing (class)
 import Material.Icon as Icon
 import Material.Layout as Layout
@@ -26,7 +26,7 @@ import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
 import Views.EditBallotV exposing (editBallotH, editBallotV)
 import Views.ResultsV exposing (resultsH, resultsV)
-import Views.ViewHelpers exposing (nilView, notFoundView)
+import Views.ViewHelpers exposing (SvElement, nilView, notFoundView)
 import Views.VoteV exposing (voteH, voteV)
 
 
@@ -36,22 +36,29 @@ rootDemoView model =
         isLoading =
             model.isLoading
 
+        w =
+            width <| px (scaled 3)
+
         navBack =
-            if List.length model.routeStack > 1 || True then
-                el NilS [ onClick NavigateBack ] (mkIcon "arrow-left" I36)
+            if List.length model.routeStack > 1 then
+                [ el NilS [ onClick NavigateBack, w ] (mkIcon "arrow-left" I24) ]
             else
-                el NilS [] empty
+                [ el NilS [] empty ]
+
+        ( hLeft, hCenter, hRight ) =
+            pageHeader model
 
         header =
             row HeaderStyle
-                [ spacing (scaled 1), alignLeft ]
-                [ navBack
-                , row NilS [ width fill ] <| List.map html <| pageHeader model
+                [ spacing (scaled 2), alignLeft, alignBottom, spread ]
+                [ row NilS [ width fill ] <| navBack ++ hLeft
+                , row MenuBarHeading [ width fill ] hCenter
+                , row NilS [ width fill ] hRight
                 ]
 
         mainLayout =
             column NilS
-                []
+                [ spacing (scaled 2) ]
                 [ header
                 , page model
 
@@ -65,7 +72,7 @@ fst a b =
     a
 
 
-page : Model -> Element SvClass Variation Msg
+page : Model -> SvElement
 page model =
     case List.head model.routeStack ? NotFoundRoute of
         DashboardR ->
@@ -96,32 +103,41 @@ page model =
             fst notFoundView <| notFoundView
 
 
-pageHeader : Model -> List (Html Msg)
+wrapH x =
+    ( [], [ x ], [] )
+
+
+
+-- | Headers should return a tuple3 of SvElements that correspond to left, center, right
+-- | elements in the header.
+
+
+pageHeader : Model -> ( List SvElement, List SvElement, List SvElement )
 pageHeader model =
     case List.head model.routeStack ? NotFoundRoute of
         DashboardR ->
-            dashboardH model
+            wrapH <| html <| div [] <| dashboardH model
 
         DemocracyListR ->
-            democracyListH model
+            wrapH <| html <| div [] <| democracyListH model
 
         DemocracyR democracyId ->
             democracyH democracyId model
 
         VoteR ballotId ->
-            voteH ballotId model
+            wrapH <| html <| div [] <| voteH ballotId model
 
         ResultsR ballotId ->
-            resultsH ballotId model
+            wrapH <| html <| div [] <| resultsH ballotId model
 
         CreateDemocracyR ->
-            createDemocracyH
+            wrapH <| html <| div [] <| createDemocracyH
 
         CreateVoteR democracyId ->
-            createBallotH democracyId model
+            wrapH <| html <| div [] <| createBallotH democracyId model
 
         EditVoteR ballotId ->
-            editBallotH ballotId model
+            wrapH <| html <| div [] <| editBallotH ballotId model
 
         NotFoundRoute ->
-            []
+            wrapH <| text "Not found"

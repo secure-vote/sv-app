@@ -7,4 +7,5 @@ type Variation
     = SecBtn
     | DisabledBtn
     | TabBtnActive
+    | NoTabRowBorder
     | VarColor Color

@@ -11,6 +11,7 @@ type StyleOption
 type SvClass
     = HeaderStyle
     | Heading
+    | MenuBarHeading
     | SubH
     | SubSubH
     | BigText
