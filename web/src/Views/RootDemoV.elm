@@ -3,8 +3,8 @@ module Views.RootDemoV exposing (..)
 import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
-import Html exposing (Html, div, hr, img, span, text)
-import Html.Attributes exposing (class, src, style)
+import Html exposing (Html, div, hr, img, span, text, node)
+import Html.Attributes exposing (class, src, style, attribute)
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options exposing (cs, css, onClick, styled)
@@ -46,9 +46,13 @@ rootDemoView model =
                 )
             ]
 
+        cssInjection href_ =
+            node "link" [ attribute "rel" "stylesheet", attribute "href" href_ ] []
+
         main =
             header
-                ++ [ page model
+                ++ [ cssInjection "https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.9.1/tachyons.min.css"
+                   , page model
                    , dialog model
                    , Snackbar.view model.snack |> Html.map Snackbar
                    ]
