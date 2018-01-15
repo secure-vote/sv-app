@@ -15,4 +15,7 @@ type SvClass
     | SubSubH
     | BigText
     | RegText
+    | TabRow
+    | TabBtn
+    | IssueList
     | NilS

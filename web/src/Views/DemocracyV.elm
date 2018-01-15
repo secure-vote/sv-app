@@ -2,6 +2,11 @@ module Views.DemocracyV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
+import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
+import Components.Tabs exposing (mkTabBtn, mkTabRow)
+import Element exposing (Element, button, column, html, row)
+import Element.Attributes exposing (center, padding, paddingTop, spacing, verticalCenter)
+import Element.Events exposing (onClick)
 import Helpers exposing (findVoteExists, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
 import Html exposing (Html, a, div, h1, img, span, text)
 import Html.Attributes exposing (class, href)
@@ -19,7 +24,11 @@ import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD), Route(CreateVoteR, EditVoteR, ResultsR, VoteR))
+import Styles.Styles exposing (SvClass(..))
+import Styles.Swarm exposing (scaled)
+import Styles.Variations exposing (Variation)
 import Views.EditBallotV exposing (populateFromModel)
+import Views.ViewHelpers exposing (SvElement, notFoundView)
 
 
 type BallotStatus
@@ -28,14 +37,14 @@ type BallotStatus
     | Future
 
 
-democracyV : DemocracyId -> Model -> Html Msg
-democracyV democracyId model =
+democracyV : DemocracyId -> Model -> SvElement
+democracyV democId model =
     let
         democracy =
-            getDemocracy democracyId model
+            getDemocracy democId model
 
-        tabId =
-            genNewId democracyId 3
+        tabGroupId =
+            genNewId democId 3
 
         adminOptions =
             if getAdminToggle model then
@@ -48,46 +57,64 @@ democracyV democracyId model =
                 ]
             else
                 []
+
+        tabs =
+            [ { id = 0
+              , elem = mkIconWLabel "Votes" "checkbox-marked" I18
+              , view = mainVotesV model democId
+              }
+            , { id = 1
+              , elem = mkIconWLabel "Past" "history" I18
+              , view = pastVotesV model democId
+              }
+            ]
+
+        activeTab =
+            getIntField tabGroupId model
+
+        tabRow tabs =
+            mkTabRow model
+                (\i -> i == activeTab)
+                (SetIntField tabGroupId)
+                tabs
+
+        tabContent tabs =
+            List.head (List.filter (\{ id } -> id == activeTab) tabs)
+                |> Maybe.map .view
+                |> Maybe.withDefault notFoundView
     in
-    Tabs.render Mdl
-        [ 0 ]
-        model.mdl
-        [ Tabs.ripple
-        , Tabs.onSelectTab <| SetIntField tabId
-        , Tabs.activeTab <| getIntField tabId model
+    column NilS
+        []
+        [ tabRow tabs
+        , tabContent tabs
         ]
-        ([ Tabs.label
-            [ Options.center ]
-            [ Icon.i "check_box"
-            , Options.span [ css "width" "4px" ] []
-            , text "Votes"
-            ]
-         , Tabs.label
-            [ Options.center ]
-            [ Icon.i "history"
-            , Options.span [ css "width" "4px" ] []
-            , text "Past"
-            ]
-         ]
-            ++ adminOptions
-        )
-        ([]
-            ++ (case getIntField tabId model of
-                    0 ->
-                        [ currentBallotList democracy.ballots model
-                        , futureBallotList democracy.ballots model
-                        ]
 
-                    1 ->
-                        [ pastBallotList democracy.ballots model ]
 
-                    2 ->
-                        [ memberList democracyId model ]
 
-                    _ ->
-                        [ h1 [ class "red" ] [ text "Not Found" ] ]
-               )
-        )
+--        ([ Tabs.label
+--
+--         , Tabs.label
+--
+--         ]
+--            ++ adminOptions
+--        )
+--        ([]
+--            ++ (case getIntField tabId model of
+--                    0 ->
+--                        [ currentBallotList democracy.ballots model
+--                        , futureBallotList democracy.ballots model
+--                        ]
+--
+--                    1 ->
+--                        [ pastBallotList democracy.ballots model ]
+--
+--                    2 ->
+--                        [ memberList democracyId model ]
+--
+--                    _ ->
+--                        [ h1 [ class "red" ] [ text "Not Found" ] ]
+--               )
+--        )
 
 
 democracyH : DemocracyId -> Model -> List (Html Msg)
@@ -113,6 +140,28 @@ democracyH democracyId model =
             ++ adminOptions
         )
     ]
+
+
+mainVotesV : Model -> DemocracyId -> SvElement
+mainVotesV model democId =
+    let
+        democracy =
+            getDemocracy democId model
+    in
+    column IssueList
+        []
+        [ html <| currentBallotList democracy.ballots model
+        , html <| futureBallotList democracy.ballots model
+        ]
+
+
+pastVotesV : Model -> DemocracyId -> SvElement
+pastVotesV model democId =
+    let
+        democracy =
+            getDemocracy democId model
+    in
+    column IssueList [] [ html <| pastBallotList democracy.ballots model ]
 
 
 currentBallotList : List BallotId -> Model -> Html Msg

@@ -1,8 +1,10 @@
 module Components.Icons exposing (..)
 
-import Element exposing (Element, html)
+import Element exposing (Element, html, row, text)
+import Element.Attributes exposing (spacing, verticalCenter)
 import Html
 import Html.Attributes exposing (class)
+import Styles.Styles exposing (SvClass(NilS))
 
 
 type IconSize
@@ -31,3 +33,8 @@ mkIcon name sz =
                         "48"
     in
     html <| Html.i [ class "mdi", class szClass, class <| "mdi-" ++ name ] []
+
+
+mkIconWLabel : String -> String -> IconSize -> Element SvClass v m
+mkIconWLabel l name sz =
+    row NilS [ spacing 5, verticalCenter ] [ mkIcon name sz, text l ]
