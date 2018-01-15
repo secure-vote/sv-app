@@ -3,92 +3,95 @@ module Views.RootDemoV exposing (..)
 import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
-import Html exposing (Html, div, hr, img, span, text, node)
-import Html.Attributes exposing (class, src, style, attribute)
+import Components.Icons exposing (IconSize(I36), mkIcon)
+import Element exposing (Element, column, el, empty, html, layout, row, text)
+import Element.Events exposing (onClick)
+import Html exposing (Html, i, span)
+import Html.Attributes exposing (class)
 import Material.Icon as Icon
 import Material.Layout as Layout
-import Material.Options exposing (cs, css, onClick, styled)
 import Material.Snackbar as Snackbar
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog, Snackbar))
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
+import Styles.GenStyles exposing (genStylesheet)
+import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
+import Styles.Swarm exposing (swmStylesheet)
 import Views.CreateBallotV exposing (createBallotH, createBallotV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
 import Views.EditBallotV exposing (editBallotH, editBallotV)
 import Views.ResultsV exposing (resultsH, resultsV)
+import Views.ViewHelpers exposing (nilView)
 import Views.VoteV exposing (voteH, voteV)
 
 
 rootDemoView : Model -> Html Msg
 rootDemoView model =
     let
-        logo =
-            div [ class "main-logo" ] []
-
         isLoading =
             model.isLoading
 
         navBack =
-            if List.length model.routeStack > 1 then
-                [ Layout.link [ onClick NavigateBack ] [ Icon.view "arrow_back" [ Icon.size36 ] ] ]
+            if List.length model.routeStack > 1 || True then
+                el NilS [ onClick NavigateBack ] (mkIcon "arrow-left" I36)
             else
-                []
+                el NilS [] empty
 
         header =
-            [ Layout.row [ cs "secondary-header relative" ]
-                ([ Layout.navigation [ cs "absolute left-0" ]
-                    navBack
-                 ]
-                    ++ pageHeader model
-                )
-            ]
+            row HeaderStyle
+                []
+                [ navBack
+                , row NilS [] <| List.map html <| pageHeader model
+                ]
 
-        cssInjection href_ =
-            node "link" [ attribute "rel" "stylesheet", attribute "href" href_ ] []
+        mainLayout =
+            column NilS
+                []
+                [ header
+                , page model
 
-        main =
-            header
-                ++ [ cssInjection "https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.9.1/tachyons.min.css"
-                   , page model
-                   , dialog model
-                   , Snackbar.view model.snack |> Html.map Snackbar
-                   ]
+                -- , dialog model
+                ]
     in
-    div [] main
+    layout (genStylesheet SwmStyle) mainLayout
 
 
-page : Model -> Html Msg
+fst a b =
+    a
+
+
+page : Model -> Element SvClass v m
 page model =
     case List.head model.routeStack ? NotFoundRoute of
         DashboardR ->
-            dashboardV model
+            fst notFoundView <| dashboardV model
 
         DemocracyListR ->
-            democracyListV model
+            fst notFoundView <| democracyListV model
 
         DemocracyR democracyId ->
-            democracyV democracyId model
+            fst notFoundView <| democracyV democracyId model
 
         VoteR ballotId ->
-            voteV ballotId model
+            fst notFoundView <| voteV ballotId model
 
         ResultsR ballotId ->
-            resultsV ballotId model
+            fst notFoundView <| resultsV ballotId model
 
         CreateDemocracyR ->
-            createDemocracyV model
+            fst notFoundView <| createDemocracyV model
 
         CreateVoteR democracyId ->
-            createBallotV democracyId model
+            fst notFoundView <| createBallotV democracyId model
 
         EditVoteR ballotId ->
-            editBallotV ballotId model
+            fst notFoundView <| editBallotV ballotId model
 
         NotFoundRoute ->
-            notFoundView
+            fst notFoundView <| notFoundView
 
 
 pageHeader : Model -> List (Html Msg)
@@ -119,11 +122,9 @@ pageHeader model =
             editBallotH ballotId model
 
         NotFoundRoute ->
-            [ notFoundView ]
+            []
 
 
-notFoundView : Html msg
+notFoundView : Element SvClass v m
 notFoundView =
-    div []
-        [ text "Not found"
-        ]
+    el Heading [] (text "Not Found")

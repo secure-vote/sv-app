@@ -31,6 +31,7 @@ const _dist = '_dist';
 const outputPath = path.join(__dirname, _dist);
 const CopyWebpackPluginConfig = new CopyWebpackPlugin([
   {from: './web/css', to: outputPath + '/css'},
+  {from: './web/fonts', to: outputPath + '/fonts'},
   {from: './web/js', to: outputPath + '/js'},
   {from: './web/img', to: outputPath + '/img'},
   {from: './web/_headers', to: outputPath}
