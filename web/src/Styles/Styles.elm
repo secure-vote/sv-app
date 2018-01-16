@@ -1,5 +1,26 @@
 module Styles.Styles exposing (..)
 
+import Style exposing (StyleSheet)
 
 
-type SVStyle = MdlStyle | SwmStyle
+type StyleOption
+    = SwmStyle
+    | SvStyle
+
+
+type SvClass
+    = HeaderStyle
+    | Heading
+    | MenuBarHeading
+    | SubH
+    | SubSubH
+    | BigText
+    | RegText
+    | TabRow
+    | TabBtn
+    | IssueList
+    | IssueCard
+    | IssueCardResults
+    | CardFooter
+    | VoteList
+    | NilS

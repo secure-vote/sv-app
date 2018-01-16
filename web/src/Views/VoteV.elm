@@ -1,8 +1,10 @@
 module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Element exposing (column, el, html, row, text)
+import Element.Attributes exposing (alignRight, center, spacing, spread, verticalCenter)
 import Helpers exposing (genNewId, getBallot, getFloatField, readableTime)
-import Html exposing (Html, div, p, span, text)
+import Html as H exposing (Html, div, p, span)
 import Html.Attributes exposing (class, style)
 import Material.Icon as Icon
 import Material.Layout as Layout
@@ -13,9 +15,12 @@ import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
+import Styles.Styles exposing (SvClass(NilS, VoteList))
+import Styles.Swarm exposing (scaled)
+import Views.ViewHelpers exposing (SvElement)
 
 
-voteV : BallotId -> Model -> Html Msg
+voteV : BallotId -> Model -> SvElement
 voteV ballotId model =
     let
         ballot =
@@ -46,49 +51,35 @@ voteV ballotId model =
                 "Vote closes in " ++ readableTime ballot.finish model
 
         optionListItem { id, name, desc } =
-            div [ class "center mw-5 cf mb4 mt3 db w-100 bb bw1 b--silver" ]
-                [ div [ class "h-100 w-100 w-100-m w-30-l fl mt2 mb3 tl-l v-mid" ]
-                    [ span [ class "w-100 f4 tc tl-l v-mid b" ] [ text name ] ]
-                , div [ class "cf w-0 fl dn dib-m" ]
-                    -- &nbsp;
-                    [ text " " ]
-                , div [ class "cf v-mid w-100 w-70-m w-40-l fl mb2" ]
-                    [ div [] [ text <| "Your vote: " ++ (toString <| getFloatField id model) ]
-                    , div [ class "center" ]
-                        [ div [ class "inline-flex flex-row content-center cf relative w-100", style [ ( "top", "-10px" ) ] ]
-                            [ span
-                                [ class "f3 relative"
-                                , style [ ( "top", "0px" ), ( "left", "15px" ) ]
+            row VoteList
+                [ spread, verticalCenter ]
+                [ text name
+                , column NilS
+                    []
+                    [ text <| "Your vote: " ++ (toString <| getFloatField id model)
+                    , row NilS
+                        [ verticalCenter, spacing (scaled 2) ]
+                        [ text "👎"
+                        , html <|
+                            Slider.view <|
+                                [ Slider.value <| getFloatField id model
+                                , Slider.min -3
+                                , Slider.max 3
+                                , Slider.step 1
+                                , Slider.onChange <| SetFloatField id
                                 ]
-                                [ text "👎" ]
-                            , div [ class "dib w-100" ]
-                                [ Slider.view
-                                    ([ Slider.value <| getFloatField id model
-                                     , Slider.min -3
-                                     , Slider.max 3
-                                     , Slider.step 1
-                                     , Slider.onChange <| SetFloatField id
-                                     ]
-                                        ++ sliderOptions
-                                    )
-                                ]
-                            , span
-                                [ class "f3 relative"
-                                , style [ ( "top", "0px" ), ( "right", "13px" ) ]
-                                ]
-                                [ text "❤️" ]
-                            ]
+                                    ++ sliderOptions
+                        , text "❤️"
                         ]
                     ]
-                , div [ class "v-mid w-100 w-25-m w-30-l fl mb3 tr-l tr-m tc" ]
-                    [ btn (id * 13 + 1)
+                , html <|
+                    btn (id * 13 + 1)
                         model
                         [ SecBtn
                         , Click (SetDialog (name ++ ": Details") (BallotOptionD desc))
                         , OpenDialog
                         ]
-                        [ text "Details" ]
-                    ]
+                        [ H.text "Details" ]
                 ]
 
         newVoteOption { id } =
@@ -103,28 +94,22 @@ voteV ballotId model =
         genNonce { value } =
             value
     in
-    div [ class "tc pa3" ]
+    column NilS
+        []
         [ text ballot.desc
-        , styled p
-            [ cs "tr pa2"
-            , Typo.caption
-            ]
-            [ text voteTime ]
-        , div [] optionList
-        , btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), OpenDialog ] ++ continueBtnOptions) [ text "Continue" ]
+        , el NilS [ alignRight ] (text voteTime)
+        , column NilS [ spacing (scaled 3) ] optionList
+        , el NilS [ center ] <| html <| btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), OpenDialog ] ++ continueBtnOptions) [ H.text "Continue" ]
         ]
 
 
-voteH : BallotId -> Model -> List (Html Msg)
+voteH : BallotId -> Model -> ( List SvElement, List SvElement, List SvElement )
 voteH id model =
     let
         ballot =
             getBallot id model
     in
-    [ Layout.title [] [ text ballot.name ]
-    , Layout.spacer
-    , Layout.navigation []
-        [ Layout.link []
-            [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
-        ]
-    ]
+    ( []
+    , [ text ballot.name ]
+    , [ html <| btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
+    )

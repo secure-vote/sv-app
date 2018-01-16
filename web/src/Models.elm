@@ -7,7 +7,7 @@ import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteConfirm
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
-import Styles.Styles exposing (SVStyle(MdlStyle, SwmStyle))
+import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
 
 
@@ -29,7 +29,7 @@ type alias Model =
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
-    , globalStyle : SVStyle
+    , globalStyle : StyleOption
     }
 
 
@@ -52,7 +52,7 @@ initModel =
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
-    , globalStyle = MdlStyle
+    , globalStyle = SvStyle
     }
 
 
