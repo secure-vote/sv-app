@@ -1,26 +1,31 @@
 module Styles.Swarm exposing (..)
 
 import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba)
+import Element.Attributes exposing (height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
 import Style.Font as Font exposing (bold)
 import Style.Scale as Scale
 import Style.Shadow as Shadow
+import Style.Transition exposing (transitions)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Variations exposing (IssueCardStatus(..), Variation(..))
+import Time exposing (millisecond)
 
 
 scaled =
     Scale.modular 10 1.618
 
 
+{-| Highlight Color: #fb9823
+-}
 swmHltColor =
-    orange
+    rgb 251 152 35
 
 
 textColorVars =
-    [ variation (VarColor red) [ C.text red ] ]
+    [ variation (VarColor red) [ C.text red ], variation BoldT [ Font.bold ] ]
 
 
 headingCommon =
@@ -68,13 +73,23 @@ swmStylesheet =
             ]
         , style TabBtn
             [ Font.size 24
-            , bottom 1.0
-            , solid
-            , C.border <| rgba 0 0 0 0
             , variation TabBtnActive
-                [ bottom 1.0
-                , solid
-                , C.border swmHltColor
+                [ pseudo "after"
+                    [ prop "width" "100%"
+                    , background swmHltColor
+                    ]
+                ]
+            , pseudo "after"
+                [ prop "display" "block"
+                , background <| rgba 0 0 0 0
+                , prop "bottom" "0"
+                , prop "content" " "
+                , prop "height" "1px"
+                , prop "position" "absolute"
+                , prop "transition" "width .25s ease, background-color .25s ease"
+                , prop "width" "0"
+                , prop "left" "50%"
+                , prop "transform" "translateX(-50%)"
                 ]
             ]
         , style IssueCard
@@ -82,6 +97,7 @@ swmStylesheet =
             , solid
             , C.border <| rgb 200 200 200
             , Shadow.glow gray 1.0
+            , cursor "pointer"
             , variation (IssueCardMod VoteDone)
                 [ background bgHltSec ]
             , variation (IssueCardMod VoteWaiting)
@@ -97,6 +113,14 @@ swmStylesheet =
             , Bdr.top 1.0
             , solid
             , C.border <| rgb 180 180 180
+            ]
+        , style ResultsColumn
+            [ Bdr.right 1.0
+            , solid
+            ]
+        , style ResultsSummary
+            [ Bdr.all 1.0
+            , solid
             ]
         , style Footer
             [ Font.weight 400

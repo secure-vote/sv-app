@@ -1,10 +1,9 @@
 module Views.RootDemoV exposing (..)
 
 import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
-import Element exposing (Element, column, el, empty, html, layout, row, text)
+import Element exposing (Element, button, column, el, empty, html, layout, row, text)
 import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
 import Html exposing (Html, div, i, span)
@@ -41,9 +40,9 @@ rootDemoView model =
 
         navBack =
             if List.length model.routeStack > 1 then
-                [ el NilS [ onClick NavigateBack, w ] (mkIcon "arrow-left" I24) ]
+                [ button NilS [ onClick NavigateBack, w ] (mkIcon "arrow-left" I24) ]
             else
-                [ el NilS [] empty ]
+                [ empty ]
 
         ( hLeft, hCenter, hRight ) =
             pageHeader model
@@ -88,7 +87,7 @@ page model =
             voteV ballotId model
 
         ResultsR ballotId ->
-            fst notFoundView <| resultsV ballotId model
+            resultsV ballotId model
 
         CreateDemocracyR ->
             fst notFoundView <| createDemocracyV model
@@ -128,7 +127,7 @@ pageHeader model =
             voteH ballotId model
 
         ResultsR ballotId ->
-            wrapH <| html <| div [] <| resultsH ballotId model
+            resultsH ballotId model
 
         CreateDemocracyR ->
             wrapH <| html <| div [] <| createDemocracyH

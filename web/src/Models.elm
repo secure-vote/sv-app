@@ -30,6 +30,7 @@ type alias Model =
     , isLoading : Bool
     , isDemocracyLevel : Bool
     , globalStyle : StyleOption
+    , singleDemocName : String
     }
 
 
@@ -53,6 +54,7 @@ initModel =
     , isLoading = True
     , isDemocracyLevel = False
     , globalStyle = SvStyle
+    , singleDemocName = ""
     }
 
 
@@ -76,6 +78,7 @@ initModelWithFlags flags =
     , isLoading = True
     , isDemocracyLevel = True
     , globalStyle = SwmStyle
+    , singleDemocName = flags.singleDemocName
     }
 
 
@@ -83,6 +86,7 @@ type alias Flags =
     { votingPrivKey : String
     , democracyId : Int
     , admin : Bool
+    , singleDemocName : String
     }
 
 

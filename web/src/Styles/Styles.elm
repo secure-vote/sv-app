@@ -24,4 +24,7 @@ type SvClass
     | IssueCardResults
     | CardFooter
     | VoteList
+    | ResultsBarGraph
+    | ResultsSummary
+    | ResultsColumn
     | NilS

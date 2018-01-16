@@ -10,6 +10,7 @@ type Variation
     | NoTabRowBorder
     | IssueCardMod IssueCardStatus
     | VarColor Color
+    | BoldT
 
 
 type IssueCardStatus

@@ -51,6 +51,10 @@ activeTab democId model =
     getIntField (tabGroupId democId) model
 
 
+issueListSpacing =
+    spacing <| scaled 2
+
+
 democracyV : DemocracyId -> Model -> SvElement
 democracyV democId model =
     let
@@ -109,7 +113,7 @@ democracyH democracyId model =
                 [ vary NoTabRowBorder True ]
     in
     ( []
-    , [ text democracy.name ]
+    , [ text model.singleDemocName ]
     , [ tabRow tabs ]
     )
 
@@ -133,7 +137,7 @@ mainVotesV model democId =
             getDemocracy democId model
     in
     column IssueList
-        [ spacing <| scaled 1 ]
+        [ issueListSpacing ]
         [ el SubSubH [] (text "Open Ballots")
         , currentBallotList democracy.ballots model
         , el SubSubH [] (text "Upcoming Ballots")
@@ -148,7 +152,7 @@ pastVotesV model democId =
             getDemocracy democId model
     in
     column IssueList
-        [ spacing <| scaled 1 ]
+        [ issueListSpacing ]
         [ el SubSubH [] (text "Past ballots")
         , pastBallotList democracy.ballots model
         ]
@@ -172,7 +176,7 @@ currentBallotList ballots model =
                 ballotId
     in
     column IssueList
-        [ spacing <| scaled 1 ]
+        [ issueListSpacing ]
     <|
         if List.isEmpty ballots then
             [ el SubH [] (text "There are no current ballots") ]
@@ -196,7 +200,7 @@ futureBallotList ballots model =
             issueCard model ballotId
     in
     column IssueList
-        [ spacing <| scaled 1 ]
+        [ issueListSpacing ]
     <|
         if List.isEmpty ballots then
             [ el SubH [] (text "There are no upcoming ballots") ]
@@ -220,7 +224,7 @@ pastBallotList ballots model =
             issueCard model ballotId
     in
     column IssueList
-        [ spacing <| scaled 1 ]
+        [ issueListSpacing ]
     <|
         if List.isEmpty ballots then
             [ el SubH [] (text "There are no past ballots") ]

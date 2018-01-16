@@ -17,7 +17,11 @@ type alias TabRec =
 
 mkTabBtn : (Int -> Bool) -> (Int -> Msg) -> Int -> SvElement -> SvElement
 mkTabBtn isActiveTab msgF tabId innerElem =
-    button TabBtn [ onClick <| msgF tabId, vary TabBtnActive (isActiveTab tabId) ] innerElem
+    button TabBtn
+        [ onClick <| msgF tabId
+        , vary TabBtnActive (isActiveTab tabId)
+        ]
+        innerElem
 
 
 mkTabRow : (Int -> Bool) -> (Int -> Msg) -> List TabRec -> List SvAttribute -> SvElement
