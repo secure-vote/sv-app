@@ -14,6 +14,7 @@ type SvClass
     | MenuBarHeading
     | SubH
     | SubSubH
+    | Footer
     | BigText
     | RegText
     | TabRow

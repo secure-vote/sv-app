@@ -98,4 +98,13 @@ swmStylesheet =
             , solid
             , C.border <| rgb 180 180 180
             ]
+        , style Footer
+            [ Font.weight 400
+            , Font.size 13
+            ]
+        , style VoteList
+            [ Bdr.bottom 1.0
+            , solid
+            , C.border <| rgb 180 180 180
+            ]
         ]
