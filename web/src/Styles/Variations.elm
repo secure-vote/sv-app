@@ -8,6 +8,12 @@ type Variation
     | DisabledBtn
     | TabBtnActive
     | NoTabRowBorder
-    | IssueCardVoteDone
-    | IssueCardVoteWaiting
+    | IssueCardMod IssueCardStatus
     | VarColor Color
+
+
+type IssueCardStatus
+    = VoteDone
+    | VoteWaiting
+    | VoteFuture
+    | IssuePast

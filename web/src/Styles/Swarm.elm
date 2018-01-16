@@ -1,13 +1,14 @@
 module Styles.Swarm exposing (..)
 
-import Color exposing (darkGray, gray, lightGray, orange, red, rgba)
+import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba)
 import Style exposing (..)
-import Style.Border exposing (bottom, solid)
-import Style.Color as C
-import Style.Font as Font
+import Style.Border as Bdr exposing (bottom, solid)
+import Style.Color as C exposing (background)
+import Style.Font as Font exposing (bold)
 import Style.Scale as Scale
+import Style.Shadow as Shadow
 import Styles.Styles exposing (SvClass(..))
-import Styles.Variations exposing (Variation(..))
+import Styles.Variations exposing (IssueCardStatus(..), Variation(..))
 
 
 scaled =
@@ -22,6 +23,18 @@ textColorVars =
     [ variation (VarColor red) [ C.text red ] ]
 
 
+headingCommon =
+    [ bold ] ++ textColorVars
+
+
+bgHltSec =
+    lightOrange
+
+
+bgHltPri =
+    rgb 230 180 150
+
+
 swmStylesheet : StyleSheet SvClass Variation
 swmStylesheet =
     styleSheet
@@ -34,7 +47,15 @@ swmStylesheet =
         , style Heading <|
             [ Font.size <| scaled 4
             ]
-                ++ textColorVars
+                ++ headingCommon
+        , style SubH <|
+            [ Font.size <| scaled 3
+            ]
+                ++ headingCommon
+        , style SubSubH <|
+            [ Font.size <| scaled 2
+            ]
+                ++ headingCommon
         , style MenuBarHeading
             [ Font.size <| scaled 3
             ]
@@ -55,5 +76,26 @@ swmStylesheet =
                 , solid
                 , C.border swmHltColor
                 ]
+            ]
+        , style IssueCard
+            [ Bdr.all 1.0
+            , solid
+            , C.border <| rgb 200 200 200
+            , Shadow.glow gray 1.0
+            , variation (IssueCardMod VoteDone)
+                [ background bgHltSec ]
+            , variation (IssueCardMod VoteWaiting)
+                [ background bgHltPri ]
+            , variation (IssueCardMod VoteFuture)
+                [ background lightGray ]
+            , variation (IssueCardMod IssuePast)
+                [ background lightGray ]
+            ]
+        , style CardFooter
+            [ Font.weight 400
+            , Font.size 13
+            , Bdr.top 1.0
+            , solid
+            , C.border <| rgb 180 180 180
             ]
         ]

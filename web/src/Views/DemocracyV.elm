@@ -145,9 +145,11 @@ mainVotesV model democId =
             getDemocracy democId model
     in
     column IssueList
-        []
-        [ currentBallotList democracy.ballots model
-        , html <| futureBallotList democracy.ballots model
+        [ spacing <| scaled 1 ]
+        [ el SubSubH [] (text "Open Ballots")
+        , currentBallotList democracy.ballots model
+        , el SubSubH [] (text "Upcoming Ballots")
+        , futureBallotList democracy.ballots model
         ]
 
 
@@ -157,7 +159,11 @@ pastVotesV model democId =
         democracy =
             getDemocracy democId model
     in
-    column IssueList [] [ html <| pastBallotList democracy.ballots model ]
+    column IssueList
+        [ spacing <| scaled 1 ]
+        [ el SubSubH [] (text "Past ballots")
+        , pastBallotList democracy.ballots model
+        ]
 
 
 currentBallotList : List BallotId -> Model -> SvElement
@@ -186,7 +192,7 @@ currentBallotList ballots model =
             List.map ballotCard filteredBallots
 
 
-futureBallotList : List BallotId -> Model -> Html Msg
+futureBallotList : List BallotId -> Model -> SvElement
 futureBallotList ballots model =
     let
         filteredBallots =
@@ -199,59 +205,18 @@ futureBallotList ballots model =
             (getBallot id model).finish > model.now && (getBallot id model).start >= model.now
 
         ballotCard ballotId =
-            let
-                ballot =
-                    getBallot ballotId model
-
-                adminOptions =
-                    let
-                        multiMsg =
-                            MultiMsg
-                                [ populateFromModel ballotId model
-                                , NavigateTo <| EditVoteR ballotId
-                                ]
-                    in
-                    if getAdminToggle model then
-                        [ Card.actions []
-                            [ div [ class "pa2 absolute top-0 right-0" ]
-                                [ btn 678465546456 model [ Icon, Click multiMsg ] [ Icon.i "edit" ]
-                                ]
-                            ]
-                        ]
-                    else
-                        []
-            in
-            Card.view
-                ([ cs "ma4"
-                 , css "width" "auto"
-                 , MColor.background (MColor.color MColor.Grey MColor.S200)
-                 , Options.onClick <| NavigateTo <| VoteR ballotId
-                 ]
-                    ++ elevation ballotId model
-                )
-                ([ Card.title [] [ H.text ballot.name ]
-                 , Card.text [ cs "tl" ]
-                    [ H.text ballot.desc
-                    , styled span
-                        [ cs "tr pa2 absolute bottom-0 right-0"
-                        , Typo.caption
-                        ]
-                        [ H.text <| "Vote opens in " ++ readableTime ballot.start model ]
-                    ]
-                 ]
-                    ++ adminOptions
-                )
+            issueCard model ballotId
     in
-    div [ class "tc" ]
-        [ div [] <|
-            if List.isEmpty ballots then
-                [ H.text "There are no future ballots" ]
-            else
-                List.map ballotCard filteredBallots
-        ]
+    column IssueList
+        [ spacing <| scaled 1 ]
+    <|
+        if List.isEmpty ballots then
+            [ el SubH [] (text "There are no upcoming ballots") ]
+        else
+            List.map ballotCard filteredBallots
 
 
-pastBallotList : List BallotId -> Model -> Html Msg
+pastBallotList : List BallotId -> Model -> SvElement
 pastBallotList ballots model =
     let
         filteredBallots =
@@ -264,81 +229,36 @@ pastBallotList ballots model =
             (getBallot id model).finish < model.now
 
         ballotCard ballotId =
-            let
-                ballot =
-                    getBallot ballotId model
-
-                resultString { name, result } =
-                    name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
-
-                displayResults =
-                    "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.ballotOptions)
-
-                adminOptions =
-                    let
-                        multiMsg =
-                            MultiMsg
-                                [ populateFromModel ballotId model
-                                , NavigateTo <| EditVoteR ballotId
-                                ]
-                    in
-                    if getAdminToggle model then
-                        [ Card.actions []
-                            [ div [ class "pa2 absolute top-0 right-0" ]
-                                [ btn 68456873456 model [ Icon, Click multiMsg ] [ Icon.i "edit" ]
-                                ]
-                            ]
-                        ]
-                    else
-                        []
-            in
-            Card.view
-                ([ cs "ma4"
-                 , css "width" "auto"
-                 , MColor.background (MColor.color MColor.Grey MColor.S200)
-                 , Options.onClick <| NavigateTo <| ResultsR ballotId
-                 ]
-                    ++ elevation ballotId model
-                )
-                ([ Card.title [] [ H.text ballot.name ]
-                 , Card.text [ cs "tl" ]
-                    [ H.text displayResults
-                    , styled span
-                        [ cs "tr pa2 absolute bottom-0 right-0"
-                        , Typo.caption
-                        ]
-                        [ H.text <| "Vote closed " ++ readableTime ballot.finish model ++ " ago" ]
-                    ]
-                 ]
-                    ++ adminOptions
-                )
+            issueCard model ballotId
     in
-    div [ class "tc" ]
-        [ div [] <|
-            if List.isEmpty ballots then
-                [ H.text "There are no past ballots" ]
-            else
-                List.map ballotCard filteredBallots
-        ]
+    column IssueList
+        [ spacing <| scaled 1 ]
+    <|
+        if List.isEmpty ballots then
+            [ el SubH [] (text "There are no past ballots") ]
+        else
+            List.map ballotCard filteredBallots
 
 
-memberList : DemocracyId -> Model -> Html Msg
-memberList id model =
-    let
-        listItem { firstName, lastName } =
-            Table.tr []
-                [ Table.td [ cs "tl" ] [ H.text <| firstName ++ " " ++ lastName ]
-                , Table.td [] [ Icon.i "edit" ]
-                ]
-    in
-    Table.table [ cs "w-100" ]
-        [ Table.thead []
-            [ Table.tr []
-                [ Table.th [ cs "tl" ] [ H.text "Name" ]
-                , Table.th []
-                    [ btn 945674563456 model [ SecBtn, OpenDialog, Click (SetDialog "Invite Members" <| MemberInviteD) ] [ H.text "Invite +" ]
-                    ]
-                ]
-            ]
-        , Table.tbody [] <| List.map listItem <| getMembers id model
-        ]
+
+-- # EXCLUDE MEMBER LIST FOR NOW
+--memberList : DemocracyId -> Model -> Html Msg
+--memberList id model =
+--    let
+--        listItem { firstName, lastName } =
+--            Table.tr []
+--                [ Table.td [ cs "tl" ] [ H.text <| firstName ++ " " ++ lastName ]
+--                , Table.td [] [ Icon.i "edit" ]
+--                ]
+--    in
+--    Table.table [ cs "w-100" ]
+--        [ Table.thead []
+--            [ Table.tr []
+--                [ Table.th [ cs "tl" ] [ H.text "Name" ]
+--                , Table.th []
+--                    [ btn 945674563456 model [ SecBtn, OpenDialog, Click (SetDialog "Invite Members" <| MemberInviteD) ] [ H.text "Invite +" ]
+--                    ]
+--                ]
+--            ]
+--        , Table.tbody [] <| List.map listItem <| getMembers id model
+--        ]

@@ -20,5 +20,6 @@ type SvClass
     | TabBtn
     | IssueList
     | IssueCard
+    | IssueCardResults
     | CardFooter
     | NilS
