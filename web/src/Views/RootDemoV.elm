@@ -3,14 +3,10 @@ module Views.RootDemoV exposing (..)
 import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
-import Element exposing (Element, button, column, el, empty, html, layout, row, text)
+import Element exposing (Element, button, column, el, empty, html, layout, row, text, within)
 import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
 import Html exposing (Html, div, i, span)
-import Html.Attributes exposing (class)
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Snackbar as Snackbar
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog, Snackbar))
@@ -18,7 +14,6 @@ import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
 import Styles.Swarm exposing (scaled, swmStylesheet)
-import Styles.Variations exposing (Variation)
 import Views.CreateBallotV exposing (createBallotH, createBallotV)
 import Views.DashboardV exposing (dashboardH, dashboardV)
 import Views.DemocracyListV exposing (democracyListH, democracyListV)
@@ -60,9 +55,8 @@ rootDemoView model =
                 [ spacing (scaled 2) ]
                 [ header
                 , page model
-
-                -- , dialog model
                 ]
+                |> within [ dialog model ]
     in
     layout (genStylesheet SwmStyle) mainLayout
 

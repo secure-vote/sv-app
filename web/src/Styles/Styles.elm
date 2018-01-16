@@ -14,9 +14,10 @@ type SvClass
     | MenuBarHeading
     | SubH
     | SubSubH
-    | Footer
+    | FooterText
     | BigText
     | RegText
+    | Error
     | TabRow
     | TabBtn
     | IssueList
@@ -24,6 +25,8 @@ type SvClass
     | IssueCardResults
     | CardFooter
     | VoteList
+    | DialogBackdrop
+    | DialogStyle
     | ResultsBarGraph
     | ResultsSummary
     | ResultsColumn
