@@ -73,24 +73,31 @@ swmStylesheet =
             ]
         , style TabBtn
             [ Font.size 24
+            , bottom 1.0
+            , solid
+            , C.border <| rgba 0 0 0 0
             , variation TabBtnActive
-                [ pseudo "after"
-                    [ prop "width" "100%"
-                    , background swmHltColor
-                    ]
+                [ C.border <| swmHltColor
                 ]
-            , pseudo "after"
-                [ prop "display" "block"
-                , background <| rgba 0 0 0 0
-                , prop "bottom" "0"
-                , prop "content" " "
-                , prop "height" "1px"
-                , prop "position" "absolute"
-                , prop "transition" "width .25s ease, background-color .25s ease"
-                , prop "width" "0"
-                , prop "left" "50%"
-                , prop "transform" "translateX(-50%)"
-                ]
+
+            --            , variation TabBtnActive
+            --                [ pseudo "after"
+            --                    [ prop "width" "100%"
+            --                    , background swmHltColor
+            --                    ]
+            --                ]
+            --            , pseudo "after"
+            --                [ prop "display" "block"
+            --                , background <| rgba 0 0 0 0
+            --                , prop "bottom" "0"
+            --                , prop "content" " "
+            --                , prop "height" "1px"
+            --                , prop "position" "absolute"
+            --                , prop "transition" "width .25s ease, background-color .25s ease"
+            --                , prop "width" "0"
+            --                , prop "left" "50%"
+            --                , prop "transform" "translateX(-50%)"
+            --                ]
             ]
         , style IssueCard
             [ Bdr.all 1.0
