@@ -1,8 +1,10 @@
 module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (column, el, html, row, text)
 import Element.Attributes exposing (alignRight, center, padding, spacing, spread, verticalCenter)
+import Element.Events exposing (onClick)
 import Helpers exposing (genNewId, getBallot, getFloatField, readableTime)
 import Html as H exposing (Html, div, p, span)
 import Html.Attributes exposing (class, style)
@@ -108,8 +110,11 @@ voteH id model =
     let
         ballot =
             getBallot id model
+
+        clickMsg =
+            SetDialog "Ballot Info" <| BallotInfoD ballot.desc
     in
     ( []
     , [ text ballot.name ]
-    , [ html <| btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
+    , [ el NilS [ onClick clickMsg ] <| mkIcon "information-outline" I24 ]
     )
