@@ -44,6 +44,8 @@ issueCard model ballotId =
         voteStatus =
             if ballotDone then
                 ""
+            else if ballot.start > model.now then
+                "🕑 This ballot is not open yet"
             else if checkAlreadyVoted ballotId model then
                 "✅ You have voted in this ballot"
             else
@@ -58,7 +60,7 @@ issueCard model ballotId =
         title =
             let
                 textExtra =
-                    if ballotDone then
+                    if ballotDone || ballot.start > model.now then
                         ""
                     else
                         "🔴 "
@@ -78,6 +80,8 @@ issueCard model ballotId =
         timeText =
             if ballotDone then
                 "Vote closed " ++ readableTime ballot.finish model ++ " ago"
+            else if ballot.start > model.now then
+                "Vote opens in " ++ readableTime ballot.start model
             else
                 "Vote closes in " ++ readableTime ballot.finish model
 
