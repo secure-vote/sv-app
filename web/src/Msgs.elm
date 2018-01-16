@@ -13,6 +13,7 @@ type Msg
     | SetTime Time
     | Mdl (Material.Msg Msg)
     | SetDialog String (DialogRoute Msg)
+    | HideDialog
     | SetElevation Int MouseState
     | SetField Int String
     | SetIntField Int Int

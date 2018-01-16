@@ -1,20 +1,24 @@
 module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Components.Icons exposing (IconSize(I48), mkIcon)
 import Components.LoadingSpinner exposing (spinner)
 import Components.TextF exposing (textF)
-import Element exposing (column, el, html, row, table, text)
-import Element.Attributes exposing (alignRight, center)
+import Element exposing (button, column, el, html, row, table, text)
+import Element.Attributes exposing (alignRight, center, padding, spacing)
+import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getAdminToggle, getBallot, getFloatField)
 import Html as H exposing (Html, div, h2, h3, p, td, tr)
 import Html.Attributes exposing (class)
+import List exposing (map)
 import Material.Options as Options
 import Material.Toggles as Toggles
 import Models exposing (Model, adminToggleId)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
+import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
+import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement)
 
 
@@ -31,11 +35,6 @@ subsubhead s =
 voteConfirmDialogV : Vote -> VoteId -> Model -> SvElement
 voteConfirmDialogV vote voteId model =
     let
-        tableRow item =
-            [ el NilS [] (text item.name)
-            , el NilS [] <| text <| toString <| getFloatField item.id model
-            ]
-
         ballot =
             getBallot vote.ballotId model
 
@@ -52,38 +51,45 @@ voteConfirmDialogV vote voteId model =
             MultiMsg
                 [ NavigateBackTo <| DemocracyR democracyId
                 , SetVoteConfirmStatus AwaitingConfirmation
+                , HideDialog
                 ]
     in
-    column NilS [] <|
+    column NilS [ spacing (scaled 2) ] <|
         case model.voteConfirmStatus of
             AwaitingConfirmation ->
+                let
+                    names item =
+                        text item.name
+
+                    values item =
+                        text <| toString <| getFloatField item.id model
+                in
                 [ text "Please confirm that your vote details below are correct."
-                , table NilS [] <| List.map tableRow ballot.ballotOptions
+                , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
                 , row NilS
-                    []
-                    [ html <| btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ H.text "Close" ]
-                    , html <| btn 463467465 model [ PriBtn, Attr (class "ma2 dib"), Click createVoteMsg ] [ H.text "Yes" ]
+                    [ alignRight, spacing (scaled 2) ]
+                    [ button NilS [ onClick HideDialog ] (text "Close")
+                    , button NilS [ onClick createVoteMsg ] (text "Yes")
                     ]
                 ]
 
             Processing ->
                 [ el NilS [ center ] (text "Processing...")
-                , html spinner
+
+                --                , html spinner
                 ]
 
             Validating ->
                 [ el NilS [ center ] (text "Validating...")
-                , html spinner
+
+                --                , html spinner
                 ]
 
             Complete ->
                 [ el NilS [ center ] (text "Your vote has been cast successfully!")
-                , el Heading [] (text "✅")
-                , el NilS
-                    [ alignRight ]
-                  <|
-                    html <|
-                        btn 784584356234 model [ PriBtn, CloseDialog, Attr (class "ma2 dib"), Click completeMsg ] [ H.text "Close" ]
+                , el Heading [ center ] (mkIcon "check-circle-outline" I48)
+                , el NilS [ alignRight ] <|
+                    button NilS [ onClick completeMsg ] (text "Close")
                 ]
 
 

@@ -50,13 +50,19 @@ rootDemoView model =
                 , row NilS [ width fill, alignRight ] hRight
                 ]
 
+        showDialog =
+            if model.showDialog then
+                [ dialog model ]
+            else
+                []
+
         mainLayout =
             column NilS
                 [ spacing (scaled 2) ]
                 [ header
                 , page model
                 ]
-                |> within [ dialog model ]
+                |> within showDialog
     in
     layout (genStylesheet SwmStyle) mainLayout
 

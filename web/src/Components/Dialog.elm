@@ -1,13 +1,16 @@
 module Components.Dialog exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Element exposing (column, el, row, text, within)
-import Element.Attributes exposing (center, fill, height, minWidth, padding, percent, verticalCenter, width)
+import Components.Icons exposing (IconSize(I24), mkIcon)
+import Element exposing (button, column, el, row, text, within)
+import Element.Attributes exposing (alignRight, center, fill, height, minWidth, padding, percent, spacing, spread, verticalCenter, width)
+import Element.Events exposing (onClick)
 import Html as H exposing (Html, div, h1, h3)
 import Html.Attributes exposing (class, style)
 import Models exposing (Model)
+import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
-import Styles.Styles exposing (SvClass(DialogBackdrop, DialogStyle, Error, NilS))
+import Styles.Styles exposing (SvClass(DialogBackdrop, DialogStyle, Error, Heading, NilS, SubH))
 import Styles.Swarm exposing (scaled)
 import Views.DialogV exposing (..)
 import Views.ViewHelpers exposing (SvElement)
@@ -45,11 +48,11 @@ dialog model =
     el DialogBackdrop [ width fill, height fill ] <|
         el DialogStyle [ center, verticalCenter ] <|
             column NilS
-                [ padding (scaled 2) ]
-                [ row NilS
-                    []
+                [ padding (scaled 2), spacing (scaled 2) ]
+                [ row SubH
+                    [ spacing (scaled 3), spread ]
                     [ text model.dialogHtml.title
-                    , text "Close Button"
+                    , button NilS [ onClick HideDialog ] (mkIcon "close" I24)
                     ]
                 , innerElement
                 ]
