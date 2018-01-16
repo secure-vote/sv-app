@@ -9,16 +9,6 @@ import Element exposing (Element, button, column, el, html, row, text)
 import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
 import Element.Events exposing (onClick)
 import Helpers exposing (checkAlreadyVoted, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
-import Html as H exposing (Html, a, div, h1, img, span)
-import Html.Attributes exposing (class, href)
-import Material.Card as Card
-import Material.Color as MColor
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Options as Options exposing (cs, css, styled)
-import Material.Table as Table
-import Material.Tabs as Tabs
-import Material.Typography as Typo
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -67,18 +57,17 @@ democracyV democId model =
         democracy =
             getDemocracy democId model
 
-        adminOptions =
-            if getAdminToggle model then
-                [ Tabs.label
-                    [ Options.center ]
-                    [ Icon.i "group"
-                    , Options.span [ css "width" "4px" ] []
-                    , H.text "Members"
-                    ]
-                ]
-            else
-                []
-
+        --        adminOptions =
+        --            if getAdminToggle model then
+        --                [ Tabs.label
+        --                    [ Options.center ]
+        --                    [ Icon.i "group"
+        --                    , Options.span [ css "width" "4px" ] []
+        --                    , H.text "Members"
+        --                    ]
+        --                ]
+        --            else
+        --                []
         tabs =
             democTabs democId model
 
@@ -99,14 +88,13 @@ democracyH democracyId model =
         democracy =
             getDemocracy democracyId model
 
-        adminOptions =
-            if getAdminToggle model then
-                [ Layout.link []
-                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Click <| NavigateTo <| CreateVoteR democracyId ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
-                ]
-            else
-                []
-
+        --        adminOptions =
+        --            if getAdminToggle model then
+        --                [ Layout.link []
+        --                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Click <| NavigateTo <| CreateVoteR democracyId ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
+        --                ]
+        --            else
+        --                []
         tabs =
             democTabs democracyId model
 
