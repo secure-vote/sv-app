@@ -5,7 +5,7 @@ import Components.Btn exposing (BtnProps(..), btn)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (Element, column, el, empty, html, layout, row, text)
-import Element.Attributes exposing (alignBottom, alignLeft, center, fill, paddingBottom, px, spacing, spread, width)
+import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
 import Html exposing (Html, div, i, span)
 import Html.Attributes exposing (class)
@@ -51,9 +51,9 @@ rootDemoView model =
         header =
             row HeaderStyle
                 [ spacing (scaled 2), alignLeft, alignBottom, spread ]
-                [ row NilS [ width fill ] <| navBack ++ hLeft
+                [ row NilS [ width fill, alignLeft ] <| navBack ++ hLeft
                 , row MenuBarHeading [ width fill ] hCenter
-                , row NilS [ width fill ] hRight
+                , row NilS [ width fill, alignRight ] hRight
                 ]
 
         mainLayout =

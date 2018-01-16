@@ -19,4 +19,6 @@ type SvClass
     | TabRow
     | TabBtn
     | IssueList
+    | IssueCard
+    | CardFooter
     | NilS

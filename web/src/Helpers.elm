@@ -17,8 +17,10 @@ findDemocracy ballotId model =
     List.head (List.filter containsBallot <| Dict.toList model.democracies) ? ( 0, Democracy "Missing Democracy" "" "" [] )
 
 
-findVoteExists : BallotId -> Model -> Bool
-findVoteExists ballotId model =
+{-| Check if a vote exists in model.votes or not.
+-}
+checkAlreadyVoted : BallotId -> Model -> Bool
+checkAlreadyVoted ballotId model =
     let
         containsBallot vote =
             ballotId == vote.ballotId

@@ -8,4 +8,6 @@ type Variation
     | DisabledBtn
     | TabBtnActive
     | NoTabRowBorder
+    | IssueCardVoteDone
+    | IssueCardVoteWaiting
     | VarColor Color

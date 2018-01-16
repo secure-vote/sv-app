@@ -3,15 +3,16 @@ module Views.DemocracyV exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.CardElevation exposing (elevation)
 import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
+import Components.IssueCard exposing (issueCard)
 import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
 import Element exposing (Element, button, column, el, html, row, text)
 import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
 import Element.Events exposing (onClick)
-import Helpers exposing (findVoteExists, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
+import Helpers exposing (checkAlreadyVoted, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
 import Html as H exposing (Html, a, div, h1, img, span)
 import Html.Attributes exposing (class, href)
 import Material.Card as Card
-import Material.Color as Color
+import Material.Color as MColor
 import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.Options as Options exposing (cs, css, styled)
@@ -92,33 +93,6 @@ democracyV democId model =
         ]
 
 
-
---        ([ Tabs.label
---
---         , Tabs.label
---
---         ]
---            ++ adminOptions
---        )
---        ([]
---            ++ (case getIntField tabId model of
---                    0 ->
---                        [ currentBallotList democracy.ballots model
---                        , futureBallotList democracy.ballots model
---                        ]
---
---                    1 ->
---                        [ pastBallotList democracy.ballots model ]
---
---                    2 ->
---                        [ memberList democracyId model ]
---
---                    _ ->
---                        [ h1 [ class "red" ] [ text "Not Found" ] ]
---               )
---        )
-
-
 democracyH : DemocracyId -> Model -> ( List SvElement, List SvElement, List SvElement )
 democracyH democracyId model =
     let
@@ -172,7 +146,7 @@ mainVotesV model democId =
     in
     column IssueList
         []
-        [ html <| currentBallotList democracy.ballots model
+        [ currentBallotList democracy.ballots model
         , html <| futureBallotList democracy.ballots model
         ]
 
@@ -186,7 +160,7 @@ pastVotesV model democId =
     column IssueList [] [ html <| pastBallotList democracy.ballots model ]
 
 
-currentBallotList : List BallotId -> Model -> Html Msg
+currentBallotList : List BallotId -> Model -> SvElement
 currentBallotList ballots model =
     let
         filteredBallots =
@@ -199,69 +173,17 @@ currentBallotList ballots model =
             (getBallot id model).finish > model.now && (getBallot id model).start <= model.now
 
         ballotCard ballotId =
-            let
-                ballot =
-                    getBallot ballotId model
-
-                cardColor =
-                    if findVoteExists ballotId model then
-                        Color.color Color.Amber Color.S50
-                    else
-                        Color.color Color.Amber Color.S300
-
-                voteStatus =
-                    if findVoteExists ballotId model then
-                        "✅ You have voted in this ballot"
-                    else
-                        "❗ You have not voted in this ballot yet"
-
-                adminOptions =
-                    let
-                        multiMsg =
-                            MultiMsg
-                                [ populateFromModel ballotId model
-                                , NavigateTo <| EditVoteR ballotId
-                                ]
-                    in
-                    if getAdminToggle model then
-                        [ div [ class "pa2 absolute top-0 right-0" ]
-                            [ btn 84345845675 model [ Icon, Click multiMsg ] [ Icon.i "edit" ]
-                            ]
-                        ]
-                    else
-                        []
-            in
-            Card.view
-                ([ cs "ma4"
-                 , css "width" "auto"
-                 , Color.background cardColor
-                 , Options.onClick <| NavigateTo <| VoteR ballotId
-                 ]
-                    ++ elevation ballotId model
-                )
-                [ Card.title [ cs "b" ] [ H.text <| "🔴 " ++ ballot.name ]
-                , Card.text [ cs "tl" ]
-                    [ H.text ballot.desc
-                    , styled span
-                        [ cs "tr pa2 absolute bottom-0 right-0"
-                        , Typo.caption
-                        ]
-                        [ H.text <| "Vote closes in " ++ readableTime ballot.finish model ]
-                    ]
-                , Card.actions [ Card.border, cs "tl" ]
-                    ([ styled span [ Typo.caption ] [ H.text voteStatus ]
-                     ]
-                        ++ adminOptions
-                    )
-                ]
+            issueCard
+                model
+                ballotId
     in
-    div [ class "tc" ]
-        [ div [] <|
-            if List.isEmpty ballots then
-                [ H.text "There are no current ballots" ]
-            else
-                List.map ballotCard filteredBallots
-        ]
+    column IssueList
+        [ spacing <| scaled 1 ]
+    <|
+        if List.isEmpty ballots then
+            [ el SubH [] (text "There are no current ballots") ]
+        else
+            List.map ballotCard filteredBallots
 
 
 futureBallotList : List BallotId -> Model -> Html Msg
@@ -302,7 +224,7 @@ futureBallotList ballots model =
             Card.view
                 ([ cs "ma4"
                  , css "width" "auto"
-                 , Color.background (Color.color Color.Grey Color.S200)
+                 , MColor.background (MColor.color MColor.Grey MColor.S200)
                  , Options.onClick <| NavigateTo <| VoteR ballotId
                  ]
                     ++ elevation ballotId model
@@ -373,7 +295,7 @@ pastBallotList ballots model =
             Card.view
                 ([ cs "ma4"
                  , css "width" "auto"
-                 , Color.background (Color.color Color.Grey Color.S200)
+                 , MColor.background (MColor.color MColor.Grey MColor.S200)
                  , Options.onClick <| NavigateTo <| ResultsR ballotId
                  ]
                     ++ elevation ballotId model

@@ -23,7 +23,7 @@ mkTabBtn isActiveTab msgF tabId innerElem =
 mkTabRow : (Int -> Bool) -> (Int -> Msg) -> List TabRec -> List SvAttribute -> SvElement
 mkTabRow isActiveTab msgF pairs attrs =
     row TabRow
-        ([ spacing (scaled 1), center, verticalCenter, paddingTop (scaled 1) ]
+        ([ spacing (scaled 2), center, verticalCenter, paddingTop (scaled 1) ]
             ++ attrs
         )
     <|

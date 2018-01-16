@@ -30,19 +30,24 @@
       </div>
     </div>
     <script>
-      setTimeout(() => {
-        var node = document.getElementById('sv-fullscreen');
-        var flags = {
-            votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
-            democracyId: 31,
-            admin: false
-        };
-        const app = Elm.MainDemo.embed(node,flags);
+      loadElm = function() {
+        if (typeof Elm !== "undefined") {
+            var node = document.getElementById('sv-fullscreen');
+            var flags = {
+                votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
+                democracyId: 31,
+                admin: false
+            };
+            const app = Elm.MainDemo.embed(node, flags);
 
-        // Remove Loading Spinner
-        var element = document.getElementById("loading-screen");
-        element.parentNode.removeChild(element);
-      }, 400);
+            // Remove Loading Spinner
+            var element = document.getElementById("loading-screen");
+            element.parentNode.removeChild(element);
+        } else {
+            setTimeout(loadElm, 100);
+        }
+      }
+      loadElm();
     </script>
   </body>
 </html>
