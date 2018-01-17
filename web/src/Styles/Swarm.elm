@@ -5,7 +5,7 @@ import Element.Attributes exposing (class, height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
-import Style.Font as Font exposing (bold)
+import Style.Font as Font exposing (bold, weight)
 import Style.Scale as Scale
 import Style.Shadow as Shadow
 import Style.Transition exposing (transitions)
@@ -29,7 +29,7 @@ textColorVars =
 
 
 headingCommon =
-    [ bold ] ++ textColorVars
+    [ weight 300 ] ++ textColorVars
 
 
 bgHltSec =
@@ -84,7 +84,7 @@ swmStylesheet =
                 [ bottom 0 ]
             ]
         , style TabBtn
-            [ Font.size 24
+            [ Font.size 15
             , bottom 1.0
             , solid
             , C.border <| rgba 0 0 0 0

@@ -4,7 +4,7 @@ import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (Element, button, column, el, empty, html, layout, row, text, within)
-import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, paddingBottom, px, spacing, spread, width)
+import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, padding, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
 import Html exposing (Html, div, i, span)
 import Maybe.Extra exposing ((?))
@@ -45,8 +45,8 @@ rootDemoView model =
         header =
             row HeaderStyle
                 [ spacing (scaled 2), alignLeft, alignBottom, spread ]
-                [ row NilS [ width fill, alignLeft ] <| navBack ++ hLeft
-                , row MenuBarHeading [ width fill ] hCenter
+                [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
+                , row MenuBarHeading [ width fill, padding (scaled 1) ] hCenter
                 , row NilS [ width fill, alignRight ] hRight
                 ]
 

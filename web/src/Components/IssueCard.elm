@@ -4,7 +4,7 @@ import Color exposing (rgb)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, readableTime)
+import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, relativeTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -63,7 +63,9 @@ issueCard model ballotId =
                     if ballotDone || ballot.start > model.now then
                         ""
                     else
-                        "🔴 "
+                        ""
+
+                --                        "🔴 "
             in
             el SubSubH [ paddingBottom (scaled 1) ] (text <| textExtra ++ ballot.name)
 
@@ -79,11 +81,11 @@ issueCard model ballotId =
 
         timeText =
             if ballotDone then
-                "Vote closed " ++ readableTime ballot.finish model ++ " ago"
+                "Vote closed " ++ relativeTime ballot.finish model ++ " ago"
             else if ballot.start > model.now then
-                "Vote opens in " ++ readableTime ballot.start model
+                "Vote opens in " ++ relativeTime ballot.start model
             else
-                "Vote closes in " ++ readableTime ballot.finish model
+                "Vote closes in " ++ relativeTime ballot.finish model
 
         footer =
             row CardFooter

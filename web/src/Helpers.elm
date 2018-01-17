@@ -1,5 +1,6 @@
 module Helpers exposing (..)
 
+import Date
 import Dict
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model, adminToggleId)
@@ -70,8 +71,8 @@ getAdminToggle model =
     Dict.get adminToggleId model.boolFields ? False
 
 
-readableTime : Time -> Model -> String
-readableTime time model =
+relativeTime : Time -> Model -> String
+relativeTime time model =
     let
         difference =
             abs <| time - model.now
@@ -90,6 +91,34 @@ readableTime time model =
         (toString <| floor <| Time.inHours difference / 24 / 365) ++ " years"
     else
         "error reading number"
+
+
+readableTime : Time -> String
+readableTime time =
+    let
+        date =
+            Date.fromTime time
+
+        addZero num =
+            if num < 10 then
+                "0" ++ toString num
+            else
+                toString num
+    in
+    (toString <| Date.dayOfWeek date)
+        ++ ", "
+        ++ (toString <| Date.day date)
+        ++ " "
+        ++ (toString <| Date.month date)
+        ++ " "
+        ++ (toString <| Date.year date)
+        ++ " - "
+        ++ (addZero <| Date.hour date)
+        ++ ":"
+        ++ (addZero <| Date.minute date)
+        ++ ":"
+        ++ (addZero <| Date.second date)
+        ++ " UTC"
 
 
 getResultPercent : Ballot -> Float -> Int
