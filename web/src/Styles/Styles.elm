@@ -16,6 +16,11 @@ type SvClass
     | SubSubH
     | FooterText
     | BigText
+      -- MAX STYLES
+    | ResultsBarGraph
+    | ResultsSummary
+    | ResultsColumn
+      -- END MAX
     | RegText
     | Error
     | TabRow
@@ -27,7 +32,7 @@ type SvClass
     | VoteList
     | DialogBackdrop
     | DialogStyle
-    | ResultsBarGraph
-    | ResultsSummary
-    | ResultsColumn
+      -- TOM STYLES
+    | BtnS
+      -- END TOM
     | NilS

@@ -5,11 +5,11 @@ import Components.Icons exposing (IconSize(I48), mkIcon)
 import Components.LoadingSpinner exposing (spinner)
 import Components.TextF exposing (textF)
 import Element exposing (button, column, el, html, row, table, text)
-import Element.Attributes exposing (alignRight, center, padding, spacing)
+import Element.Attributes exposing (alignRight, center, class, padding, spacing)
 import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getAdminToggle, getBallot, getFloatField)
 import Html as H exposing (Html, div, h2, h3, p, td, tr)
-import Html.Attributes exposing (class)
+import Html.Attributes as HA
 import List exposing (map)
 import Material.Options as Options
 import Material.Toggles as Toggles
@@ -67,9 +67,9 @@ voteConfirmDialogV vote voteId model =
                 [ text "Please confirm that your vote details below are correct."
                 , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
                 , row NilS
-                    [ alignRight, spacing (scaled 2) ]
-                    [ button NilS [ onClick HideDialog ] (text "Close")
-                    , button NilS [ onClick createVoteMsg ] (text "Yes")
+                    [ spacing (scaled 2) ]
+                    [ button NilS [ onClick HideDialog, padding (scaled 1), class "btn-secondary" ] (text "Close")
+                    , button NilS [ onClick createVoteMsg, padding (scaled 1), class "btn" ] (text "Yes")
                     ]
                 ]
 
@@ -88,8 +88,8 @@ voteConfirmDialogV vote voteId model =
             Complete ->
                 [ el NilS [ center ] (text "Your vote has been cast successfully!")
                 , el Heading [ center ] (mkIcon "check-circle-outline" I48)
-                , el NilS [ alignRight ] <|
-                    button NilS [ onClick completeMsg ] (text "Close")
+                , el NilS [] <|
+                    button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Close")
                 ]
 
 
@@ -107,6 +107,7 @@ ballotDeleteConfirmDialogV ballotId model =
                 [ DeleteBallot ballotId
                 , NavigateBackTo <| DemocracyR democracyId
                 , ShowToast <| ballot.name ++ " has been deleted"
+                , HideDialog
                 ]
     in
     column NilS
@@ -114,8 +115,8 @@ ballotDeleteConfirmDialogV ballotId model =
         [ text <| "Are you sure you want to delete " ++ ballot.name
         , row NilS
             [ alignRight ]
-            [ html <| btn 976565675 model [ SecBtn, CloseDialog, Attr (class "ma2 dib") ] [ H.text "Cancel" ]
-            , html <| btn 463467465 model [ SecBtn, CloseDialog, Attr (class "ma2 dib btn-warning"), Click completeMsg ] [ H.text "Delete" ]
+            [ button NilS [ onClick HideDialog, padding (scaled 1), class "btn-secondary" ] (text "Cancel")
+            , button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Delete")
             ]
         ]
 
@@ -156,5 +157,5 @@ memberInviteDialogV model =
         [ text "Invite via email"
         , html <| textF 788765454534 "Seperate addresses with a coma" [] model
         , text "Or Upload a CSV"
-        , html <| btn 4356373453 model [ SecBtn, Attr (class "db") ] [ H.text "Choose a file" ]
+        , html <| btn 4356373453 model [ SecBtn, Attr (HA.class "db") ] [ H.text "Choose a file" ]
         ]
