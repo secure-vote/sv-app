@@ -20,6 +20,7 @@ mkTabBtn isActiveTab msgF tabId innerElem =
     el TabBtn
         [ onClick <| msgF tabId
         , vary TabBtnActive (isActiveTab tabId)
+        , paddingBottom (scaled 1)
         ]
         innerElem
 
@@ -27,7 +28,7 @@ mkTabBtn isActiveTab msgF tabId innerElem =
 mkTabRow : (Int -> Bool) -> (Int -> Msg) -> List TabRec -> List SvAttribute -> SvElement
 mkTabRow isActiveTab msgF pairs attrs =
     row TabRow
-        ([ spacing (scaled 2), center, verticalCenter, paddingTop (scaled 1) ]
+        ([ spacing (scaled 2), center, verticalCenter ]
             ++ attrs
         )
     <|

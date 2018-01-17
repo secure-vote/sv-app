@@ -8,7 +8,7 @@ import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
 import Element exposing (Element, button, column, el, html, row, text)
 import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
 import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, readableTime)
+import Helpers exposing (checkAlreadyVoted, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, relativeTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -31,11 +31,11 @@ type BallotStatus
 democTabs : DemocracyId -> Model -> List TabRec
 democTabs democId model =
     [ { id = 0
-      , elem = mkIconWLabel "Votes" "checkbox-marked" I18
+      , elem = mkIconWLabel "Current Votes" "checkbox-marked" I18
       , view = mainVotesV model democId
       }
     , { id = 1
-      , elem = mkIconWLabel "Past" "history" I18
+      , elem = mkIconWLabel "Past Votes" "history" I18
       , view = pastVotesV model democId
       }
     ]
@@ -138,9 +138,9 @@ mainVotesV model democId =
     in
     column IssueList
         [ issueListSpacing ]
-        [ el SubSubH [] (text "Open Ballots")
+        [ el SubH [] (text "Open Ballots")
         , currentBallotList democracy.ballots model
-        , el SubSubH [] (text "Upcoming Ballots")
+        , el SubH [] (text "Upcoming Ballots")
         , futureBallotList democracy.ballots model
         ]
 
@@ -153,7 +153,7 @@ pastVotesV model democId =
     in
     column IssueList
         [ issueListSpacing ]
-        [ el SubSubH [] (text "Past ballots")
+        [ el SubH [] (text "Past ballots")
         , pastBallotList democracy.ballots model
         ]
 

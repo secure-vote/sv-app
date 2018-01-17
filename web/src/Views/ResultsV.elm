@@ -1,17 +1,10 @@
 module Views.ResultsV exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (getBallot, getResultPercent)
-import Html as H exposing (Html, div, h2, p, table, td, tr)
-import Html.Attributes exposing (style)
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Options exposing (cs, styled)
-import Material.Typography as Typo
+import Helpers exposing (getBallot, getResultPercent, readableTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -21,6 +14,7 @@ import Routes exposing (DialogRoute(BallotInfoD))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(BoldT))
+import Svg.Attributes as SvgA
 import Tuple exposing (first, second)
 import Views.ViewHelpers exposing (SvElement)
 
@@ -49,8 +43,8 @@ resultsV id model =
         optColGen extraAttrs =
             column ResultsColumn <| [ resTableSpacing, paddingRight (scaled 1) ] ++ extraAttrs
 
-        genVotesPct =
-            el NilS [ vary BoldT True ] << text << toString << getResultPercent ballot << second
+        genVotesPct { name, result } =
+            el NilS [ vary BoldT True ] <| text <| (toString <| getResultPercent ballot <| result ? 0) ++ "%"
 
         genResName =
             text << first
@@ -69,15 +63,16 @@ resultsV id model =
                     ++ List.map (genVotesN << getResults) ballot.ballotOptions
 
         optPctCol =
-            optColGen [] <| List.map (genVotesPct << getResults) ballot.ballotOptions
+            optColGen [ alignRight ] <|
+                [ el SubSubH [] <| text "% Votes" ]
+                    ++ List.map genVotesPct ballot.ballotOptions
 
         results =
             row ResultsSummary
-                [ padding 10, spacing (scaled 1) ]
+                [ padding 10, spacing (scaled 1), width content ]
                 [ optNamesCol
                 , optVotesCol
-
-                {- , optPctCol -}
+                , optPctCol
                 ]
 
         plotGroup ( desc, value ) =
@@ -88,22 +83,29 @@ resultsV id model =
                 []
                 (html <|
                     Plot.viewBars
-                        (Plot.groups <| List.map plotGroup)
+                        { axis = Plot.normalAxis
+                        , toGroups = List.map plotGroup
+                        , styles = [ [ SvgA.fill "rgba(251, 152, 35, 0.85)" ] ]
+                        , maxWidth = Plot.Percentage 75
+                        }
                         (List.map getResults ballot.ballotOptions)
                 )
     in
-    column NilS
+    row NilS
         []
-        [ el SubSubH [] <| text "Description:"
-        , el NilS [ paddingBottom (scaled 1) ] <| text ballot.desc
-        , column NilS
-            [ paddingBottom (scaled 1) ]
-            [ row NilS [] <| [ bold "Start Time: ", text <| toString ballot.start ]
-            , row NilS [] <| [ bold "End Time: ", text <| toString ballot.finish ]
+        [ column NilS
+            [ minWidth (percent 40) ]
+            [ el SubSubH [] <| text "Description:"
+            , el NilS [ paddingBottom (scaled 1) ] <| text ballot.desc
+            , column NilS
+                [ paddingBottom (scaled 1) ]
+                [ row NilS [] <| [ bold "Start Time: ", text <| readableTime ballot.start ]
+                , row NilS [] <| [ bold "End Time: ", text <| readableTime ballot.finish ]
+                ]
+            , el SubH [ paddingBottom (scaled 1) ] <| text "Results"
+            , results
             ]
-        , el SubH [ paddingBottom (scaled 1) ] <| text "Results"
-        , results
-        , resultsGraph
+        , column NilS [ width fill, minWidth (percent 40) ] [ resultsGraph ]
         ]
 
 
@@ -136,7 +138,7 @@ resultsH id model =
         clickMsg =
             onClick <| SetDialog "Ballot Info" <| BallotInfoD ballot.desc
     in
-    ( [], [ text ballot.name ], [ button NilS [ clickMsg ] <| mkIcon "information-outline" I24 ] )
+    ( [], [ text ballot.name ], [ button NilS [ clickMsg, padding (scaled 1) ] <| mkIcon "information-outline" I24 ] )
 
 
 
