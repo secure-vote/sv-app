@@ -2,22 +2,24 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
-import Element exposing (column, el, html, row, text)
-import Element.Attributes exposing (alignRight, center, padding, spacing, spread, verticalCenter)
+import Element exposing (button, column, el, html, row, text)
+import Element.Attributes exposing (alignRight, attribute, center, class, fill, padding, spacing, spread, verticalCenter, width)
 import Element.Events exposing (onClick)
-import Helpers exposing (genNewId, getBallot, getFloatField, readableTime)
-import Html as H exposing (Html, div, p, span)
-import Html.Attributes exposing (class, style)
+import Helpers exposing (genNewId, getBallot, getField, getFloatField, readableTime)
+import Html as H exposing (Html, div, input, p, span)
+import Html.Attributes as HA exposing (style)
+import Html.Events as HE
+import Json.Decode exposing (succeed)
 import Material.Icon as Icon
 import Material.Layout as Layout
-import Material.Options exposing (cs, styled)
+import Material.Options as Options exposing (cs, css, styled)
 import Material.Slider as Slider
 import Material.Typography as Typo
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
-import Msgs exposing (Msg(SetDialog, SetFloatField))
+import Msgs exposing (Msg(SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
-import Styles.Styles exposing (SvClass(FooterText, NilS, VoteList))
+import Styles.Styles exposing (SvClass(FooterText, InputS, NilS, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement)
 
@@ -42,7 +44,7 @@ voteV ballotId model =
 
         continueBtnOptions =
             if isFutureVote then
-                [ Disabled ]
+                [ attribute "disabled" "disabled" ]
             else
                 []
 
@@ -54,34 +56,30 @@ voteV ballotId model =
 
         optionListItem { id, name, desc } =
             row VoteList
-                [ spread, verticalCenter, padding (scaled 2) ]
+                [ verticalCenter, padding (scaled 2), spacing (scaled 3) ]
                 [ text name
                 , column NilS
-                    [ center, spacing (scaled 1) ]
+                    [ center, spacing (scaled 1), width fill ]
                     [ text <| "Your vote: " ++ (toString <| getFloatField id model)
                     , row NilS
-                        [ verticalCenter, spacing (scaled 2) ]
+                        [ verticalCenter, spacing (scaled 2), width fill ]
                         [ text "👎"
-                        , html <|
-                            Slider.view <|
-                                [ Slider.value <| getFloatField id model
-                                , Slider.min -3
-                                , Slider.max 3
-                                , Slider.step 1
-                                , Slider.onChange <| SetFloatField id
-                                ]
-                                    ++ sliderOptions
+                        , el InputS [ width fill ] <|
+                            html <|
+                                input
+                                    [ HA.type_ "range"
+                                    , HA.min "-3"
+                                    , HA.max "3"
+                                    , HA.step "1"
+                                    , HA.value <| toString <| getFloatField id model
+                                    , HE.onInput <| (String.toFloat >> Result.withDefault 0 >> SetFloatField id)
+                                    , style [ ( "width", "100%" ) ]
+                                    ]
+                                    []
                         , text "❤️"
                         ]
                     ]
-                , html <|
-                    btn (id * 13 + 1)
-                        model
-                        [ SecBtn
-                        , Click (SetDialog (name ++ ": Details") (BallotOptionD desc))
-                        , OpenDialog
-                        ]
-                        [ H.text "Details" ]
+                , button NilS [ onClick (SetDialog (name ++ ": Details") (BallotOptionD desc)), padding (scaled 1), class "btn-secondary" ] (text "Details")
                 ]
 
         newVoteOption { id } =
@@ -101,7 +99,7 @@ voteV ballotId model =
         [ text ballot.desc
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
-        , el NilS [ center ] <| html <| btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), OpenDialog ] ++ continueBtnOptions) [ H.text "Continue" ]
+        , button NilS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), class "btn" ] ++ continueBtnOptions) (text "Continue")
         ]
 
 

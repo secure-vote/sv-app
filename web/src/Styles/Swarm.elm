@@ -161,4 +161,7 @@ swmStylesheet =
             ]
         , style BtnS
             []
+        , style InputS
+            [ prop "pointer-events" "auto"
+            ]
         ]

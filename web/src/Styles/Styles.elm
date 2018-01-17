@@ -34,5 +34,6 @@ type SvClass
     | DialogStyle
       -- TOM STYLES
     | BtnS
+    | InputS
       -- END TOM
     | NilS
