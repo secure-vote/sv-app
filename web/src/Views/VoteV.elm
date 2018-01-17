@@ -17,7 +17,7 @@ import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
-import Styles.Styles exposing (SvClass(Footer, NilS, VoteList))
+import Styles.Styles exposing (SvClass(FooterText, NilS, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement)
 
@@ -99,7 +99,7 @@ voteV ballotId model =
     column NilS
         []
         [ text ballot.desc
-        , el Footer [ alignRight ] (text voteTime)
+        , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
         , el NilS [ center ] <| html <| btn 894823489 model ([ PriBtn, Attr (class "ma3"), Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), OpenDialog ] ++ continueBtnOptions) [ H.text "Continue" ]
         ]

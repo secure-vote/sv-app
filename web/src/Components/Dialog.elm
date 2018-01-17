@@ -1,21 +1,24 @@
 module Components.Dialog exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
-import Html exposing (Html, div, h1, h3, text)
-import Html.Attributes exposing (class)
-import Material.Dialog as Dialog
-import Material.Icon as MIcon
-import Material.Options as Options exposing (cs, css)
+import Components.Icons exposing (IconSize(I24), mkIcon)
+import Element exposing (button, column, el, row, text, within)
+import Element.Attributes exposing (alignRight, center, class, fill, height, minWidth, padding, percent, spacing, spread, verticalCenter, width)
+import Element.Events exposing (onClick)
+import Html as H exposing (Html, div, h1, h3)
 import Models exposing (Model)
-import Msgs exposing (Msg)
+import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
+import Styles.Styles exposing (SvClass(..))
+import Styles.Swarm exposing (scaled)
 import Views.DialogV exposing (..)
+import Views.ViewHelpers exposing (SvElement)
 
 
-dialog : Model -> Html Msg
+dialog : Model -> SvElement
 dialog model =
     let
-        innerHtml =
+        innerElement =
             case model.dialogHtml.route of
                 VoteConfirmationD vote voteId ->
                     voteConfirmDialogV vote voteId model
@@ -39,25 +42,16 @@ dialog model =
                     memberInviteDialogV model
 
                 NotFoundD ->
-                    h1 [ class "red" ] [ text "Not Found" ]
+                    el Error [] (text "Not Found")
     in
-    Dialog.view
-        [ cs "w-80 w-70-l"
-        , cs "overflow-scroll"
-        , css "max-height" "80%"
-        , Options.id "dialog-container"
-        ]
-        [ Dialog.title
-            [ cs "" ]
-            [ div []
-                [ h3 [ class "mv0 dib" ] [ text model.dialogHtml.title ]
-                , btn 384394893 model [ Icon, CloseDialog, Attr (class "fr") ] [ MIcon.view "close" [ MIcon.size24 ] ]
+    el DialogBackdrop [ width fill, height fill ] <|
+        el DialogStyle [ center, verticalCenter ] <|
+            column NilS
+                [ padding (scaled 2), spacing (scaled 2) ]
+                [ row SubH
+                    [ spacing (scaled 3), spread ]
+                    [ text model.dialogHtml.title
+                    , button NilS [ onClick HideDialog ] (mkIcon "close" I24)
+                    ]
+                , innerElement
                 ]
-            ]
-        , Dialog.content
-            [ cs "overflow-y-scroll db" ]
-            [ div
-                [ class "db " ]
-                [ innerHtml ]
-            ]
-        ]

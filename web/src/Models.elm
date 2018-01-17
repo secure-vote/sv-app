@@ -17,6 +17,7 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
+    , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , voteConfirmStatus : VoteConfirmStatus
     , routeStack : List Route
@@ -41,6 +42,7 @@ initModel =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , voteConfirmStatus = AwaitingConfirmation
     , routeStack = [ DashboardR ]
@@ -65,6 +67,7 @@ initModelWithFlags flags =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , voteConfirmStatus = AwaitingConfirmation
     , routeStack = [ DemocracyR flags.democracyId ]

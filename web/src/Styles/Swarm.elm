@@ -1,7 +1,7 @@
 module Styles.Swarm exposing (..)
 
-import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba)
-import Element.Attributes exposing (height, px)
+import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba, white)
+import Element.Attributes exposing (class, height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
@@ -40,6 +40,10 @@ bgHltPri =
     rgb 230 180 150
 
 
+bgShadow =
+    rgba 10 10 10 0.5
+
+
 swmStylesheet : StyleSheet SvClass Variation
 swmStylesheet =
     styleSheet
@@ -61,6 +65,14 @@ swmStylesheet =
             [ Font.size <| scaled 2
             ]
                 ++ headingCommon
+        , style FooterText
+            [ Font.weight 400
+            , Font.size 13
+            ]
+        , style Error
+            [ Font.size <| scaled 4
+            , C.text red
+            ]
         , style MenuBarHeading
             [ Font.size <| scaled 3
             ]
@@ -129,13 +141,24 @@ swmStylesheet =
             [ Bdr.all 1.0
             , solid
             ]
-        , style Footer
-            [ Font.weight 400
-            , Font.size 13
-            ]
         , style VoteList
             [ Bdr.bottom 1.0
             , solid
             , C.border <| rgb 180 180 180
             ]
+        , style DialogBackdrop
+            [ background bgShadow
+            , Shadow.box
+                { offset = ( 0, 0 )
+                , size = 15
+                , blur = 15
+                , color = bgShadow
+                }
+            ]
+        , style DialogStyle
+            [ background white
+            , Shadow.deep
+            ]
+        , style BtnS
+            []
         ]

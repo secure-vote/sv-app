@@ -29,7 +29,10 @@ update msg model =
             Material.update Mdl msg_ model
 
         SetDialog title route ->
-            { model | dialogHtml = { title = title, route = route } } ! []
+            { model | dialogHtml = { title = title, route = route }, showDialog = True } ! []
+
+        HideDialog ->
+            { model | showDialog = False } ! []
 
         SetElevation id state ->
             { model | elevations = Dict.insert id state model.elevations } ! []
