@@ -3,7 +3,7 @@ module Views.VoteV exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
-import Element.Attributes exposing (alignRight, attribute, center, class, fill, padding, spacing, spread, verticalCenter, width)
+import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, percent, spacing, spread, verticalCenter, width)
 import Element.Events exposing (onClick)
 import Helpers exposing (genNewId, getBallot, getField, getFloatField, readableTime)
 import Html as H exposing (Html, div, input, p, span)
@@ -38,7 +38,7 @@ voteV ballotId model =
 
         sliderOptions =
             if isFutureVote then
-                [ Slider.disabled ]
+                [ HA.attribute "disabled" "disabled" ]
             else
                 []
 
@@ -56,10 +56,10 @@ voteV ballotId model =
 
         optionListItem { id, name, desc } =
             row VoteList
-                [ verticalCenter, padding (scaled 2), spacing (scaled 3) ]
+                [ spread, verticalCenter, padding (scaled 2), spacing (scaled 3) ]
                 [ text name
                 , column NilS
-                    [ center, spacing (scaled 1), width fill ]
+                    [ center, spacing (scaled 1), width fill, maxWidth (percent 50) ]
                     [ text <| "Your vote: " ++ (toString <| getFloatField id model)
                     , row NilS
                         [ verticalCenter, spacing (scaled 2), width fill ]
@@ -67,19 +67,21 @@ voteV ballotId model =
                         , el InputS [ width fill ] <|
                             html <|
                                 input
-                                    [ HA.type_ "range"
-                                    , HA.min "-3"
-                                    , HA.max "3"
-                                    , HA.step "1"
-                                    , HA.value <| toString <| getFloatField id model
-                                    , HE.onInput <| (String.toFloat >> Result.withDefault 0 >> SetFloatField id)
-                                    , style [ ( "width", "100%" ) ]
-                                    ]
+                                    ([ HA.type_ "range"
+                                     , HA.min "-3"
+                                     , HA.max "3"
+                                     , HA.step "1"
+                                     , HA.value <| toString <| getFloatField id model
+                                     , HE.onInput <| (String.toFloat >> Result.withDefault 0 >> SetFloatField id)
+                                     , style [ ( "width", "100%" ) ]
+                                     ]
+                                        ++ sliderOptions
+                                    )
                                     []
                         , text "❤️"
                         ]
                     ]
-                , button NilS [ onClick (SetDialog (name ++ ": Details") (BallotOptionD desc)), padding (scaled 1), class "btn-secondary" ] (text "Details")
+                , button NilS [ onClick (SetDialog (name ++ ": Details") (BallotOptionD desc)), padding (scaled 1), class "btn-secondary btn-outer--small" ] (text "Details")
                 ]
 
         newVoteOption { id } =
