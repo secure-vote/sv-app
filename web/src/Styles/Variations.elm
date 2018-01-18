@@ -11,6 +11,7 @@ type Variation
     | IssueCardMod IssueCardStatus
     | VarColor Color
     | BoldT
+    | Disabled
 
 
 type IssueCardStatus

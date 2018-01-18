@@ -3,7 +3,7 @@ module Views.VoteV exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
-import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, percent, spacing, spread, verticalCenter, width)
+import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, paddingBottom, percent, spacing, spread, verticalCenter, width)
 import Element.Events exposing (onClick)
 import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, relativeTime)
 import Html as H exposing (Html, div, input, p, span)
@@ -19,7 +19,8 @@ import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
-import Styles.Styles exposing (SvClass(FooterText, InputS, NilS, VoteList))
+import Styles.StyleHelpers exposing (disabledBtnAttr)
+import Styles.Styles exposing (SvClass(BtnS, DataParam, FooterText, InputS, NilS, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement)
 
@@ -55,7 +56,7 @@ voteV ballotId model =
 
         continueBtnOptions =
             if isFutureVote || haveVoted then
-                [ attribute "disabled" "disabled" ]
+                disabledBtnAttr ++ []
             else
                 []
 
@@ -90,7 +91,7 @@ voteV ballotId model =
                         , text "❤️"
                         ]
                     ]
-                , button NilS
+                , button BtnS
                     [ onClick
                         (SetDialog (name ++ ": Details") (BallotOptionD desc))
                     , padding (scaled 1)
@@ -113,10 +114,14 @@ voteV ballotId model =
     in
     column NilS
         []
-        [ text ballot.desc
+        [ column NilS
+            []
+            [ el SubSubH [] <| text "Ballot Description"
+            , el DataParam [] <| text ballot.desc
+            ]
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
-        , button NilS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), class "btn" ] ++ continueBtnOptions) (text "Continue")
+        , button BtnS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), class "btn" ] ++ continueBtnOptions) (text "Continue")
         ]
 
 

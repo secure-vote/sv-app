@@ -163,7 +163,10 @@ swmStylesheet =
             , Shadow.deep
             ]
         , style BtnS
-            []
+            [ variation Disabled
+                [ cursor "not-allowed"
+                ]
+            ]
         , style InputS
             [ prop "pointer-events" "auto"
             ]
