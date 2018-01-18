@@ -1,11 +1,9 @@
 module Components.Dialog exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, row, text, within)
 import Element.Attributes exposing (alignRight, center, class, fill, height, minWidth, padding, percent, spacing, spread, verticalCenter, width)
 import Element.Events exposing (onClick)
-import Html as H exposing (Html, div, h1, h3)
 import Models exposing (Model)
 import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
@@ -38,9 +36,9 @@ dialog model =
                 UserInfoD ->
                     userInfoDialogV model
 
-                MemberInviteD ->
-                    memberInviteDialogV model
-
+                --              Not in use
+                --                MemberInviteD ->
+                --                    memberInviteDialogV model
                 NotFoundD ->
                     el Error [] (text "Not Found")
     in

@@ -96,7 +96,7 @@ resultsV id model =
     row NilS
         [ spacing <| scaled 4 ]
         [ column NilS
-            [ minWidth (percent 40) ]
+            [ minWidth (percent 40), spacing (scaled 1) ]
             [ el SubSubH [] <| text "Ballot Description"
             , el NilS
                 [ paddingBottom (scaled 1) ]

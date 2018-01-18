@@ -1,6 +1,5 @@
 module Views.VoteV exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
 import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, paddingBottom, percent, spacing, spread, verticalCenter, width)
@@ -9,12 +8,6 @@ import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getField, getFl
 import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
-import Json.Decode exposing (succeed)
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Options as Options exposing (cs, css, styled)
-import Material.Slider as Slider
-import Material.Typography as Typo
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetField, SetFloatField))
@@ -74,12 +67,12 @@ voteV ballotId model =
                 [ spread, verticalCenter, padding (scaled 2), spacing (scaled 3) ]
                 [ text name
                 , column NilS
-                    [ center, spacing (scaled 1), width fill, maxWidth (percent 50) ]
+                    [ center, spacing (scaled 1), width fill, maxWidth (percent 40) ]
                     [ text <| "Your vote: " ++ (toString <| getFloatField id model)
                     , row NilS
                         [ verticalCenter, spacing (scaled 2), width fill ]
-                        [ text "👎"
-                        , el InputS [ width fill ] <|
+                        [ mkIcon "minus" I24
+                        , el InputS [ width fill, verticalCenter ] <|
                             html <|
                                 input
                                     ([ HA.value <| toString <| getFloatField id model
@@ -88,7 +81,7 @@ voteV ballotId model =
                                         ++ sliderOptions
                                     )
                                     []
-                        , text "❤️"
+                        , mkIcon "plus" I24
                         ]
                     ]
                 , button BtnS

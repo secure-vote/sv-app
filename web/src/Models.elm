@@ -7,6 +7,7 @@ import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteConfirm
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
+import Spinner
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
 
@@ -27,9 +28,11 @@ type alias Model =
     , boolFields : Dict Int Bool
     , elevations : Dict Int MouseState
     , snack : Material.Snackbar.Model String
+    , spinner : Spinner.Model
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
+    , isAdmin : Bool
     , globalStyle : StyleOption
     , singleDemocName : String
     }
@@ -52,9 +55,11 @@ initModel =
     , boolFields = Dict.empty
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
+    , spinner = Spinner.init
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
+    , isAdmin = False
     , globalStyle = SvStyle
     , singleDemocName = ""
     }
@@ -77,9 +82,11 @@ initModelWithFlags flags =
     , boolFields = Dict.empty
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
+    , spinner = Spinner.init
     , now = 0
     , isLoading = True
     , isDemocracyLevel = True
+    , isAdmin = flags.admin
     , globalStyle = SwmStyle
     , singleDemocName = flags.singleDemocName
     }
@@ -335,14 +342,21 @@ type alias Member =
     }
 
 
-adminToggleId : Int
-adminToggleId =
-    245748734253
+
+-- Deprecated
+--adminToggleId : Int
+--adminToggleId =
+--    245748734253
+-- Not yet in use.
 
 
 type alias BallotCategory =
     -- ( Name, Parent ) --
     ( String, String )
+
+
+
+-- Not yet in use.
 
 
 ballotCategories : List BallotCategory

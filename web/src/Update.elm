@@ -12,6 +12,7 @@ import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(..))
 import Process
 import Routes exposing (Route(NotFoundRoute))
+import Spinner
 import Task
 import Time exposing (Time)
 
@@ -114,6 +115,13 @@ update msg model =
             Snackbar.update msg_ model.snack
                 |> map1st (\s -> { model | snack = s })
                 |> map2nd (Cmd.map Snackbar)
+
+        SpinnerMsg msg ->
+            let
+                spinnerModel =
+                    Spinner.update msg model.spinner
+            in
+            { model | spinner = spinnerModel } ! []
 
         MultiMsg msgs ->
             multiUpdate msgs model []

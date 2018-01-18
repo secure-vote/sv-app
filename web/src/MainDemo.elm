@@ -2,7 +2,8 @@ module MainDemo exposing (..)
 
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags)
-import Msgs exposing (Msg(SetTime))
+import Msgs exposing (Msg(SetTime, SpinnerMsg))
+import Spinner
 import Task exposing (perform)
 import Time exposing (Time)
 import Update exposing (update)
@@ -23,7 +24,7 @@ initCmds =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.none
+    Sub.map SpinnerMsg Spinner.subscription
 
 
 

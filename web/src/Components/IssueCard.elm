@@ -1,6 +1,5 @@
 module Components.IssueCard exposing (..)
 
-import Color exposing (rgb)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
