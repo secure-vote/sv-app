@@ -94,15 +94,15 @@ resultsV id model =
     row NilS
         []
         [ column NilS
-            [ minWidth (percent 40) ]
-            [ el SubSubH [] <| text "Description:"
-            , el NilS [ paddingBottom (scaled 1) ] <| text ballot.desc
+            [ minWidth (percent 40), spacing (scaled 1) ]
+            [ el SubH [] <| text "Description"
+            , el NilS [] <| text ballot.desc
             , column NilS
-                [ paddingBottom (scaled 1) ]
+                []
                 [ row NilS [] <| [ bold "Start Time: ", text <| readableTime ballot.start ]
                 , row NilS [] <| [ bold "End Time: ", text <| readableTime ballot.finish ]
                 ]
-            , el SubH [ paddingBottom (scaled 1) ] <| text "Results"
+            , el SubH [] <| text "Results"
             , results
             ]
         , column NilS [ width fill, minWidth (percent 40) ] [ resultsGraph ]

@@ -59,12 +59,12 @@ voteV ballotId model =
                 [ spread, verticalCenter, padding (scaled 2), spacing (scaled 3) ]
                 [ text name
                 , column NilS
-                    [ center, spacing (scaled 1), width fill, maxWidth (percent 50) ]
+                    [ center, spacing (scaled 1), width fill, maxWidth (percent 40) ]
                     [ text <| "Your vote: " ++ (toString <| getFloatField id model)
                     , row NilS
                         [ verticalCenter, spacing (scaled 2), width fill ]
-                        [ text "👎"
-                        , el InputS [ width fill ] <|
+                        [ mkIcon "minus" I24
+                        , el InputS [ width fill, verticalCenter ] <|
                             html <|
                                 input
                                     ([ HA.type_ "range"
@@ -78,7 +78,7 @@ voteV ballotId model =
                                         ++ sliderOptions
                                     )
                                     []
-                        , text "❤️"
+                        , mkIcon "plus" I24
                         ]
                     ]
                 , button NilS [ onClick (SetDialog (name ++ ": Details") (BallotOptionD desc)), padding (scaled 1), class "btn-secondary btn-outer--small" ] (text "Details")
