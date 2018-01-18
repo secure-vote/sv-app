@@ -7,6 +7,7 @@ import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteConfirm
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (MouseState, Msg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
+import Spinner
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
 
@@ -27,6 +28,7 @@ type alias Model =
     , boolFields : Dict Int Bool
     , elevations : Dict Int MouseState
     , snack : Material.Snackbar.Model String
+    , spinner : Spinner.Model
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
@@ -53,6 +55,7 @@ initModel =
     , boolFields = Dict.empty
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
+    , spinner = Spinner.init
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
@@ -79,6 +82,7 @@ initModelWithFlags flags =
     , boolFields = Dict.empty
     , elevations = Dict.empty
     , snack = Material.Snackbar.model
+    , spinner = Spinner.init
     , now = 0
     , isLoading = True
     , isDemocracyLevel = True

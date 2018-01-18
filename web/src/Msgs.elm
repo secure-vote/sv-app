@@ -5,6 +5,7 @@ import Material.Snackbar as Snackbar
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteConfirmStatus, VoteId)
 import Models.Democracy exposing (DemocracyId)
 import Routes exposing (DialogRoute, Route)
+import Spinner
 import Time exposing (Time)
 
 
@@ -30,6 +31,7 @@ type Msg
     | SetVoteConfirmStatus VoteConfirmStatus
     | ShowToast String
     | Snackbar (Snackbar.Msg String)
+    | SpinnerMsg Spinner.Msg
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
 

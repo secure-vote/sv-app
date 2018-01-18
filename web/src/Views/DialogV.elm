@@ -1,8 +1,9 @@
 module Views.DialogV exposing (..)
 
+import Color
 import Components.Icons exposing (IconSize(I48), mkIcon)
 import Element exposing (button, column, el, html, row, table, text)
-import Element.Attributes exposing (alignRight, center, class, padding, spacing)
+import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
 import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getBallot, getFloatField)
 import List exposing (map)
@@ -10,6 +11,7 @@ import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
 import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
 import Routes exposing (Route(DemocracyR))
+import Spinner exposing (defaultConfig)
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement)
@@ -46,6 +48,9 @@ voteConfirmDialogV vote voteId model =
                 , SetVoteConfirmStatus AwaitingConfirmation
                 , HideDialog
                 ]
+
+        spinner =
+            Spinner.view { defaultConfig | color = always Color.black, scale = 0.5 } model.spinner
     in
     column NilS [ spacing (scaled 2) ] <|
         case model.voteConfirmStatus of
@@ -68,14 +73,12 @@ voteConfirmDialogV vote voteId model =
 
             Processing ->
                 [ el NilS [ center ] (text "Processing...")
-
-                --                , html spinner
+                , el NilS [ height (px 120) ] <| html spinner
                 ]
 
             Validating ->
                 [ el NilS [ center ] (text "Validating...")
-
-                --                , html spinner
+                , el NilS [ height (px 120) ] <| html spinner
                 ]
 
             Complete ->
