@@ -1,8 +1,6 @@
 module Views.ViewHelpers exposing (..)
 
-import Color exposing (red)
 import Element exposing (..)
-import Element.Attributes exposing (vary)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (..)
 import Styles.Variations exposing (Variation(..))

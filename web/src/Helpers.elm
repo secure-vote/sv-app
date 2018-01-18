@@ -3,7 +3,7 @@ module Helpers exposing (..)
 import Date
 import Dict
 import Maybe.Extra exposing ((?))
-import Models exposing (Member, Model, adminToggleId)
+import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Time exposing (Time)
@@ -66,9 +66,11 @@ getFloatField id model =
     Dict.get id model.floatFields ? 0
 
 
-getAdminToggle : Model -> Bool
-getAdminToggle model =
-    Dict.get adminToggleId model.boolFields ? False
+
+-- Deprecated
+--getAdminToggle : Model -> Bool
+--getAdminToggle model =
+--    Dict.get adminToggleId model.boolFields ? False
 
 
 relativeTime : Time -> Model -> String

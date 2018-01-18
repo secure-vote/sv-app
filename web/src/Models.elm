@@ -30,6 +30,7 @@ type alias Model =
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
+    , isAdmin : Bool
     , globalStyle : StyleOption
     , singleDemocName : String
     }
@@ -55,6 +56,7 @@ initModel =
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
+    , isAdmin = False
     , globalStyle = SvStyle
     , singleDemocName = ""
     }
@@ -80,6 +82,7 @@ initModelWithFlags flags =
     , now = 0
     , isLoading = True
     , isDemocracyLevel = True
+    , isAdmin = flags.admin
     , globalStyle = SwmStyle
     , singleDemocName = flags.singleDemocName
     }
@@ -335,14 +338,21 @@ type alias Member =
     }
 
 
-adminToggleId : Int
-adminToggleId =
-    245748734253
+
+-- Deprecated
+--adminToggleId : Int
+--adminToggleId =
+--    245748734253
+-- Not yet in use.
 
 
 type alias BallotCategory =
     -- ( Name, Parent ) --
     ( String, String )
+
+
+
+-- Not yet in use.
 
 
 ballotCategories : List BallotCategory

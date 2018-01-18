@@ -1,19 +1,12 @@
 module Views.DialogV exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I48), mkIcon)
-import Components.LoadingSpinner exposing (spinner)
-import Components.TextF exposing (textF)
 import Element exposing (button, column, el, html, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, padding, spacing)
 import Element.Events exposing (onClick)
-import Helpers exposing (findDemocracy, getAdminToggle, getBallot, getFloatField)
-import Html as H exposing (Html, div, h2, h3, p, td, tr)
-import Html.Attributes as HA
+import Helpers exposing (findDemocracy, getBallot, getFloatField)
 import List exposing (map)
-import Material.Options as Options
-import Material.Toggles as Toggles
-import Models exposing (Model, adminToggleId)
+import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
 import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
 import Routes exposing (Route(DemocracyR))
@@ -138,24 +131,28 @@ democracyInfoDialogV desc =
 
 userInfoDialogV : Model -> SvElement
 userInfoDialogV model =
-    el NilS [] <|
-        html <|
-            Toggles.switch Mdl
-                [ adminToggleId ]
-                model.mdl
-                [ Options.onToggle <| ToggleBoolField adminToggleId
-                , Toggles.ripple
-                , Toggles.value <| getAdminToggle model
-                ]
-                [ H.text "Admin User" ]
+    text "Lorem Ipsum"
 
 
-memberInviteDialogV : Model -> SvElement
-memberInviteDialogV model =
-    column NilS
-        []
-        [ text "Invite via email"
-        , html <| textF 788765454534 "Seperate addresses with a coma" [] model
-        , text "Or Upload a CSV"
-        , html <| btn 4356373453 model [ SecBtn, Attr (HA.class "db") ] [ H.text "Choose a file" ]
-        ]
+
+--    Deprecated
+--    el NilS [] <|
+--        html <|
+--            Toggles.switch Mdl
+--                [ adminToggleId ]
+--                model.mdl
+--                [ Options.onToggle <| ToggleBoolField adminToggleId
+--                , Toggles.ripple
+--                , Toggles.value <| getAdminToggle model
+--                ]
+--                [ H.text "Admin User" ]
+-- Not in use
+--memberInviteDialogV : Model -> SvElement
+--memberInviteDialogV model =
+--    column NilS
+--        []
+--        [ text "Invite via email"
+--        , html <| textF 788765454534 "Seperate addresses with a coma" [] model
+--        , text "Or Upload a CSV"
+--        , html <| btn 4356373453 model [ SecBtn, Attr (HA.class "db") ] [ H.text "Choose a file" ]
+--        ]

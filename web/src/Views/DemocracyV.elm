@@ -1,31 +1,19 @@
 module Views.DemocracyV exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
-import Components.CardElevation exposing (elevation)
 import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
 import Components.IssueCard exposing (issueCard)
 import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
 import Element exposing (Element, button, column, el, html, row, text)
 import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
-import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, genNewId, getAdminToggle, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, relativeTime)
-import Maybe.Extra exposing ((?))
+import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, SetDialog, SetField, SetIntField))
-import Routes exposing (DialogRoute(DemocracyInfoD, MemberInviteD), Route(CreateVoteR, EditVoteR, ResultsR, VoteR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NoTabRowBorder))
-import Views.EditBallotV exposing (populateFromModel)
 import Views.ViewHelpers exposing (SvElement, notFoundView)
-
-
-type BallotStatus
-    = Past
-    | Current
-    | Future
 
 
 democTabs : DemocracyId -> Model -> List TabRec

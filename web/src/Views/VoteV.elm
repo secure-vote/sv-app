@@ -1,6 +1,5 @@
 module Views.VoteV exposing (..)
 
-import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
 import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, percent, spacing, spread, verticalCenter, width)
@@ -9,12 +8,6 @@ import Helpers exposing (genNewId, getBallot, getField, getFloatField, relativeT
 import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
-import Json.Decode exposing (succeed)
-import Material.Icon as Icon
-import Material.Layout as Layout
-import Material.Options as Options exposing (cs, css, styled)
-import Material.Slider as Slider
-import Material.Typography as Typo
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(SetDialog, SetField, SetFloatField))
