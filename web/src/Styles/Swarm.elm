@@ -123,10 +123,12 @@ swmStylesheet =
             , Shadow.glow gray 1.0
             , cursor "pointer"
             , variation (IssueCardMod VoteDone)
-                [ background swmOkColor ]
+                [ background swmOkColor
+                , C.text white
+                ]
             , variation (IssueCardMod VoteWaiting)
                 [ background swmHltColor
-                , C.text <| rgb 255 255 255
+                , C.text white
                 ]
             , variation (IssueCardMod VoteFuture)
                 [ background lightGray ]
