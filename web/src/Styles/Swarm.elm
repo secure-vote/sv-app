@@ -29,12 +29,20 @@ swmOkColor =
     rgb 63 165 149
 
 
-textColorVars =
-    [ variation (VarColor red) [ C.text red ], variation BoldT [ Font.bold ] ]
+textVariations =
+    [ variation (VarColor red) [ C.text red ]
+    , variation BoldT [ Font.bold ]
+    , variation Caps
+        [ uppercase
+        ]
+    , variation SmallFont
+        [ Font.size 11
+        ]
+    ]
 
 
 headingCommon =
-    [ weight 300 ] ++ textColorVars
+    [ weight 300 ] ++ textVariations
 
 
 bgHltSec =
@@ -180,11 +188,6 @@ swmStylesheet =
             [ prop "pointer-events" "auto"
             ]
         , style ParaS
-            [ variation Caps
-                [ uppercase
-                ]
-            , variation SmallFont
-                [ Font.size 11
-                ]
-            ]
+            []
+            ++ textVariations
         ]
