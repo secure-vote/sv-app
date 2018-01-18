@@ -20,6 +20,7 @@ type SvClass
     | ResultsBarGraph
     | ResultsSummary
     | ResultsColumn
+    | DataParam
       -- END MAX
     | RegText
     | Error

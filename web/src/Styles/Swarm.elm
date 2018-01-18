@@ -141,6 +141,9 @@ swmStylesheet =
             [ Bdr.all 1.0
             , solid
             ]
+        , style DataParam
+            [ Font.typeface [ Font.monospace ]
+            ]
         , style VoteList
             [ Bdr.bottom 1.0
             , solid

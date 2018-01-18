@@ -72,7 +72,9 @@ resultsV id model =
                 [ padding 10, spacing (scaled 1), width content ]
                 [ optNamesCol
                 , optVotesCol
-                , optPctCol
+
+                -- Do not include this currently as it doesn't make sense with negative votes
+                --, optPctCol
                 ]
 
         plotGroup ( desc, value ) =
@@ -92,20 +94,41 @@ resultsV id model =
                 )
     in
     row NilS
-        []
+        [ spacing <| scaled 4 ]
         [ column NilS
             [ minWidth (percent 40) ]
             [ el SubSubH [] <| text "Description:"
-            , el NilS [ paddingBottom (scaled 1) ] <| text ballot.desc
+            , el NilS
+                [ paddingBottom (scaled 1) ]
+              <|
+                el DataParam [] <|
+                    text ballot.desc
             , column NilS
                 [ paddingBottom (scaled 1) ]
-                [ row NilS [] <| [ bold "Start Time: ", text <| readableTime ballot.start ]
-                , row NilS [] <| [ bold "End Time: ", text <| readableTime ballot.finish ]
+                [ row NilS [] <|
+                    [ text "Start Time: "
+                    , el DataParam [] <| text <| readableTime ballot.start
+                    ]
+                , row NilS [] <|
+                    [ text "End Time: "
+                    , el DataParam [] <| text <| readableTime ballot.finish
+                    ]
                 ]
-            , el SubH [ paddingBottom (scaled 1) ] <| text "Results"
+            , el SubH
+                [ paddingBottom (scaled 1)
+                , paddingTop (scaled 2)
+                ]
+                (text "Results")
             , results
             ]
-        , column NilS [ width fill, minWidth (percent 40) ] [ resultsGraph ]
+        , column NilS
+            [ width fill, minWidth (percent 40) ]
+            [ el SubSubH [ center ] <|
+                text <|
+                    "Aggregate votes for: "
+                        ++ ballot.name
+            , resultsGraph
+            ]
         ]
 
 
@@ -138,7 +161,10 @@ resultsH id model =
         clickMsg =
             onClick <| SetDialog "Ballot Info" <| BallotInfoD ballot.desc
     in
-    ( [], [ text ballot.name ], [ button NilS [ clickMsg, padding (scaled 1) ] <| mkIcon "information-outline" I24 ] )
+    ( []
+    , [ text <| "Results: " ++ ballot.name ]
+    , [ button NilS [ clickMsg, padding (scaled 1) ] <| mkIcon "information-outline" I24 ]
+    )
 
 
 

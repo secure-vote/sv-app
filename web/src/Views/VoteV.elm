@@ -5,7 +5,7 @@ import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
 import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, percent, spacing, spread, verticalCenter, width)
 import Element.Events exposing (onClick)
-import Helpers exposing (genNewId, getBallot, getField, getFloatField, relativeTime)
+import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, relativeTime)
 import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
@@ -36,14 +36,25 @@ voteV ballotId model =
         isFutureVote =
             model.now < ballot.start
 
+        haveVoted =
+            checkAlreadyVoted ballotId model
+
         sliderOptions =
-            if isFutureVote then
-                [ HA.attribute "disabled" "disabled" ]
-            else
-                []
+            (++)
+                [ HA.type_ "range"
+                , HA.min "-3"
+                , HA.max "3"
+                , HA.step "1"
+                , style [ ( "width", "100%" ), ( "background", "none" ) ]
+                ]
+            <|
+                if isFutureVote || haveVoted then
+                    [ HA.attribute "disabled" "disabled" ]
+                else
+                    []
 
         continueBtnOptions =
-            if isFutureVote then
+            if isFutureVote || haveVoted then
                 [ attribute "disabled" "disabled" ]
             else
                 []
@@ -53,6 +64,9 @@ voteV ballotId model =
                 "Vote opens in " ++ relativeTime ballot.start model
             else
                 "Vote closes in " ++ relativeTime ballot.finish model
+
+        sliderInputMsg id =
+            String.toFloat >> Result.withDefault 0 >> SetFloatField id
 
         optionListItem { id, name, desc } =
             row VoteList
@@ -67,13 +81,8 @@ voteV ballotId model =
                         , el InputS [ width fill ] <|
                             html <|
                                 input
-                                    ([ HA.type_ "range"
-                                     , HA.min "-3"
-                                     , HA.max "3"
-                                     , HA.step "1"
-                                     , HA.value <| toString <| getFloatField id model
-                                     , HE.onInput <| (String.toFloat >> Result.withDefault 0 >> SetFloatField id)
-                                     , style [ ( "width", "100%" ) ]
+                                    ([ HA.value <| toString <| getFloatField id model
+                                     , HE.onInput <| sliderInputMsg id
                                      ]
                                         ++ sliderOptions
                                     )
@@ -81,7 +90,13 @@ voteV ballotId model =
                         , text "❤️"
                         ]
                     ]
-                , button NilS [ onClick (SetDialog (name ++ ": Details") (BallotOptionD desc)), padding (scaled 1), class "btn-secondary btn-outer--small" ] (text "Details")
+                , button NilS
+                    [ onClick
+                        (SetDialog (name ++ ": Details") (BallotOptionD desc))
+                    , padding (scaled 1)
+                    , class "btn-secondary btn-outer--small"
+                    ]
+                    (text "Details")
                 ]
 
         newVoteOption { id } =
@@ -116,5 +131,9 @@ voteH id model =
     in
     ( []
     , [ text ballot.name ]
-    , [ el NilS [ onClick clickMsg, padding (scaled 1) ] <| mkIcon "information-outline" I24 ]
+    , [ el NilS
+            [ onClick clickMsg, padding (scaled 1) ]
+        <|
+            mkIcon "information-outline" I24
+      ]
     )
