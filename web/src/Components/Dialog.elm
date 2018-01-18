@@ -2,7 +2,7 @@ module Components.Dialog exposing (..)
 
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, row, text, within)
-import Element.Attributes exposing (alignRight, center, class, fill, height, minWidth, padding, percent, spacing, spread, verticalCenter, width)
+import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
 import Models exposing (Model)
 import Msgs exposing (Msg(HideDialog))
@@ -11,6 +11,9 @@ import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Views.DialogV exposing (..)
 import Views.ViewHelpers exposing (SvElement)
+
+
+-- TODO: as a component this should not have views in the code.
 
 
 dialog : Model -> SvElement
@@ -43,7 +46,7 @@ dialog model =
                     el Error [] (text "Not Found")
     in
     el DialogBackdrop [ width fill, height fill ] <|
-        el DialogStyle [ center, verticalCenter ] <|
+        el DialogStyle [ center, verticalCenter, maxWidth <| px 500 ] <|
             column NilS
                 [ padding (scaled 2), spacing (scaled 2) ]
                 [ row SubH

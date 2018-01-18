@@ -31,7 +31,7 @@ type Msg
     | SetVoteConfirmStatus VoteConfirmStatus
     | ShowToast String
     | Snackbar (Snackbar.Msg String)
-    | SpinnerMsg Spinner.Msg
+      --    | SpinnerMsg Spinner.Msg
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
 

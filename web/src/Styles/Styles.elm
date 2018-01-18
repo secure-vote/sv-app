@@ -21,6 +21,7 @@ type SvClass
     | ResultsSummary
     | ResultsColumn
     | DataParam
+    | ParaS
       -- END MAX
     | RegText
     | Error

@@ -3,7 +3,7 @@ module Components.IssueCard exposing (..)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, relativeTime)
+import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, para, relativeTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -44,11 +44,11 @@ issueCard model ballotId =
             if ballotDone then
                 ""
             else if ballot.start > model.now then
-                "🕑 This ballot is not open yet"
+                "This ballot is not open yet"
             else if checkAlreadyVoted ballotId model then
-                "✅ You have voted in this ballot"
+                "You have voted in this ballot"
             else
-                "❗ You have not voted in this ballot yet"
+                "You have not voted in this ballot yet"
 
         resultString { name, result } =
             name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
@@ -57,26 +57,17 @@ issueCard model ballotId =
             "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.ballotOptions)
 
         title =
-            let
-                textExtra =
-                    if ballotDone || ballot.start > model.now then
-                        ""
-                    else
-                        ""
-
-                --                        "🔴 "
-            in
-            el SubSubH [ paddingBottom (scaled 1) ] (text <| textExtra ++ ballot.name)
+            el SubSubH [ paddingBottom (scaled 1) ] (text <| ballot.name)
 
         body =
             let
                 results =
                     if ballotDone then
-                        el IssueCardResults [] (text displayResults)
+                        el IssueCardResults [] (para [] displayResults)
                     else
                         empty
             in
-            column NilS [ spacing <| scaled 1 ] [ el NilS [] <| text ballot.desc, results ]
+            column NilS [ spacing <| scaled 1 ] [ el NilS [] <| para [] ballot.desc, results ]
 
         timeText =
             if ballotDone then
@@ -89,10 +80,10 @@ issueCard model ballotId =
         footer =
             row CardFooter
                 [ spread, padding (scaled 1) ]
-                [ el NilS [ alignLeft ] (text voteStatus)
+                [ el NilS [ alignLeft ] (para [ vary Caps True, vary SmallFont True, verticalCenter ] voteStatus)
                 , el NilS
                     [ alignRight ]
-                    (text timeText)
+                    (para [] timeText)
                 ]
     in
     column IssueCard

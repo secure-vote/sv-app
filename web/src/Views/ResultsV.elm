@@ -4,7 +4,7 @@ import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (getBallot, getResultPercent, readableTime)
+import Helpers exposing (getBallot, getResultPercent, para, readableTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -88,7 +88,7 @@ resultsV id model =
                         { axis = Plot.normalAxis
                         , toGroups = List.map plotGroup
                         , styles = [ [ SvgA.fill "rgba(251, 152, 35, 0.85)" ] ]
-                        , maxWidth = Plot.Percentage 75
+                        , maxWidth = Plot.Percentage 70
                         }
                         (List.map getResults ballot.ballotOptions)
                 )
@@ -96,22 +96,22 @@ resultsV id model =
     row NilS
         [ spacing <| scaled 4 ]
         [ column NilS
-            [ minWidth (percent 40), spacing (scaled 1) ]
+            [ width <| fillPortion 1, spacing (scaled 1) ]
             [ el SubSubH [] <| text "Ballot Description"
             , el NilS
                 [ paddingBottom (scaled 1) ]
               <|
-                el DataParam [] <|
-                    text ballot.desc
+                el NilS [] <|
+                    para [] ballot.desc
             , column NilS
                 [ paddingBottom (scaled 1) ]
                 [ row NilS [] <|
-                    [ text "Start Time: "
-                    , el DataParam [] <| text <| readableTime ballot.start
+                    [ bold "Start Time: "
+                    , el NilS [] <| text <| readableTime ballot.start
                     ]
                 , row NilS [] <|
-                    [ text "End Time: "
-                    , el DataParam [] <| text <| readableTime ballot.finish
+                    [ bold "End Time: "
+                    , el NilS [] <| text <| readableTime ballot.finish
                     ]
                 ]
             , el SubH
@@ -122,9 +122,9 @@ resultsV id model =
             , results
             ]
         , column NilS
-            [ width fill, minWidth (percent 40) ]
+            [ width <| fillPortion 1 ]
             [ el SubSubH [ center ] <|
-                text <|
+                para [] <|
                     "Aggregate votes for: "
                         ++ ballot.name
             , resultsGraph

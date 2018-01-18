@@ -12,6 +12,8 @@ type Variation
     | VarColor Color
     | BoldT
     | Disabled
+    | Caps
+    | SmallFont
 
 
 type IssueCardStatus

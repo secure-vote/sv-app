@@ -2,9 +2,9 @@ module Views.VoteV exposing (..)
 
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, html, row, text)
-import Element.Attributes exposing (alignRight, attribute, center, class, fill, maxWidth, padding, paddingBottom, percent, spacing, spread, verticalCenter, width)
+import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, relativeTime)
+import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, para, relativeTime)
 import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
@@ -65,9 +65,9 @@ voteV ballotId model =
         optionListItem { id, name, desc } =
             row VoteList
                 [ spread, verticalCenter, padding (scaled 2), spacing (scaled 3) ]
-                [ text name
+                [ el NilS [ width <| fillPortion 1 ] <| para [] name
                 , column NilS
-                    [ center, spacing (scaled 1), width fill, maxWidth (percent 40) ]
+                    [ center, spacing (scaled 1), width <| fillPortion 2 ]
                     [ text <| "Your vote: " ++ (toString <| getFloatField id model)
                     , row NilS
                         [ verticalCenter, spacing (scaled 2), width fill ]
@@ -89,6 +89,7 @@ voteV ballotId model =
                         (SetDialog (name ++ ": Details") (BallotOptionD desc))
                     , padding (scaled 1)
                     , class "btn-secondary btn-outer--small"
+                    , width <| fillPortion 1
                     ]
                     (text "Details")
                 ]
@@ -110,7 +111,7 @@ voteV ballotId model =
         [ column NilS
             []
             [ el SubSubH [] <| text "Ballot Description"
-            , el DataParam [] <| text ballot.desc
+            , el NilS [] <| para [] ballot.desc
             ]
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList

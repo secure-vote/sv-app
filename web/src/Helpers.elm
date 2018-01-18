@@ -2,11 +2,16 @@ module Helpers exposing (..)
 
 import Date
 import Dict
+import Element exposing (Attribute, paragraph, text)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
+import Msgs exposing (Msg)
+import Styles.Styles exposing (SvClass(NilS, ParaS))
+import Styles.Variations exposing (Variation)
 import Time exposing (Time)
+import Views.ViewHelpers exposing (SvElement)
 
 
 findDemocracy : BallotId -> Model -> ( DemocracyId, Democracy )
@@ -139,3 +144,8 @@ getResultPercent ballot value =
 genNewId : Int -> Int -> Int
 genNewId parentId nonce =
     1033 * (parentId + nonce * 17)
+
+
+para : List (Attribute Variation Msg) -> String -> SvElement
+para attrs txt =
+    paragraph ParaS attrs [ text txt ]

@@ -1,11 +1,12 @@
 module Styles.Swarm exposing (..)
 
 import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba, white)
+import Element exposing (sub)
 import Element.Attributes exposing (class, height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
-import Style.Font as Font exposing (bold, weight)
+import Style.Font as Font exposing (..)
 import Style.Scale as Scale
 import Style.Shadow as Shadow
 import Style.Transition exposing (transitions)
@@ -22,6 +23,10 @@ scaled =
 -}
 swmHltColor =
     rgb 251 152 35
+
+
+swmOkColor =
+    rgb 63 165 149
 
 
 textColorVars =
@@ -118,9 +123,11 @@ swmStylesheet =
             , Shadow.glow gray 1.0
             , cursor "pointer"
             , variation (IssueCardMod VoteDone)
-                [ background bgHltSec ]
+                [ background swmOkColor ]
             , variation (IssueCardMod VoteWaiting)
-                [ background bgHltPri ]
+                [ background swmHltColor
+                , C.text <| rgb 255 255 255
+                ]
             , variation (IssueCardMod VoteFuture)
                 [ background lightGray ]
             , variation (IssueCardMod IssuePast)
@@ -169,5 +176,13 @@ swmStylesheet =
             ]
         , style InputS
             [ prop "pointer-events" "auto"
+            ]
+        , style ParaS
+            [ variation Caps
+                [ uppercase
+                ]
+            , variation SmallFont
+                [ Font.size 11
+                ]
             ]
         ]

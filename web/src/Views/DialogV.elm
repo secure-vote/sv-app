@@ -2,10 +2,10 @@ module Views.DialogV exposing (..)
 
 import Color
 import Components.Icons exposing (IconSize(I48), mkIcon)
-import Element exposing (button, column, el, html, row, table, text)
+import Element exposing (button, column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
 import Element.Events exposing (onClick)
-import Helpers exposing (findDemocracy, getBallot, getFloatField)
+import Helpers exposing (findDemocracy, getBallot, getFloatField, para)
 import List exposing (map)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
@@ -57,12 +57,12 @@ voteConfirmDialogV vote voteId model =
             AwaitingConfirmation ->
                 let
                     names item =
-                        text item.name
+                        para [] item.name
 
                     values item =
-                        text <| toString <| getFloatField item.id model
+                        para [] <| toString <| getFloatField item.id model
                 in
-                [ text "Please confirm that your vote details below are correct."
+                [ para [] "Please confirm that your vote details below are correct."
                 , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
                 , row NilS
                     [ spacing (scaled 2) ]
@@ -72,17 +72,17 @@ voteConfirmDialogV vote voteId model =
                 ]
 
             Processing ->
-                [ el NilS [ center ] (text "Processing...")
+                [ el NilS [ center ] (para [] "Processing...")
                 , el NilS [ height (px 120) ] <| html spinner
                 ]
 
             Validating ->
-                [ el NilS [ center ] (text "Validating...")
+                [ el NilS [ center ] (para [] "Validating...")
                 , el NilS [ height (px 120) ] <| html spinner
                 ]
 
             Complete ->
-                [ el NilS [ center ] (text "Your vote has been cast successfully!")
+                [ el NilS [ center ] (para [] "Your vote has been cast successfully!")
                 , el Heading [ center ] (mkIcon "check-circle-outline" I48)
                 , el NilS [] <|
                     button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Close")
@@ -108,7 +108,7 @@ ballotDeleteConfirmDialogV ballotId model =
     in
     column NilS
         []
-        [ text <| "Are you sure you want to delete " ++ ballot.name
+        [ para [] <| "Are you sure you want to delete " ++ ballot.name
         , row NilS
             [ alignRight ]
             [ button NilS [ onClick HideDialog, padding (scaled 1), class "btn-secondary" ] (text "Cancel")
@@ -119,22 +119,22 @@ ballotDeleteConfirmDialogV ballotId model =
 
 ballotInfoDialogV : String -> SvElement
 ballotInfoDialogV desc =
-    text desc
+    column NilS [] [ para [] desc ]
 
 
 ballotOptionDialogV : String -> SvElement
 ballotOptionDialogV desc =
-    text desc
+    para [] desc
 
 
 democracyInfoDialogV : String -> SvElement
 democracyInfoDialogV desc =
-    text desc
+    para [] desc
 
 
 userInfoDialogV : Model -> SvElement
 userInfoDialogV model =
-    text "Lorem Ipsum"
+    para [] "Lorem Ipsum"
 
 
 
