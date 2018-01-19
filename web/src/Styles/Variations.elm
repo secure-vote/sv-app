@@ -14,6 +14,8 @@ type Variation
     | Disabled
     | Caps
     | SmallFont
+    | NGood
+    | NBad
 
 
 type IssueCardStatus

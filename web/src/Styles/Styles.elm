@@ -23,6 +23,7 @@ type SvClass
     | DataParam
     | ParaS
     | SpinnerS
+    | Notify
       -- END MAX
     | RegText
     | Error

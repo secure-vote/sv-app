@@ -29,6 +29,10 @@ swmOkColor =
     rgb 63 165 149
 
 
+swmErrColor =
+    rgb 194 36 59
+
+
 textVariations =
     [ variation (VarColor red) [ C.text red ]
     , variation BoldT [ Font.bold ]
@@ -189,4 +193,21 @@ swmStylesheet =
             [ prop "pointer-events" "auto"
             ]
         , style ParaS <| [] ++ textVariations
+        , style Notify
+            [ Bdr.all 1.0
+            , solid
+            , C.border <| rgb 180 180 180
+            , C.text white
+            , Font.center
+            , variation NGood
+                [ background swmOkColor
+                , C.text white
+                , Bdr.all 0
+                ]
+            , variation NBad
+                [ background swmErrColor
+                , C.text white
+                , Bdr.all 0
+                ]
+            ]
         ]
