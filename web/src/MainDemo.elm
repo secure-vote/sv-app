@@ -3,7 +3,6 @@ module MainDemo exposing (..)
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags)
 import Msgs exposing (Msg(SetTime))
-import Spinner
 import Task exposing (perform)
 import Time exposing (Time)
 import Update exposing (update)
