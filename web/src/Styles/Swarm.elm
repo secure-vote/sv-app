@@ -90,9 +90,10 @@ swmStylesheet =
             [ Font.size <| scaled 4
             , C.text red
             ]
-        , style MenuBarHeading
+        , style MenuBarHeading <|
             [ Font.size <| scaled 3
             ]
+                ++ headingCommon
         , style TabRow
             [ bottom 1.0
             , solid
