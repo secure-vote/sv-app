@@ -41,16 +41,6 @@ issueCard model ballotId =
             else
                 vary (IssueCardMod VoteWaiting) True
 
-        voteStatus =
-            if ballotDone then
-                ""
-            else if ballot.start > model.now then
-                "This ballot is not open yet"
-            else if checkAlreadyVoted ballotId model then
-                "You have voted in this ballot"
-            else
-                "You have not voted in this ballot yet"
-
         resultString { name, result } =
             name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
 
@@ -65,20 +55,25 @@ issueCard model ballotId =
                     "No Winner"
 
         displayResults =
-            "Result: " ++ showWinningBallot
+            "Winning Result: " ++ showWinningBallot
+
+        voteStatus =
+            if ballotDone then
+                displayResults
+            else if ballot.start > model.now then
+                "This ballot is not open yet"
+            else if checkAlreadyVoted ballotId model then
+                "You have voted in this ballot"
+            else
+                "You have not voted in this ballot yet"
 
         title =
             el SubSubH [ paddingBottom (scaled 1) ] (text <| ballot.name)
 
         body =
-            let
-                results =
-                    if ballotDone then
-                        el IssueCardResults [] (para [] displayResults)
-                    else
-                        empty
-            in
-            column NilS [ spacing <| scaled 1 ] [ el NilS [] <| para [] ballot.desc, results ]
+            column NilS
+                [ spacing <| scaled 1 ]
+                [ el NilS [] <| para [] ballot.desc ]
 
         timeText =
             if ballotDone then
