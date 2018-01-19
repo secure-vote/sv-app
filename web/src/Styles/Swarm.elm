@@ -187,7 +187,5 @@ swmStylesheet =
         , style InputS
             [ prop "pointer-events" "auto"
             ]
-        , style ParaS
-            []
-            ++ textVariations
+        , style ParaS <| [] ++ textVariations
         ]

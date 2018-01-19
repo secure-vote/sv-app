@@ -110,11 +110,8 @@ voteV ballotId model =
         []
         [ column NilS
             []
-            [ el SubSubH [ paddingBottom <| scaled 1 ] <|
-                text "Ballot Description"
-                    para
-                    []
-                    ballot.desc
+            [ el SubSubH [ paddingBottom (scaled 1) ] (text "Ballot Description")
+            , para [] ballot.desc
             ]
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
