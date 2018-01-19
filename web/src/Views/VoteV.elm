@@ -10,7 +10,7 @@ import Html.Attributes as HA exposing (style)
 import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
-import Msgs exposing (Msg(SetDialog, SetField, SetFloatField))
+import Msgs exposing (Msg(NoOp, SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
 import Styles.StyleHelpers exposing (disabledBtnAttr)
 import Styles.Styles exposing (SvClass(..))
@@ -48,19 +48,25 @@ voteV ballotId model =
                 else
                     []
 
+        sliderAlterMsg id newVal =
+            if isFutureVote || haveVoted then
+                NoOp
+            else
+                sliderInputMsg id newVal
+
         voteRangeReduce id =
             let
                 newVal =
                     max (getFloatField id model - 1) -3
             in
-            onClick <| sliderInputMsg id <| toString newVal
+            onClick <| sliderAlterMsg id <| toString newVal
 
         voteRangeIncrease id =
             let
                 newVal =
                     min (getFloatField id model + 1) 3
             in
-            onClick <| sliderInputMsg id <| toString newVal
+            onClick <| sliderAlterMsg id <| toString newVal
 
         continueBtnOptions =
             if isFutureVote || haveVoted then
@@ -91,10 +97,10 @@ voteV ballotId model =
                         , el InputS [ width fill, verticalCenter ] <|
                             html <|
                                 input
-                                    ([ HA.value <| toString <| getFloatField id model
-                                     , HE.onInput <| sliderInputMsg id
-                                     ]
-                                        ++ sliderOptions
+                                    (sliderOptions
+                                        ++ [ HA.value <| toString <| getFloatField id model
+                                           , HE.onInput <| sliderInputMsg id
+                                           ]
                                     )
                                     []
                         , el NilS [ voteRangeIncrease id ] <| mkIcon "plus" I24
