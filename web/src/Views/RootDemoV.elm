@@ -65,7 +65,7 @@ rootDemoView model =
             row HeaderStyle
                 [ spacing (scaled 2), alignLeft, alignBottom, spread ]
                 [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
-                , row MenuBarHeading [ width fill, padding (scaled 1) ] hCenter
+                , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter
                 , row NilS [ width fill, alignRight ] hRight
                 ]
 
