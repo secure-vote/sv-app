@@ -9,7 +9,7 @@ import Style.Color as C exposing (background)
 import Style.Font as Font exposing (..)
 import Style.Scale as Scale
 import Style.Shadow as Shadow
-import Style.Transition exposing (transitions)
+import Style.Transition as T
 import Styles.Styles exposing (SvClass(..))
 import Styles.Variations exposing (IssueCardStatus(..), Variation(..))
 import Time exposing (millisecond)
@@ -59,6 +59,24 @@ bgHltPri =
 
 bgShadow =
     rgba 10 10 10 0.5
+
+
+shadowSmall =
+    Shadow.box
+        { offset = ( 0, 1 )
+        , size = 1
+        , blur = 2
+        , color = Color.gray
+        }
+
+
+shadowLarge =
+    Shadow.box
+        { offset = ( 0, 1 )
+        , size = 3
+        , blur = 5
+        , color = Color.gray
+        }
 
 
 swmStylesheet : StyleSheet SvClass Variation
@@ -133,9 +151,12 @@ swmStylesheet =
             [ Bdr.all 1.0
             , solid
             , C.border <| rgb 200 200 200
-            , Shadow.glow gray 1.0
+            , shadowSmall
             , cursor "pointer"
             , background lightGray
+            , T.all
+            , hover
+                [ shadowLarge ]
             ]
         , style CardFooter
             [ Font.weight 400
