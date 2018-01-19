@@ -6,7 +6,8 @@ import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (Element, button, column, el, empty, html, layout, row, text, within)
 import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, padding, paddingBottom, px, spacing, spread, width)
 import Element.Events exposing (onClick)
-import Html exposing (Html, div, i, span)
+import Html as H exposing (Html, div, i, node, span)
+import Html.Attributes as HA
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (Msg(Mdl, NavigateBack, NavigateHome, SetDialog, Snackbar))
@@ -20,7 +21,7 @@ import Views.DemocracyListV exposing (democracyListH, democracyListV)
 import Views.DemocracyV exposing (democracyH, democracyV)
 import Views.EditBallotV exposing (editBallotH, editBallotV)
 import Views.ResultsV exposing (resultsH, resultsV)
-import Views.ViewHelpers exposing (SvElement, nilView, notFoundView)
+import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
 import Views.VoteV exposing (voteH, voteV)
 
 
@@ -32,6 +33,24 @@ rootDemoView model =
 
         w =
             width <| px (scaled 3)
+
+        injectCss =
+            let
+                tag =
+                    "link"
+
+                attrs =
+                    [ HA.attribute "rel" "stylesheet"
+                    , HA.attribute "property" "stylesheet"
+
+                    -- , HA.attribute "href" "https://sv-app-mvp.netlify.com/css/cssload-spinner.css"
+                    , HA.attribute "href" "/css/cssload-spinner.css"
+                    ]
+
+                children =
+                    []
+            in
+            H.node tag attrs children
 
         navBack =
             if List.length model.routeStack > 1 then
@@ -64,7 +83,7 @@ rootDemoView model =
                 ]
                 |> within showDialog
     in
-    layout (genStylesheet SwmStyle) mainLayout
+    H.div [] [ injectCss, layout (genStylesheet SwmStyle) mainLayout ]
 
 
 fst a b =

@@ -11,7 +11,7 @@ https://icons8.com/cssload/en/terms_of_use
     -moz-box-sizing: border-box;
 }
 .cssload-container {
-    margin: 38px auto 0 auto;
+    /*margin: 38px auto 0 auto;*/
     max-width: 1048px;
 }
 

@@ -79,7 +79,7 @@ issueCard model ballotId =
 
         footer =
             row CardFooter
-                [ spread, padding (scaled 1) ]
+                [ spread, padding (scaled 1), cardColor ]
                 [ el NilS [ alignLeft ] (para [ vary Caps True, vary SmallFont True, verticalCenter ] voteStatus)
                 , el NilS
                     [ alignRight ]

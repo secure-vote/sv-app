@@ -130,6 +130,14 @@ swmStylesheet =
             , C.border <| rgb 200 200 200
             , Shadow.glow gray 1.0
             , cursor "pointer"
+            , background lightGray
+            ]
+        , style CardFooter
+            [ Font.weight 400
+            , Font.size 13
+            , Bdr.top 1.0
+            , solid
+            , C.border <| rgb 180 180 180
             , variation (IssueCardMod VoteDone)
                 [ background swmOkColor
                 , C.text white
@@ -142,13 +150,6 @@ swmStylesheet =
                 [ background lightGray ]
             , variation (IssueCardMod IssuePast)
                 [ background lightGray ]
-            ]
-        , style CardFooter
-            [ Font.weight 400
-            , Font.size 13
-            , Bdr.top 1.0
-            , solid
-            , C.border <| rgb 180 180 180
             ]
         , style ResultsColumn
             [ Bdr.right 1.0

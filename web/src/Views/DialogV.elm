@@ -11,10 +11,9 @@ import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
 import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
 import Routes exposing (Route(DemocracyR))
-import Spinner exposing (defaultConfig)
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
-import Views.ViewHelpers exposing (SvElement)
+import Views.ViewHelpers exposing (SvElement, cssSpinner)
 
 
 subhead : String -> SvElement
@@ -48,9 +47,6 @@ voteConfirmDialogV vote voteId model =
                 , SetVoteConfirmStatus AwaitingConfirmation
                 , HideDialog
                 ]
-
-        spinner =
-            Spinner.view { defaultConfig | color = always Color.black, scale = 0.5 } model.spinner
     in
     column NilS [ spacing (scaled 2) ] <|
         case model.voteConfirmStatus of
@@ -73,12 +69,12 @@ voteConfirmDialogV vote voteId model =
 
             Processing ->
                 [ el NilS [ center ] (para [] "Processing...")
-                , el NilS [ height (px 120) ] <| html spinner
+                , el NilS [] <| cssSpinner
                 ]
 
             Validating ->
                 [ el NilS [ center ] (para [] "Validating...")
-                , el NilS [ height (px 120) ] <| html spinner
+                , el NilS [] <| cssSpinner
                 ]
 
             Complete ->

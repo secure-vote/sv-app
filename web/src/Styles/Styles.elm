@@ -22,6 +22,7 @@ type SvClass
     | ResultsColumn
     | DataParam
     | ParaS
+    | SpinnerS
       -- END MAX
     | RegText
     | Error
