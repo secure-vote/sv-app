@@ -55,7 +55,7 @@ const genOutput = () => {
 const genElmLoader = () => {
     let extra = '';
 
-    if (TARGET_ENV !== 'production') {
+    if (__DEV__) {
         extra += "&debug=true"
     }
 
