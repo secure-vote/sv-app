@@ -4,6 +4,7 @@ import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, row, text, within)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
+import Helpers exposing (para)
 import Models exposing (Model)
 import Models.Ballot exposing (VoteConfirmStatus(Processing, Validating))
 import Msgs exposing (Msg(HideDialog))
@@ -53,13 +54,13 @@ dialog model =
                 [ button NilS [ onClick HideDialog ] (mkIcon "close" I24) ]
     in
     el DialogBackdrop [ width fill, height fill ] <|
-        el DialogStyle [ center, verticalCenter, maxWidth <| px 500 ] <|
+        el DialogStyle [ center, verticalCenter, maxWidth <| px 600 ] <|
             column NilS
                 [ padding (scaled 2), spacing (scaled 2) ]
                 [ row SubH
                     [ spacing (scaled 3), spread ]
                   <|
-                    [ text model.dialogHtml.title
+                    [ para [] model.dialogHtml.title
                     ]
                         ++ closeButton
                 , innerElement
