@@ -4,6 +4,7 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
 import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, para, relativeTime)
+import List exposing (filter, head, maximum)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -53,8 +54,18 @@ issueCard model ballotId =
         resultString { name, result } =
             name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
 
+        --      [TS] Pretty messy, will probably need a refactor.
+        --      Also, Just picks the first result in a tie.
+        showWinningBallot =
+            case head (filter (\{ result } -> result == maximum (List.map (\{ result } -> result ? 0) ballot.ballotOptions)) ballot.ballotOptions) of
+                Just winningBallot ->
+                    winningBallot.name
+
+                Nothing ->
+                    "No Winner"
+
         displayResults =
-            "Results: " ++ (List.foldr (++) "" <| List.map resultString ballot.ballotOptions)
+            "Result: " ++ showWinningBallot
 
         title =
             el SubSubH [ paddingBottom (scaled 1) ] (text <| ballot.name)

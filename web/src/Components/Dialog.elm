@@ -5,6 +5,7 @@ import Element exposing (button, column, el, row, text, within)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
 import Models exposing (Model)
+import Models.Ballot exposing (VoteConfirmStatus(Processing, Validating))
 import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
 import Styles.Styles exposing (SvClass(..))
@@ -44,6 +45,12 @@ dialog model =
                 --                    memberInviteDialogV model
                 NotFoundD ->
                     el Error [] (text "Not Found")
+
+        closeButton =
+            if model.voteConfirmStatus == Processing || model.voteConfirmStatus == Validating then
+                []
+            else
+                [ button NilS [ onClick HideDialog ] (mkIcon "close" I24) ]
     in
     el DialogBackdrop [ width fill, height fill ] <|
         el DialogStyle [ center, verticalCenter, maxWidth <| px 500 ] <|
@@ -51,8 +58,9 @@ dialog model =
                 [ padding (scaled 2), spacing (scaled 2) ]
                 [ row SubH
                     [ spacing (scaled 3), spread ]
+                  <|
                     [ text model.dialogHtml.title
-                    , button NilS [ onClick HideDialog ] (mkIcon "close" I24)
                     ]
+                        ++ closeButton
                 , innerElement
                 ]

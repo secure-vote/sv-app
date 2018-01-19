@@ -115,7 +115,7 @@ voteV ballotId model =
             ]
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
-        , button BtnS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), class "btn" ] ++ continueBtnOptions) (text "Continue")
+        , button BtnS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), maxWidth (px 840), center, class "btn" ] ++ continueBtnOptions) (text "Continue")
         ]
 
 
