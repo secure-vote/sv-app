@@ -42,9 +42,7 @@ rootDemoView model =
                 attrs =
                     [ HA.attribute "rel" "stylesheet"
                     , HA.attribute "property" "stylesheet"
-
-                    -- , HA.attribute "href" "https://sv-app-mvp.netlify.com/css/cssload-spinner.css"
-                    , HA.attribute "href" "/css/cssload-spinner.css"
+                    , HA.attribute "href" "https://sv-app-mvp.netlify.com/css/cssload-spinner.css"
                     ]
 
                 children =
