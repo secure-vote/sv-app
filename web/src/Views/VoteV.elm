@@ -11,7 +11,7 @@ import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(NoOp, SetDialog, SetField, SetFloatField))
-import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, VoteConfirmationD))
+import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD))
 import Styles.StyleHelpers exposing (disabledBtnAttr)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -165,15 +165,18 @@ voteH id model =
     let
         ballot =
             getBallot id model
-
-        clickMsg =
-            SetDialog "Ballot Info" <| BallotInfoD ballot.desc
     in
     ( []
     , [ text ballot.name ]
     , [ el NilS
-            [ onClick clickMsg, padding (scaled 1) ]
-        <|
-            mkIcon "information-outline" I24
+            [ onClick <| SetDialog "Ballot Info" (BallotInfoD ballot.desc)
+            , padding (scaled 1)
+            ]
+            (mkIcon "information-outline" I24)
+      , el NilS
+            [ onClick <| SetDialog "How to Vote" HowToVoteD
+            , padding (scaled 1)
+            ]
+            (mkIcon "help-circle-outline" I24)
       ]
     )
