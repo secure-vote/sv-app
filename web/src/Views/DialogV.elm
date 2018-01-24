@@ -68,19 +68,18 @@ voteConfirmDialogV vote voteId model =
 
             Processing ->
                 [ el NilS [ center ] (para [] "Processing...")
-                , el NilS [] <| cssSpinner
+                , cssSpinner
                 ]
 
             Validating ->
                 [ el NilS [ center ] (para [] "Validating...")
-                , el NilS [] <| cssSpinner
+                , cssSpinner
                 ]
 
             Complete ->
                 [ el NilS [ center ] (para [] "Your vote has been cast successfully!")
                 , el Heading [ center ] (mkIcon "check-circle-outline" I48)
-                , el NilS [] <|
-                    button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Close")
+                , button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Close")
                 ]
 
 
@@ -159,8 +158,7 @@ howToVoteV =
 
 
 --    Deprecated
---    el NilS [] <|
---        html <|
+--    html <|
 --            Toggles.switch Mdl
 --                [ adminToggleId ]
 --                model.mdl

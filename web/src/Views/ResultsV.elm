@@ -100,18 +100,16 @@ resultsV id model =
             [ el SubSubH [] <| text "Ballot Description"
             , el NilS
                 [ paddingBottom (scaled 1) ]
-              <|
-                el NilS [] <|
-                    para [] ballot.desc
+                (para [] ballot.desc)
             , column NilS
                 [ paddingBottom (scaled 1) ]
                 [ row NilS [] <|
                     [ bold "Start Time: "
-                    , el NilS [] <| text <| readableTime ballot.start
+                    , text <| readableTime ballot.start
                     ]
                 , row NilS [] <|
                     [ bold "End Time: "
-                    , el NilS [] <| text <| readableTime ballot.finish
+                    , text <| readableTime ballot.finish
                     ]
                 ]
             , el SubH

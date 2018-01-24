@@ -73,7 +73,7 @@ issueCard model ballotId =
         body =
             column NilS
                 [ spacing <| scaled 1 ]
-                [ el NilS [] <| para [] ballot.desc ]
+                [ para [] ballot.desc ]
 
         timeText =
             if ballotDone then
