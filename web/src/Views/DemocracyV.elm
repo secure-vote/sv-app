@@ -3,13 +3,15 @@ module Views.DemocracyV exposing (..)
 import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
 import Components.IssueCard exposing (issueCard)
 import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
+import Components.TextF exposing (textF)
 import Element exposing (Element, button, column, el, html, row, text)
-import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
-import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, relativeTime)
+import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
+import Element.Input as Input
+import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetIntField))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NoTabRowBorder))
@@ -130,6 +132,21 @@ mainVotesV model democId =
         , currentBallotList democracy.ballots model
         , el SubH [] (text "Upcoming Ballots")
         , futureBallotList democracy.ballots model
+        , dubCol
+            [ el SubH [] (text "Vote Delegation")
+            , para [] "You can choose to delegate your votes for this fund to another user, which means your tokens will automatically go towards the preferences of your nomination"
+            ]
+            [ el SubH [] (text "Turn on Delegation")
+            , para [] "Vote delegation is disabled. You can enable vote delegation by entering the Voter ID of your nominated delegate below."
+            , Input.text NilS
+                []
+                { onChange = \a -> NoOp
+                , value = ""
+                , label = Input.labelAbove (text "Enter Voter ID")
+                , options = []
+                }
+            , button NilS [ class "btn", padding (scaled 1) ] (text "Nominate Delegate")
+            ]
         ]
 
 

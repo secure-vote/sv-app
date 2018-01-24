@@ -2,13 +2,15 @@ module Helpers exposing (..)
 
 import Date
 import Dict
-import Element exposing (Attribute, paragraph, text)
+import Element exposing (Attribute, column, el, paragraph, row, text)
+import Element.Attributes exposing (fillPortion, paddingRight, percent, spacing, width)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
+import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
 import Time exposing (Time)
 import Views.ViewHelpers exposing (SvElement)
@@ -149,3 +151,12 @@ genNewId parentId nonce =
 para : List (Attribute Variation Msg) -> String -> SvElement
 para attrs txt =
     paragraph ParaS attrs [ text txt ]
+
+
+dubCol : List SvElement -> List SvElement -> SvElement
+dubCol col1 col2 =
+    row NilS
+        []
+        [ el NilS [ width (fillPortion 1) ] <| column NilS [ width (percent 65), spacing (scaled 2) ] col1
+        , el NilS [ width (fillPortion 1) ] <| column NilS [ width (percent 65), spacing (scaled 2) ] col2
+        ]
