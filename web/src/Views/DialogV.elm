@@ -1,12 +1,11 @@
 module Views.DialogV exposing (..)
 
-import Color
 import Components.Icons exposing (IconSize(I48), mkIcon)
 import Element exposing (button, column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
 import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getBallot, getFloatField, para)
-import List exposing (map)
+import List exposing (foldr, map)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
 import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
@@ -131,6 +130,31 @@ democracyInfoDialogV desc =
 userInfoDialogV : Model -> SvElement
 userInfoDialogV model =
     para [] "Lorem Ipsum"
+
+
+howToVoteV : SvElement
+howToVoteV =
+    let
+        rangeVotingCopy =
+            [ "Each vote consists of a choosing a score within the range -3 to +3. "
+            , "+3 indicates best option and -3 indicates the worst option. "
+            , "When the voting has finished, all votes are weighted and summed, and the option with the highest weighted score wins. "
+            ]
+
+        submitVoteCopy =
+            [ "Once you have finished selecting values for your vote options, your ballot will begin processing and validation. "
+            , "When the process is complete you will be able to validate the integrity of your ballot if you wish. "
+            ]
+    in
+    column NilS
+        [ spacing (scaled 1) ]
+        [ el SubSubH [] (text "How to use Range Voting")
+        , table NilS [ spacing (scaled 1), padding (scaled 1) ] <| [ map (\a -> text "•") rangeVotingCopy, map (para []) rangeVotingCopy ]
+        , el SubSubH [] (text "Submitting your vote")
+        , para [ padding (scaled 1) ] <| foldr (++) "" submitVoteCopy
+        , el SubSubH [] (text "How to audit your vote")
+        , para [ padding (scaled 1) ] <| foldr (++) "" submitVoteCopy
+        ]
 
 
 

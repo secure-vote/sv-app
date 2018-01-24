@@ -41,6 +41,9 @@ dialog model =
                 UserInfoD ->
                     userInfoDialogV model
 
+                HowToVoteD ->
+                    howToVoteV
+
                 --              Not in use
                 --                MemberInviteD ->
                 --                    memberInviteDialogV model

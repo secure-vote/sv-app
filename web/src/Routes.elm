@@ -23,5 +23,6 @@ type DialogRoute msg
     | BallotOptionD String
     | DemocracyInfoD String
     | UserInfoD
+    | HowToVoteD
       --    | MemberInviteD
     | NotFoundD
