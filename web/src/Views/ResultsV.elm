@@ -25,15 +25,10 @@ resultsV id model =
         ballot =
             getBallot id model
     in
-    ( admin
+    ( empty
     , header ballot
     , body ballot model
     )
-
-
-admin : SvElement
-admin =
-    empty
 
 
 header : Ballot -> SvHeader

@@ -1,7 +1,6 @@
 module Views.RootDemoV exposing (..)
 
 --import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
---import Views.CreateBallotV exposing (createBallotH, createBallotV)
 --import Views.EditBallotV exposing (editBallotH, editBallotV)
 --import Views.DashboardV exposing (dashboardH, dashboardV)
 --import Views.DemocracyListV exposing (democracyListH, democracyListV)
@@ -20,6 +19,7 @@ import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
 import Styles.Swarm exposing (scaled, swmStylesheet)
+import Views.CreateBallotV exposing (createBallotV)
 import Views.DemocracyV exposing (democracyV)
 import Views.ResultsV exposing (resultsV)
 import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
@@ -78,10 +78,9 @@ rootDemoView model =
                     notFoundView
 
                 -- createDemocracyV model
-                CreateVoteR democracyId ->
-                    notFoundView
+                CreateBallotR democracyId ->
+                    createBallotV democracyId model
 
-                -- createBallotV democracyId model
                 EditVoteR ballotId ->
                     notFoundView
 

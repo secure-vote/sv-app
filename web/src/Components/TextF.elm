@@ -1,7 +1,7 @@
 module Components.TextF exposing (..)
 
 import Element exposing (el, text)
-import Element.Attributes exposing (class)
+import Element.Attributes exposing (class, fill, width)
 import Element.Input as Input
 import Helpers exposing (getField)
 import Models exposing (Model)
@@ -14,7 +14,7 @@ textF : String -> String -> Model -> SvElement
 textF name labelText model =
     el NilS [ class "field" ] <|
         Input.text InputS
-            []
+            [ width fill ]
             { onChange = SetField name
             , value = getField name model
             , label = Input.labelAbove (text labelText)

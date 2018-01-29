@@ -1,6 +1,6 @@
 module Views.DemocracyV exposing (..)
 
-import Components.Btn exposing (BtnProps(PriBtn, Small), btn)
+import Components.Btn exposing (BtnProps(Click, PriBtn, Small), btn)
 import Components.Delegation exposing (delegationV)
 import Components.IssueCard exposing (issueCard)
 import Element exposing (Element, column, el, empty, html, row, text)
@@ -9,6 +9,8 @@ import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemo
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
+import Msgs exposing (Msg(NavigateTo))
+import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
@@ -20,7 +22,7 @@ democracyV democId model =
         democracy =
             getDemocracy democId model
     in
-    ( admin
+    ( admin democId
     , header model
     , body democracy.ballots model
     )
@@ -30,13 +32,13 @@ democracyV democId model =
 -- TODO: Only show admin box when admin flag is true
 
 
-admin : SvElement
-admin =
+admin : DemocracyId -> SvElement
+admin democId =
     column AdminBoxS
         [ spacing (scaled 1), padding (scaled 4) ]
         [ el SubH [] (text "Welcome, Admin")
         , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
-        , btn [ PriBtn, Small ] (text "Create new ballot")
+        , btn [ PriBtn, Small, Click (NavigateTo (CreateBallotR democId)) ] (text "Create new ballot")
         ]
 
 
