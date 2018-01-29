@@ -7,7 +7,7 @@ import Element.Attributes exposing (..)
 import Helpers exposing (getBallot, getResultPercent, para, readableTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (Ballot, BallotId)
 import Msgs exposing (Msg(SetDialog))
 import Plot as Plot
 import Routes exposing (DialogRoute(BallotInfoD))
@@ -16,15 +16,37 @@ import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(BoldT))
 import Svg.Attributes as SvgA
 import Tuple exposing (first, second)
-import Views.ViewHelpers exposing (SvElement)
+import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
 
-resultsV : BallotId -> Model -> SvElement
+resultsV : BallotId -> Model -> SvView
 resultsV id model =
     let
         ballot =
             getBallot id model
+    in
+    ( admin
+    , header ballot
+    , body ballot model
+    )
 
+
+admin : SvElement
+admin =
+    empty
+
+
+header : Ballot -> SvHeader
+header ballot =
+    ( []
+    , [ text <| "Results: " ++ ballot.name ]
+    , [ btn [ Click (SetDialog "Ballot Info" (BallotInfoD ballot.desc)) ] (mkIcon "information-outline" I24) ]
+    )
+
+
+body : Ballot -> Model -> SvElement
+body ballot model =
+    let
         --        tableRow ( desc, value ) =
         --            tr []
         --                [ td [ class "b tr" ] [ H.text <| desc ++ ": " ]
@@ -128,48 +150,3 @@ resultsV id model =
             , resultsGraph
             ]
         ]
-
-
-
---        div
---        [ class "ma4" ]
---        [ p [] [ H.text ballot.desc ]
---        , p [] [ H.text <| "Start Time: " ++ toString ballot.start ]
---        , p [] [ H.text <| "Finish Time: " ++ toString ballot.finish ]
---        , styled h2 [ Typo.headline ] [ H.text "Results:" ]
---        , table [ class "ba pa3 mt2" ] <|
---            List.map
---                tableRow
---            <|
---                List.map
---                    getResults
---                    ballot.ballotOptions
---        , div [ class "w-90 w-50-l" ]
---            [
---            ]
---        ]
-
-
-resultsH : BallotId -> Model -> ( List SvElement, List SvElement, List SvElement )
-resultsH id model =
-    let
-        ballot =
-            getBallot id model
-
-        clickMsg =
-            SetDialog "Ballot Info" <| BallotInfoD ballot.desc
-    in
-    ( []
-    , [ text <| "Results: " ++ ballot.name ]
-    , [ btn [ Click clickMsg ] (mkIcon "information-outline" I24) ]
-    )
-
-
-
---    [ Layout.title [] [ H.text ballot.name ]
---    , Layout.spacer
---    , Layout.navigation []
---        [ Layout.link []
---            [ btn 2345785562 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Ballot Info" <| BallotInfoD ballot.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
---        ]
---    ]

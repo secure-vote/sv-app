@@ -10,24 +10,47 @@ import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId, Vote, VoteOption)
+import Models.Ballot exposing (Ballot, BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(NoOp, SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD))
-import Styles.StyleHelpers exposing (disabledBtnAttr)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NBad, NGood))
-import Views.ViewHelpers exposing (SvElement)
+import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
 
-voteV : BallotId -> Model -> SvElement
+voteV : BallotId -> Model -> SvView
 voteV ballotId model =
     let
         ballot =
             getBallot ballotId model
+    in
+    ( admin
+    , header ballot
+    , body ballotId model
+    )
 
-        optionList =
-            List.map optionListItem ballot.ballotOptions
+
+admin : SvElement
+admin =
+    el NilS [] (text "test")
+
+
+header : Ballot -> SvHeader
+header ballot =
+    ( []
+    , [ text ballot.name ]
+    , [ btn [ Click (SetDialog "Ballot Info" (BallotInfoD ballot.desc)) ] (mkIcon "information-outline" I24)
+      , btn [ Click (SetDialog "How to Vote" HowToVoteD) ] (mkIcon "help-circle-outline" I24)
+      ]
+    )
+
+
+body : BallotId -> Model -> SvElement
+body ballotId model =
+    let
+        ballot =
+            getBallot ballotId model
 
         isFutureVote =
             model.now < ballot.start
@@ -35,92 +58,11 @@ voteV ballotId model =
         haveVoted =
             checkAlreadyVoted ballotId model
 
-        sliderOptions =
-            (++)
-                [ HA.type_ "range"
-                , HA.min "-3"
-                , HA.max "3"
-                , HA.step "1"
-                , style [ ( "width", "100%" ), ( "background", "none" ) ]
-                ]
-            <|
-                if isFutureVote || haveVoted then
-                    [ HA.attribute "disabled" "disabled" ]
-                else
-                    []
-
-        sliderAlterMsg id newVal =
-            if isFutureVote || haveVoted then
-                NoOp
-            else
-                sliderInputMsg id newVal
-
-        voteRangeReduce id =
-            let
-                newVal =
-                    max (getFloatField id model - 1) -3
-            in
-            onClick <| sliderAlterMsg id <| toString newVal
-
-        voteRangeIncrease id =
-            let
-                newVal =
-                    min (getFloatField id model + 1) 3
-            in
-            onClick <| sliderAlterMsg id <| toString newVal
-
-        continueBtnOptions =
-            if isFutureVote || haveVoted then
-                [ Disabled ]
-            else
-                []
-
         voteTime =
             if isFutureVote then
                 "Vote opens in " ++ relativeTime ballot.start model
             else
                 "Vote closes in " ++ relativeTime ballot.finish model
-
-        {- TODO: Why is this a string?? -}
-        sliderInputMsg id =
-            String.toFloat >> Result.withDefault 0 >> SetFloatField id
-
-        optionListItem { id, name, desc } =
-            row VoteList
-                [ verticalCenter, padding (scaled 2), spacing (scaled 3) ]
-                [ el NilS [ width <| fillPortion 1 ] <| para [] name
-                , column NilS
-                    [ center, spacing (scaled 1), width <| fillPortion 2 ]
-                    [ text <| "Your vote: " ++ (toString <| getFloatField id model)
-                    , row NilS
-                        [ verticalCenter, spacing (scaled 2), width fill ]
-                        [ el NilS [ voteRangeReduce id ] <| mkIcon "minus" I24
-                        , el InputS [ width fill, verticalCenter ] <|
-                            html <|
-                                input
-                                    (sliderOptions
-                                        ++ [ HA.value <| toString <| getFloatField id model
-                                           , HE.onInput <| sliderInputMsg id
-                                           ]
-                                    )
-                                    []
-                        , el NilS [ voteRangeIncrease id ] <| mkIcon "plus" I24
-                        ]
-                    ]
-                , btn [ SecBtn, Small, Click (SetDialog (name ++ ": Details") (BallotOptionD desc)) ] (text "Details")
-                ]
-
-        newVoteOption { id } =
-            VoteOption id <| getFloatField id model
-
-        newVote =
-            Vote ballotId <| List.map newVoteOption ballot.ballotOptions
-
-        newVoteId =
-            genNewId ballotId <| Result.withDefault 0 <| String.toInt <| List.foldl (++) "" <| List.map toString <| List.map genNonce newVote.voteOptions
-
-        genNonce { value } =
-            value
 
         {- TODO: Refactor the below to use a component instead of duplicating code -}
         statusNotifyAlreadyVoted =
@@ -149,28 +91,123 @@ voteV ballotId model =
             , para [] ballot.desc
             ]
         , el FooterText [ alignRight ] (text voteTime)
-        , column NilS [ padding (scaled 3) ] optionList
-        , btn ([ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)) ] ++ continueBtnOptions) (text "Continue")
+        , column NilS [ padding (scaled 3) ] (optionList ballotId model)
+        , confirmationButton ballotId model
         ]
 
 
-voteH : BallotId -> Model -> ( List SvElement, List SvElement, List SvElement )
-voteH id model =
+optionList : BallotId -> Model -> List SvElement
+optionList ballotId model =
     let
         ballot =
-            getBallot id model
+            getBallot ballotId model
+
+        isFutureVote =
+            model.now < ballot.start
+
+        haveVoted =
+            checkAlreadyVoted ballotId model
+
+        {- TODO: Why is this a string?? -}
+        sliderInputMsg id =
+            String.toFloat >> Result.withDefault 0 >> SetFloatField id
+
+        sliderAlterMsg id newVal =
+            if isFutureVote || haveVoted then
+                NoOp
+            else
+                sliderInputMsg id newVal
+
+        voteRangeReduce id =
+            let
+                newVal =
+                    max (getFloatField id model - 1) -3
+            in
+            onClick <| sliderAlterMsg id <| toString newVal
+
+        voteRangeIncrease id =
+            let
+                newVal =
+                    min (getFloatField id model + 1) 3
+            in
+            onClick <| sliderAlterMsg id <| toString newVal
+
+        sliderOptions =
+            (++)
+                [ HA.type_ "range"
+                , HA.min "-3"
+                , HA.max "3"
+                , HA.step "1"
+                , style [ ( "width", "100%" ), ( "background", "none" ) ]
+                ]
+            <|
+                if isFutureVote || haveVoted then
+                    [ HA.attribute "disabled" "disabled" ]
+                else
+                    []
+
+        htmlSlider id =
+            el InputS [ width fill, verticalCenter ] <|
+                html <|
+                    input
+                        (sliderOptions
+                            ++ [ HA.value <| toString <| getFloatField id model
+                               , HE.onInput <| sliderInputMsg id
+                               ]
+                        )
+                        []
+
+        sliderCol id =
+            column NilS
+                [ center, spacing (scaled 1), width <| fillPortion 2 ]
+                [ text <| "Your vote: " ++ (toString <| getFloatField id model)
+                , row NilS
+                    [ verticalCenter, spacing (scaled 2), width fill ]
+                    [ el NilS [ voteRangeReduce id ] <| mkIcon "minus" I24
+                    , htmlSlider id
+                    , el NilS [ voteRangeIncrease id ] <| mkIcon "plus" I24
+                    ]
+                ]
+
+        optionListItem { id, name, desc } =
+            row VoteList
+                [ verticalCenter, padding (scaled 2), spacing (scaled 3) ]
+                [ el NilS [ width <| fillPortion 1 ] <| para [] name
+                , sliderCol id
+                , btn [ SecBtn, Small, Click (SetDialog (name ++ ": Details") (BallotOptionD desc)) ] (text "Details")
+                ]
     in
-    ( []
-    , [ text ballot.name ]
-    , [ el NilS
-            [ onClick <| SetDialog "Ballot Info" (BallotInfoD ballot.desc)
-            , padding (scaled 1)
-            ]
-            (mkIcon "information-outline" I24)
-      , el NilS
-            [ onClick <| SetDialog "How to Vote" HowToVoteD
-            , padding (scaled 1)
-            ]
-            (mkIcon "help-circle-outline" I24)
-      ]
-    )
+    List.map optionListItem ballot.ballotOptions
+
+
+confirmationButton : BallotId -> Model -> SvElement
+confirmationButton ballotId model =
+    let
+        ballot =
+            getBallot ballotId model
+
+        isFutureVote =
+            model.now < ballot.start
+
+        haveVoted =
+            checkAlreadyVoted ballotId model
+
+        continueBtnOptions =
+            if isFutureVote || haveVoted then
+                [ Disabled ]
+            else
+                []
+
+        newVoteOption { id } =
+            VoteOption id <| getFloatField id model
+
+        newVote =
+            Vote ballotId <| List.map newVoteOption ballot.ballotOptions
+
+        newVoteId =
+            genNewId ballotId <| Result.withDefault 0 <| String.toInt <| List.foldl (++) "" <| List.map toString <| List.map genNonce newVote.voteOptions
+
+        genNonce { value } =
+            value
+    in
+    btn ([ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)) ] ++ continueBtnOptions) (text "Continue")

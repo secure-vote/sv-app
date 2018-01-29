@@ -21,9 +21,20 @@ type alias SvAttribute =
     Attribute Variation Msg
 
 
-notFoundView : Element SvClass Variation m
+type alias SvHeader =
+    ( List SvElement, List SvElement, List SvElement )
+
+
+type alias SvView =
+    ( SvElement, SvHeader, SvElement )
+
+
+notFoundView : SvView
 notFoundView =
-    el Error [] (text "Not Found")
+    ( empty
+    , ( [], [], [] )
+    , el Error [] (text "Not Found")
+    )
 
 
 cssSpinner : SvElement

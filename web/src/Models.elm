@@ -131,7 +131,7 @@ capRaiseDesc =
 
 strategyDescription : String
 strategyDescription =
-    """This ballot is to determine the strategy of Phase 2. Options are either to expand hoizontally (geographically) or veritcally (increased investment to existing sites)."""
+    """This ballot is to determine the strategy of Phase 2. Options are either to expand hoizontally (geographically) or vertically (increased investment to existing sites)."""
 
 
 continuationDescription : String
