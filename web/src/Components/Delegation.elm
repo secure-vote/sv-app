@@ -31,15 +31,18 @@ delegationV model =
             , textF delegateTextFId "Enter Voter ID" model
             , btn [ PriBtn, Warning, Click (MultiMsg [ SetDelegate "", SetField delegateTextFId "", SetDelegationState Inactive ]) ] (text "Turn off delegation")
             ]
-    in
-    dubCol
-        [ el SubH [] (text "Vote Delegation")
-        , para [] "You can choose to delegate your votes for this fund to another user, which means your tokens will automatically go towards the preferences of your nomination"
-        ]
-    <|
-        case model.delegationState of
-            Inactive ->
-                delegationInactive
 
-            Active ->
-                delegationActive
+        leftCol =
+            [ el SubH [] (text "Vote Delegation")
+            , para [] "You can choose to delegate your votes for this fund to another user, which means your tokens will automatically go towards the preferences of your nomination"
+            ]
+
+        rightCol =
+            case model.delegationState of
+                Inactive ->
+                    delegationInactive
+
+                Active ->
+                    delegationActive
+    in
+    dubCol leftCol rightCol
