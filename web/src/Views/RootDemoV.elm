@@ -105,7 +105,7 @@ rootDemoView model =
 
         mainLayout =
             column NilS
-                []
+                [ spacing (scaled 2) ]
                 [ admin
                 , headerRow
                 , body
