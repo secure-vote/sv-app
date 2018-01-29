@@ -2,13 +2,15 @@ module Helpers exposing (..)
 
 import Date
 import Dict
-import Element exposing (Attribute, paragraph, text)
+import Element exposing (Attribute, column, el, paragraph, row, text)
+import Element.Attributes exposing (center, fillPortion, maxWidth, paddingRight, percent, px, spacing, width)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
+import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
 import Time exposing (Time)
 import Views.ViewHelpers exposing (SvElement)
@@ -56,9 +58,9 @@ getMembers id model =
     List.filter filter <| Dict.values model.members
 
 
-getField : Int -> Model -> String
-getField id model =
-    Dict.get id model.fields ? ""
+getField : String -> Model -> String
+getField name model =
+    Dict.get name model.fields ? ""
 
 
 getIntField : Int -> Model -> Int
@@ -149,3 +151,12 @@ genNewId parentId nonce =
 para : List (Attribute Variation Msg) -> String -> SvElement
 para attrs txt =
     paragraph ParaS attrs [ text txt ]
+
+
+dubCol : List SvElement -> List SvElement -> SvElement
+dubCol col1 col2 =
+    row NilS
+        []
+        [ column NilS [ width (percent 40) ] [ column NilS [ spacing (scaled 2) ] col1 ]
+        , column NilS [ width (percent 60), center ] [ column NilS [ maxWidth (px 416), spacing (scaled 2) ] col2 ]
+        ]

@@ -1,7 +1,6 @@
 module Views.ViewHelpers exposing (..)
 
 import Element exposing (..)
-import Element.Attributes exposing (..)
 import Html as H
 import Html.Attributes as HA
 import Msgs exposing (Msg)

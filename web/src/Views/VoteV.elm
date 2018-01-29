@@ -1,5 +1,6 @@
 module Views.VoteV exposing (..)
 
+import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, empty, html, row, text)
 import Element.Attributes exposing (..)
@@ -15,7 +16,7 @@ import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, HowToVoteD, Vote
 import Styles.StyleHelpers exposing (disabledBtnAttr)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(..))
+import Styles.Variations exposing (Variation(NBad, NGood))
 import Views.ViewHelpers exposing (SvElement)
 
 
@@ -70,7 +71,7 @@ voteV ballotId model =
 
         continueBtnOptions =
             if isFutureVote || haveVoted then
-                disabledBtnAttr ++ []
+                [ Disabled ]
             else
                 []
 
@@ -106,14 +107,7 @@ voteV ballotId model =
                         , el NilS [ voteRangeIncrease id ] <| mkIcon "plus" I24
                         ]
                     ]
-                , button BtnS
-                    [ onClick
-                        (SetDialog (name ++ ": Details") (BallotOptionD desc))
-                    , padding (scaled 1)
-                    , class "btn-secondary btn-outer--small"
-                    , width <| fillPortion 1
-                    ]
-                    (text "Details")
+                , btn [ SecBtn, Small, Click (SetDialog (name ++ ": Details") (BallotOptionD desc)) ] (text "Details")
                 ]
 
         newVoteOption { id } =
@@ -156,7 +150,7 @@ voteV ballotId model =
             ]
         , el FooterText [ alignRight ] (text voteTime)
         , column NilS [ padding (scaled 3) ] optionList
-        , button BtnS ([ onClick (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), padding (scaled 1), maxWidth (px 800), center, class "btn" ] ++ continueBtnOptions) (text "Continue")
+        , btn ([ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)) ] ++ continueBtnOptions) (text "Continue")
         ]
 
 

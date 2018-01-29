@@ -1,8 +1,6 @@
 module Msgs exposing (..)
 
-import Material
-import Material.Snackbar as Snackbar
-import Models.Ballot exposing (Ballot, BallotId, Vote, VoteConfirmStatus, VoteId)
+import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
 import Models.Democracy exposing (DemocracyId)
 import Routes exposing (DialogRoute, Route)
 import Time exposing (Time)
@@ -11,13 +9,12 @@ import Time exposing (Time)
 type Msg
     = NoOp
     | SetTime Time
-    | Mdl (Material.Msg Msg)
     | SetDialog String (DialogRoute Msg)
     | HideDialog
-    | SetElevation Int MouseState
-    | SetField Int String
+    | SetField String String
     | SetIntField Int Int
     | SetFloatField Int Float
+    | SetDelegate String
     | ToggleBoolField Int
     | NavigateBack
     | NavigateHome
@@ -27,10 +24,8 @@ type Msg
     | CreateBallot Ballot BallotId
     | DeleteBallot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
-    | SetVoteConfirmStatus VoteConfirmStatus
-    | ShowToast String
-    | Snackbar (Snackbar.Msg String)
-      --    | SpinnerMsg Spinner.Msg
+    | SetVoteConfirmState VoteConfirmState
+    | SetDelegationState DelegationState
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
 
@@ -39,3 +34,15 @@ type MouseState
     = MouseUp
     | MouseDown
     | MouseOver
+
+
+type DelegationState
+    = Active
+    | Inactive
+
+
+type VoteConfirmState
+    = AwaitingConfirmation
+    | Processing
+    | Validating
+    | Complete

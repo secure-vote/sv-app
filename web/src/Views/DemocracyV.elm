@@ -1,15 +1,16 @@
 module Views.DemocracyV exposing (..)
 
+import Components.Delegation exposing (delegationV)
 import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
 import Components.IssueCard exposing (issueCard)
 import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
-import Element exposing (Element, button, column, el, html, row, text)
-import Element.Attributes exposing (alignBottom, center, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
-import Helpers exposing (checkAlreadyVoted, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, relativeTime)
+import Element exposing (Element, column, el, html, row, text)
+import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
+import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(Mdl, MultiMsg, NavigateTo, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetIntField))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NoTabRowBorder))
@@ -125,11 +126,12 @@ mainVotesV model democId =
             getDemocracy democId model
     in
     column IssueList
-        [ issueListSpacing ]
+        [ spacing (scaled 3) ]
         [ el SubH [] (text "Open Ballots")
         , currentBallotList democracy.ballots model
         , el SubH [] (text "Upcoming Ballots")
         , futureBallotList democracy.ballots model
+        , delegationV model
         ]
 
 
@@ -166,8 +168,8 @@ currentBallotList ballots model =
     column IssueList
         [ issueListSpacing ]
     <|
-        if List.isEmpty ballots then
-            [ el SubH [] (text "There are no current ballots") ]
+        if List.isEmpty filteredBallots then
+            [ el NilS [] (text "There are no current ballots") ]
         else
             List.map ballotCard filteredBallots
 
@@ -190,7 +192,7 @@ futureBallotList ballots model =
     column IssueList
         [ issueListSpacing ]
     <|
-        if List.isEmpty ballots then
+        if List.isEmpty filteredBallots then
             [ el SubH [] (text "There are no upcoming ballots") ]
         else
             List.map ballotCard filteredBallots
@@ -214,7 +216,7 @@ pastBallotList ballots model =
     column IssueList
         [ issueListSpacing ]
     <|
-        if List.isEmpty ballots then
+        if List.isEmpty filteredBallots then
             [ el SubH [] (text "There are no past ballots") ]
         else
             List.map ballotCard filteredBallots

@@ -1,9 +1,9 @@
 module Views.ResultsV exposing (..)
 
+import Components.Btn exposing (BtnProps(Click), btn)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events exposing (onClick)
 import Helpers exposing (getBallot, getResultPercent, para, readableTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
@@ -157,11 +157,11 @@ resultsH id model =
             getBallot id model
 
         clickMsg =
-            onClick <| SetDialog "Ballot Info" <| BallotInfoD ballot.desc
+            SetDialog "Ballot Info" <| BallotInfoD ballot.desc
     in
     ( []
     , [ text <| "Results: " ++ ballot.name ]
-    , [ button NilS [ clickMsg, padding (scaled 1) ] <| mkIcon "information-outline" I24 ]
+    , [ btn [ Click clickMsg ] (mkIcon "information-outline" I24) ]
     )
 
 
