@@ -47,6 +47,10 @@ headingCommon =
     [ weight 300 ] ++ textVariations
 
 
+bgLightGrey =
+    rgb 247 247 247
+
+
 bgHltSec =
     lightOrange
 
@@ -215,6 +219,9 @@ swmStylesheet =
         , style InputS
             [ prop "pointer-events" "auto"
             , Font.size 16
+            ]
+        , style AdminBoxS
+            [ background bgLightGrey
             ]
         , style ParaS <| [] ++ textVariations
         , style Notify

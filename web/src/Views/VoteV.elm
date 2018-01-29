@@ -1,6 +1,6 @@
 module Views.VoteV exposing (..)
 
-import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small), btn)
+import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small, Warning), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (button, column, el, empty, html, row, text)
 import Element.Attributes exposing (..)
@@ -33,7 +33,16 @@ voteV ballotId model =
 
 admin : SvElement
 admin =
-    el NilS [] (text "test")
+    column AdminBoxS
+        [ spacing (scaled 1), padding (scaled 4) ]
+        [ el SubH [] (text "Ballot Admin")
+        , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
+        , row NilS
+            [ spacing (scaled 2) ]
+            [ btn [ PriBtn, Small ] (text "Edit ballot")
+            , btn [ PriBtn, Warning, Small ] (text "Remove ballot")
+            ]
+        ]
 
 
 header : Ballot -> SvHeader

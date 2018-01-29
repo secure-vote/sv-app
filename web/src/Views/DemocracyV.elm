@@ -1,9 +1,10 @@
 module Views.DemocracyV exposing (..)
 
+import Components.Btn exposing (BtnProps(PriBtn, Small), btn)
 import Components.Delegation exposing (delegationV)
 import Components.IssueCard exposing (issueCard)
 import Element exposing (Element, column, el, empty, html, row, text)
-import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
+import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, paddingXY, percent, spacing, spread, vary, verticalCenter, width)
 import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
@@ -27,7 +28,12 @@ democracyV democId model =
 
 admin : SvElement
 admin =
-    el NilS [] (text "test")
+    column AdminBoxS
+        [ spacing (scaled 1), padding (scaled 4) ]
+        [ el SubH [] (text "Welcome, Admin")
+        , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
+        , btn [ PriBtn, Small ] (text "Create new ballot")
+        ]
 
 
 header : Model -> SvHeader
