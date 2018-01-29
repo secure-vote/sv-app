@@ -26,6 +26,10 @@ democracyV democId model =
     )
 
 
+
+-- TODO: Only show admin box when admin flag is true
+
+
 admin : SvElement
 admin =
     column AdminBoxS
