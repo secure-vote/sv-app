@@ -4,14 +4,11 @@ module Update exposing (..)
 
 import Dict
 import Helpers exposing (getDemocracy)
-import Material
-import Material.Helpers as MHelp exposing (map1st, map2nd)
-import Material.Snackbar as Snackbar
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
-import Models.Ballot exposing (BallotId, VoteConfirmStatus(..))
+import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(..))
+import Msgs exposing (Msg(..), VoteConfirmState(..))
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -27,26 +24,23 @@ update msg model =
         SetTime time ->
             { model | now = time } ! []
 
-        Mdl msg_ ->
-            Material.update Mdl msg_ model
-
         SetDialog title route ->
             { model | dialogHtml = { title = title, route = route }, showDialog = True } ! []
 
         HideDialog ->
             { model | showDialog = False } ! []
 
-        SetElevation id state ->
-            { model | elevations = Dict.insert id state model.elevations } ! []
-
-        SetField fieldId value ->
-            { model | fields = Dict.insert fieldId value model.fields } ! []
+        SetField fieldName value ->
+            { model | fields = Dict.insert fieldName value model.fields } ! []
 
         SetIntField fieldId value ->
             { model | intFields = Dict.insert fieldId value model.intFields } ! []
 
         SetFloatField fieldId value ->
             { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
+
+        SetDelegate string ->
+            { model | delegate = string } ! []
 
         ToggleBoolField fieldId ->
             let
@@ -91,39 +85,27 @@ update msg model =
         AddBallotToDemocracy ballotId democracyId ->
             { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
 
-        SetVoteConfirmStatus status ->
+        SetVoteConfirmState state ->
             let
                 cmd =
-                    case status of
+                    case state of
                         AwaitingConfirmation ->
                             []
 
                         Processing ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmStatus Validating ]
+                            [ delay (Time.second * 3) <| SetVoteConfirmState Validating ]
 
                         Validating ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmStatus Complete ]
+                            [ delay (Time.second * 3) <| SetVoteConfirmState Complete ]
 
                         Complete ->
                             []
             in
-            { model | voteConfirmStatus = status } ! cmd
+            { model | voteConfirmStatus = state } ! cmd
 
-        ShowToast string ->
-            addSnack string model
+        SetDelegationState state ->
+            { model | delegationState = state } ! []
 
-        Snackbar msg_ ->
-            Snackbar.update msg_ model.snack
-                |> map1st (\s -> { model | snack = s })
-                |> map2nd (Cmd.map Snackbar)
-
-        --
-        --        SpinnerMsg msg ->
-        --            let
-        --                spinnerModel =
-        --                    Spinner.update msg model.spinner
-        --            in
-        --            { model | spinner = spinnerModel } ! []
         MultiMsg msgs ->
             multiUpdate msgs model []
 
@@ -163,19 +145,6 @@ addBallot ballotId democracyId model =
             getDemocracy democracyId model
     in
     { democracy | ballots = ballotId :: democracy.ballots }
-
-
-addSnack : String -> Model -> ( Model, Cmd Msg )
-addSnack string model =
-    let
-        ( snackbar_, effect ) =
-            Snackbar.add (Snackbar.toast "some payload" string) model.snack
-                |> map2nd (Cmd.map Snackbar)
-
-        model_ =
-            { model | snack = snackbar_ }
-    in
-    ( model_, Cmd.batch [ effect ] )
 
 
 delay : Time -> msg -> Cmd msg

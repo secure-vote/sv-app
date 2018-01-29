@@ -4,9 +4,7 @@ import Color exposing (Color)
 
 
 type Variation
-    = SecBtn
-    | DisabledBtn
-    | TabBtnActive
+    = TabBtnActive
     | NoTabRowBorder
     | IssueCardMod IssueCardStatus
     | VarColor Color

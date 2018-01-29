@@ -1,14 +1,15 @@
 module Views.DialogV exposing (..)
 
+import Components.Btn exposing (BtnProps(Click, PriBtn, SecBtn), btn)
 import Components.Icons exposing (IconSize(I48), mkIcon)
-import Element exposing (button, column, el, html, paragraph, row, table, text)
+import Element exposing (column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
 import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getBallot, getFloatField, para)
 import List exposing (foldr, map)
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId, Vote, VoteConfirmStatus(..), VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, Mdl, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmStatus, ShowToast, ToggleBoolField))
+import Models.Ballot exposing (BallotId, Vote, VoteId)
+import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmState, ToggleBoolField), VoteConfirmState(..))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
@@ -37,13 +38,13 @@ voteConfirmDialogV vote voteId model =
         createVoteMsg =
             MultiMsg
                 [ CreateVote vote voteId
-                , SetVoteConfirmStatus Processing
+                , SetVoteConfirmState Processing
                 ]
 
         completeMsg =
             MultiMsg
                 [ NavigateBackTo <| DemocracyR democracyId
-                , SetVoteConfirmStatus AwaitingConfirmation
+                , SetVoteConfirmState AwaitingConfirmation
                 , HideDialog
                 ]
     in
@@ -61,8 +62,8 @@ voteConfirmDialogV vote voteId model =
                 , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
                 , row NilS
                     [ spacing (scaled 2) ]
-                    [ button NilS [ onClick HideDialog, padding (scaled 1), class "btn-secondary" ] (text "Close")
-                    , button NilS [ onClick createVoteMsg, padding (scaled 1), class "btn" ] (text "Yes")
+                    [ btn [ SecBtn, Click HideDialog ] (text "Close")
+                    , btn [ PriBtn, Click createVoteMsg ] (text "Yes")
                     ]
                 ]
 
@@ -79,7 +80,7 @@ voteConfirmDialogV vote voteId model =
             Complete ->
                 [ el NilS [ center ] (para [] "Your vote has been cast successfully!")
                 , el Heading [ center ] (mkIcon "check-circle-outline" I48)
-                , button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Close")
+                , btn [ PriBtn, Click completeMsg ] (text "Close")
                 ]
 
 
@@ -96,7 +97,6 @@ ballotDeleteConfirmDialogV ballotId model =
             MultiMsg
                 [ DeleteBallot ballotId
                 , NavigateBackTo <| DemocracyR democracyId
-                , ShowToast <| ballot.name ++ " has been deleted"
                 , HideDialog
                 ]
     in
@@ -105,8 +105,8 @@ ballotDeleteConfirmDialogV ballotId model =
         [ para [] <| "Are you sure you want to delete " ++ ballot.name
         , row NilS
             [ alignRight ]
-            [ button NilS [ onClick HideDialog, padding (scaled 1), class "btn-secondary" ] (text "Cancel")
-            , button NilS [ onClick completeMsg, padding (scaled 1), class "btn" ] (text "Delete")
+            [ btn [ SecBtn, Click HideDialog ] (text "Cancel")
+            , btn [ PriBtn, Click completeMsg ] (text "Delete")
             ]
         ]
 

@@ -3,7 +3,7 @@ module Helpers exposing (..)
 import Date
 import Dict
 import Element exposing (Attribute, column, el, paragraph, row, text)
-import Element.Attributes exposing (fillPortion, paddingRight, percent, spacing, width)
+import Element.Attributes exposing (center, fillPortion, maxWidth, paddingRight, percent, px, spacing, width)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
@@ -58,9 +58,9 @@ getMembers id model =
     List.filter filter <| Dict.values model.members
 
 
-getField : Int -> Model -> String
-getField id model =
-    Dict.get id model.fields ? ""
+getField : String -> Model -> String
+getField name model =
+    Dict.get name model.fields ? ""
 
 
 getIntField : Int -> Model -> Int
@@ -157,6 +157,6 @@ dubCol : List SvElement -> List SvElement -> SvElement
 dubCol col1 col2 =
     row NilS
         []
-        [ el NilS [ width (fillPortion 1) ] <| column NilS [ width (percent 65), spacing (scaled 2) ] col1
-        , el NilS [ width (fillPortion 1) ] <| column NilS [ width (percent 65), spacing (scaled 2) ] col2
+        [ column NilS [ width (percent 40) ] [ column NilS [ spacing (scaled 2) ] col1 ]
+        , column NilS [ width (percent 60), center ] [ column NilS [ maxWidth (px 416), spacing (scaled 2) ] col2 ]
         ]

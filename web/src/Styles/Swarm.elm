@@ -1,7 +1,6 @@
 module Styles.Swarm exposing (..)
 
 import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba, white)
-import Element exposing (sub)
 import Element.Attributes exposing (class, height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
@@ -12,7 +11,6 @@ import Style.Shadow as Shadow
 import Style.Transition as T
 import Styles.Styles exposing (SvClass(..))
 import Styles.Variations exposing (IssueCardStatus(..), Variation(..))
-import Time exposing (millisecond)
 
 
 scaled =
@@ -210,9 +208,13 @@ swmStylesheet =
             [ variation Disabled
                 [ cursor "not-allowed"
                 ]
+            , variation NBad
+                [ background swmErrColor
+                ]
             ]
         , style InputS
             [ prop "pointer-events" "auto"
+            , Font.size 16
             ]
         , style ParaS <| [] ++ textVariations
         , style Notify

@@ -1,32 +1,29 @@
 module Models exposing (..)
 
 import Dict exposing (Dict)
-import Material
-import Material.Snackbar
-import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteConfirmStatus(AwaitingConfirmation), VoteId, VoteOption)
+import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteId, VoteOption)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (MouseState, Msg)
+import Msgs exposing (DelegationState(Inactive), MouseState, Msg, VoteConfirmState(AwaitingConfirmation))
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
 
 
 type alias Model =
-    { mdl : Material.Model
-    , democracies : Dict DemocracyId Democracy
+    { democracies : Dict DemocracyId Democracy
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
+    , delegate : String
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
-    , voteConfirmStatus : VoteConfirmStatus
+    , voteConfirmStatus : VoteConfirmState
+    , delegationState : DelegationState
     , routeStack : List Route
-    , fields : Dict Int String
+    , fields : Dict String String
     , intFields : Dict Int Int
     , floatFields : Dict Int Float
     , boolFields : Dict Int Bool
-    , elevations : Dict Int MouseState
-    , snack : Material.Snackbar.Model String
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
@@ -38,21 +35,20 @@ type alias Model =
 
 initModel : Model
 initModel =
-    { mdl = Material.model
-    , democracies = Dict.fromList democracies
+    { democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , voteConfirmStatus = AwaitingConfirmation
+    , delegationState = Inactive
     , routeStack = [ DashboardR ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
     , boolFields = Dict.empty
-    , elevations = Dict.empty
-    , snack = Material.Snackbar.model
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
@@ -64,21 +60,20 @@ initModel =
 
 initModelWithFlags : Flags -> Model
 initModelWithFlags flags =
-    { mdl = Material.model
-    , democracies = Dict.fromList democracies
+    { democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , voteConfirmStatus = AwaitingConfirmation
+    , delegationState = Inactive
     , routeStack = [ DemocracyR flags.democracyId ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty
     , boolFields = Dict.empty
-    , elevations = Dict.empty
-    , snack = Material.Snackbar.model
     , now = 0
     , isLoading = True
     , isDemocracyLevel = True
@@ -129,14 +124,17 @@ democracies =
 -- 1516290447 - 10:47am 18th - EST (US)
 
 
+capRaiseDesc : String
 capRaiseDesc =
     """This ballot is to determine if the fund should raise additional funds through an increase in the token supply."""
 
 
+strategyDescription : String
 strategyDescription =
     """This ballot is to determine the strategy of Phase 2. Options are either to expand hoizontally (geographically) or veritcally (increased investment to existing sites)."""
 
 
+continuationDescription : String
 continuationDescription =
     """This ballot is the regular fund continuation ballot to determine if the fund will continue operation or wind down and distribute funds to syndicate participants."""
 
@@ -176,7 +174,7 @@ ballots =
       , Ballot "Strategy Phase 2"
             strategyDescription
             {- now -} 1516004800000
-            1516804800000
+            1517804800000
             [ BallotOption 835957160
                 "Purchase new property in Brazil"
                 "This option for phase 2 will result in approx 200,000 SUN invested into new property aquisitions in San Palo and Rio de Janeiro. See `Documents` for more information."
