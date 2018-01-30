@@ -1,7 +1,7 @@
 module Components.TextF exposing (..)
 
 import Element exposing (el, text)
-import Element.Attributes exposing (class)
+import Element.Attributes exposing (class, fill, width)
 import Element.Input as Input
 import Helpers exposing (getField)
 import Models exposing (Model)

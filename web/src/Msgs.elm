@@ -12,10 +12,9 @@ type Msg
     | SetDialog String (DialogRoute Msg)
     | HideDialog
     | SetField String String
-    | SetIntField Int Int
-    | SetFloatField Int Float
+    | SetIntField String Int
+    | SetFloatField String Float
     | SetDelegate String
-    | ToggleBoolField Int
     | NavigateBack
     | NavigateHome
     | NavigateTo Route

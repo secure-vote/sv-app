@@ -4,16 +4,16 @@ import Components.Btn exposing (BtnProps(Click, PriBtn, SecBtn), btn)
 import Components.Icons exposing (IconSize(I48), mkIcon)
 import Element exposing (column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
-import Element.Events exposing (onClick)
 import Helpers exposing (findDemocracy, getBallot, getFloatField, para)
 import List exposing (foldr, map)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, Vote, VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmState, ToggleBoolField), VoteConfirmState(..))
+import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmState), VoteConfirmState(..))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, cssSpinner)
+import Views.VoteV exposing (getSliderValue)
 
 
 subhead : String -> SvElement
@@ -56,7 +56,7 @@ voteConfirmDialogV vote voteId model =
                         para [] item.name
 
                     values item =
-                        para [] <| toString <| getFloatField item.id model
+                        para [] <| toString <| getSliderValue item.id model
                 in
                 [ para [] "Please confirm that your vote details below are correct."
                 , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
@@ -101,10 +101,10 @@ ballotDeleteConfirmDialogV ballotId model =
                 ]
     in
     column NilS
-        []
+        [ spacing (scaled 2) ]
         [ para [] <| "Are you sure you want to delete " ++ ballot.name
         , row NilS
-            [ alignRight ]
+            [ spacing (scaled 2) ]
             [ btn [ SecBtn, Click HideDialog ] (text "Cancel")
             , btn [ PriBtn, Click completeMsg ] (text "Delete")
             ]

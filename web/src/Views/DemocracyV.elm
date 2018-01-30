@@ -1,151 +1,71 @@
 module Views.DemocracyV exposing (..)
 
+import Components.Btn exposing (BtnProps(Click, PriBtn, Small), btn)
 import Components.Delegation exposing (delegationV)
-import Components.Icons exposing (IconSize(I18), mkIcon, mkIconWLabel)
 import Components.IssueCard exposing (issueCard)
-import Components.Tabs exposing (TabRec, mkTabBtn, mkTabRow)
-import Element exposing (Element, column, el, html, row, text)
-import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, spacing, spread, vary, verticalCenter, width)
+import Element exposing (Element, column, el, empty, html, row, text)
+import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, paddingXY, percent, spacing, spread, vary, verticalCenter, width)
 import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
-import Msgs exposing (Msg(MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(NavigateTo))
+import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(NoTabRowBorder))
-import Views.ViewHelpers exposing (SvElement, notFoundView)
+import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
 
 
-democTabs : DemocracyId -> Model -> List TabRec
-democTabs democId model =
-    [ { id = 0
-      , elem = mkIconWLabel "Current Votes" "checkbox-marked" I18
-      , view = mainVotesV model democId
-      }
-    , { id = 1
-      , elem = mkIconWLabel "Past Votes" "history" I18
-      , view = pastVotesV model democId
-      }
-    ]
-
-
-tabGroupId : DemocracyId -> Int
-tabGroupId democId =
-    genNewId democId 3
-
-
-activeTab : DemocracyId -> Model -> Int
-activeTab democId model =
-    getIntField (tabGroupId democId) model
-
-
-issueListSpacing =
-    spacing <| scaled 2
-
-
-democracyV : DemocracyId -> Model -> SvElement
+democracyV : DemocracyId -> Model -> SvView
 democracyV democId model =
     let
         democracy =
             getDemocracy democId model
-
-        --        adminOptions =
-        --            if getAdminToggle model then
-        --                [ Tabs.label
-        --                    [ Options.center ]
-        --                    [ Icon.i "group"
-        --                    , Options.span [ css "width" "4px" ] []
-        --                    , H.text "Members"
-        --                    ]
-        --                ]
-        --            else
-        --                []
-        tabs =
-            democTabs democId model
-
-        tabContent tabs =
-            List.head (List.filter (\{ id } -> id == activeTab democId model) tabs)
-                |> Maybe.map .view
-                |> Maybe.withDefault notFoundView
     in
-    column NilS
-        []
-        [ tabContent tabs
-        ]
-
-
-democracyH : DemocracyId -> Model -> ( List SvElement, List SvElement, List SvElement )
-democracyH democracyId model =
-    let
-        democracy =
-            getDemocracy democracyId model
-
-        --        adminOptions =
-        --            if getAdminToggle model then
-        --                [ Layout.link []
-        --                    [ btn 56657685674 model [ Icon, Attr (class "sv-button-large"), Click <| NavigateTo <| CreateVoteR democracyId ] [ Icon.view "add_circle_outline" [ Icon.size36 ] ] ]
-        --                ]
-        --            else
-        --                []
-        tabs =
-            democTabs democracyId model
-
-        tabGId =
-            tabGroupId democracyId
-
-        tabRow tabs =
-            mkTabRow
-                (\i -> i == activeTab democracyId model)
-                (SetIntField tabGId)
-                tabs
-                [ vary NoTabRowBorder True ]
-    in
-    ( []
-    , [ text model.singleDemocName ]
-    , [ tabRow tabs ]
+    ( admin democId
+    , header model
+    , body democracy.ballots model
     )
 
 
 
---    [ Layout.title [] [ text democracy.name ]
---    , Layout.spacer
---    , Layout.navigation []
---        ([ Layout.link []
---            [ btn 95679345644 model [ Icon, Attr (class "sv-button-large"), OpenDialog, Click (SetDialog "Democracy Info" <| DemocracyInfoD democracy.desc) ] [ Icon.view "info_outline" [ Icon.size36 ] ] ]
---         ]
---            ++ adminOptions
---        )
---    ]
+-- TODO: Only show admin box when admin flag is true
 
 
-mainVotesV : Model -> DemocracyId -> SvElement
-mainVotesV model democId =
-    let
-        democracy =
-            getDemocracy democId model
-    in
+admin : DemocracyId -> SvElement
+admin democId =
+    column AdminBoxS
+        [ spacing (scaled 1), padding (scaled 4) ]
+        [ el SubH [] (text "Welcome, Admin")
+        , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
+        , btn [ PriBtn, Small, Click (NavigateTo (CreateBallotR democId)) ] (text "Create new ballot")
+        ]
+
+
+header : Model -> SvHeader
+header model =
+    ( []
+    , [ text model.singleDemocName ]
+    , []
+    )
+
+
+body : List BallotId -> Model -> SvElement
+body ballots model =
     column IssueList
         [ spacing (scaled 3) ]
         [ el SubH [] (text "Open Ballots")
-        , currentBallotList democracy.ballots model
+        , currentBallotList ballots model
         , el SubH [] (text "Upcoming Ballots")
-        , futureBallotList democracy.ballots model
+        , futureBallotList ballots model
+        , el SubH [] (text "Past Ballots")
+        , pastBallotList ballots model
         , delegationV model
         ]
 
 
-pastVotesV : Model -> DemocracyId -> SvElement
-pastVotesV model democId =
-    let
-        democracy =
-            getDemocracy democId model
-    in
-    column IssueList
-        [ issueListSpacing ]
-        [ el SubH [] (text "Past ballots")
-        , pastBallotList democracy.ballots model
-        ]
+issueListSpacing =
+    spacing <| scaled 2
 
 
 currentBallotList : List BallotId -> Model -> SvElement

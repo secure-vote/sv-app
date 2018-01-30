@@ -39,5 +39,6 @@ type SvClass
       -- TOM STYLES
     | BtnS
     | InputS
+    | AdminBoxS
       -- END TOM
     | NilS

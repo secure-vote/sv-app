@@ -3,7 +3,7 @@ module Helpers exposing (..)
 import Date
 import Dict
 import Element exposing (Attribute, column, el, paragraph, row, text)
-import Element.Attributes exposing (center, fillPortion, maxWidth, paddingRight, percent, px, spacing, width)
+import Element.Attributes exposing (center, fillPortion, maxWidth, minWidth, paddingRight, percent, px, spacing, width)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId)
@@ -63,21 +63,14 @@ getField name model =
     Dict.get name model.fields ? ""
 
 
-getIntField : Int -> Model -> Int
+getIntField : String -> Model -> Int
 getIntField id model =
     Dict.get id model.intFields ? 0
 
 
-getFloatField : Int -> Model -> Float
+getFloatField : String -> Model -> Float
 getFloatField id model =
     Dict.get id model.floatFields ? 0
-
-
-
--- Deprecated
---getAdminToggle : Model -> Bool
---getAdminToggle model =
---    Dict.get adminToggleId model.boolFields ? False
 
 
 relativeTime : Time -> Model -> String
@@ -158,5 +151,5 @@ dubCol col1 col2 =
     row NilS
         []
         [ column NilS [ width (percent 40) ] [ column NilS [ spacing (scaled 2) ] col1 ]
-        , column NilS [ width (percent 60), center ] [ column NilS [ maxWidth (px 416), spacing (scaled 2) ] col2 ]
+        , column NilS [ width (percent 60), center ] [ column NilS [ minWidth (px 360), maxWidth (px 416), spacing (scaled 2) ] col2 ]
         ]

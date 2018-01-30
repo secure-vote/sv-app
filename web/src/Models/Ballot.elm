@@ -45,16 +45,17 @@ type alias VoteOption =
 
 
 type alias BallotFieldIds =
-    { name : Int
-    , desc : Int
-    , start : Int
-    , finish : Int
-    , numOpts : Int
+    { name : String
+    , desc : String
+    , startDate : String
+    , startTime : String
+    , durVal : String
+    , durType : String
+    , numOpts : String
     }
 
 
 type alias BallotOptionFieldIds =
-    { id : Int
-    , name : Int
-    , desc : Int
+    { name : String
+    , desc : String
     }

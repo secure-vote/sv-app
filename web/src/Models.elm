@@ -21,9 +21,9 @@ type alias Model =
     , delegationState : DelegationState
     , routeStack : List Route
     , fields : Dict String String
-    , intFields : Dict Int Int
-    , floatFields : Dict Int Float
-    , boolFields : Dict Int Bool
+    , intFields : Dict String Int
+    , floatFields : Dict String Float
+    , boolFields : Dict String Bool
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
@@ -131,7 +131,7 @@ capRaiseDesc =
 
 strategyDescription : String
 strategyDescription =
-    """This ballot is to determine the strategy of Phase 2. Options are either to expand hoizontally (geographically) or veritcally (increased investment to existing sites)."""
+    """This ballot is to determine the strategy of Phase 2. Options are either to expand hoizontally (geographically) or vertically (increased investment to existing sites)."""
 
 
 continuationDescription : String
