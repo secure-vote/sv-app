@@ -12,7 +12,7 @@ import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteOption)
 import Msgs exposing (Msg(NoOp, SetDialog, SetField, SetFloatField))
-import Routes exposing (DialogRoute(BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD))
+import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NBad, NGood))
@@ -25,7 +25,7 @@ voteV ballotId model =
         ballot =
             getBallot ballotId model
     in
-    ( admin
+    ( admin ballotId
     , header ballot
     , body ballotId model
     )
@@ -35,8 +35,8 @@ voteV ballotId model =
 -- TODO: Only show admin box when admin flag is true
 
 
-admin : SvElement
-admin =
+admin : BallotId -> SvElement
+admin ballotId =
     column AdminBoxS
         [ spacing (scaled 1), padding (scaled 4) ]
         [ el SubH [] (text "Ballot Admin")
@@ -44,7 +44,7 @@ admin =
         , row NilS
             [ spacing (scaled 2) ]
             [ btn [ PriBtn, Small ] (text "Edit ballot")
-            , btn [ PriBtn, Warning, Small ] (text "Remove ballot")
+            , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
             ]
         ]
 

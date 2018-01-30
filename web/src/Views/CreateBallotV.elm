@@ -175,8 +175,8 @@ createNewBallot democId model =
             --            TODO: Implement date fields.
             --            , start = Result.withDefault 0 <| String.toFloat <| getField ballotField.start model
             --            , finish = Result.withDefault 0 <| String.toFloat <| getField ballotField.finish model
-            , start = 0
-            , finish = 0
+            , start = 1510000000000
+            , finish = 1520000000000
             , ballotOptions = List.map newBallotOption numBallotOptions
             }
 

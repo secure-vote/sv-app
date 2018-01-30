@@ -101,10 +101,10 @@ ballotDeleteConfirmDialogV ballotId model =
                 ]
     in
     column NilS
-        []
+        [ spacing (scaled 2) ]
         [ para [] <| "Are you sure you want to delete " ++ ballot.name
         , row NilS
-            [ alignRight ]
+            [ spacing (scaled 2) ]
             [ btn [ SecBtn, Click HideDialog ] (text "Cancel")
             , btn [ PriBtn, Click completeMsg ] (text "Delete")
             ]
