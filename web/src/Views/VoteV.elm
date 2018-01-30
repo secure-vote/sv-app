@@ -11,8 +11,8 @@ import Html.Attributes as HA exposing (style)
 import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteOption)
-import Msgs exposing (Msg(NoOp, SetDialog, SetField, SetFloatField))
-import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD))
+import Msgs exposing (Msg(NavigateTo, NoOp, SetDialog, SetField, SetFloatField))
+import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD), Route(EditBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NBad, NGood))
@@ -43,7 +43,7 @@ admin ballotId =
         , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
         , row NilS
             [ spacing (scaled 2) ]
-            [ btn [ PriBtn, Small ] (text "Edit ballot")
+            [ btn [ PriBtn, Small, Click (NavigateTo (EditBallotR ballotId)) ] (text "Edit ballot")
             , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
             ]
         ]
