@@ -79,8 +79,11 @@ rootDemoView model =
                 , page model
                 ]
                 |> within showDialog
+
+        mainPreDemoPatchJan2018 =
+            H.div [] [ injectCss, layout (genStylesheet SwmStyle) mainLayout ]
     in
-    H.div [] [ injectCss, layout (genStylesheet SwmStyle) mainLayout ]
+    H.h2 [ HA.style [ ( "text-align", "center" ) ] ] [ H.text <| "Governance for " ++ model.singleDemocName ++ " will be available after the fund is live." ]
 
 
 fst : a -> b -> a
