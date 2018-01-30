@@ -14,7 +14,7 @@ textF : String -> String -> Model -> SvElement
 textF name labelText model =
     el NilS [ class "field" ] <|
         Input.text InputS
-            [ width fill ]
+            []
             { onChange = SetField name
             , value = getField name model
             , label = Input.labelAbove (text labelText)

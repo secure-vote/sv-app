@@ -109,6 +109,16 @@ body ballotId model =
         ]
 
 
+voteOptionSliderId : Int -> String
+voteOptionSliderId id =
+    "vote-option-slider-" ++ toString id
+
+
+getSliderValue : Int -> Model -> Float
+getSliderValue id model =
+    getFloatField (voteOptionSliderId id) model
+
+
 optionList : BallotId -> Model -> List SvElement
 optionList ballotId model =
     let
@@ -123,7 +133,7 @@ optionList ballotId model =
 
         {- TODO: Why is this a string?? -}
         sliderInputMsg id =
-            String.toFloat >> Result.withDefault 0 >> SetFloatField id
+            String.toFloat >> Result.withDefault 0 >> SetFloatField (voteOptionSliderId id)
 
         sliderAlterMsg id newVal =
             if isFutureVote || haveVoted then
@@ -134,14 +144,14 @@ optionList ballotId model =
         voteRangeReduce id =
             let
                 newVal =
-                    max (getFloatField id model - 1) -3
+                    max (getSliderValue id model - 1) -3
             in
             onClick <| sliderAlterMsg id <| toString newVal
 
         voteRangeIncrease id =
             let
                 newVal =
-                    min (getFloatField id model + 1) 3
+                    min (getSliderValue id model + 1) 3
             in
             onClick <| sliderAlterMsg id <| toString newVal
 
@@ -164,7 +174,7 @@ optionList ballotId model =
                 html <|
                     input
                         (sliderOptions
-                            ++ [ HA.value <| toString <| getFloatField id model
+                            ++ [ HA.value <| toString <| getSliderValue id model
                                , HE.onInput <| sliderInputMsg id
                                ]
                         )
@@ -173,7 +183,7 @@ optionList ballotId model =
         sliderCol id =
             column NilS
                 [ center, spacing (scaled 1), width <| fillPortion 2 ]
-                [ text <| "Your vote: " ++ (toString <| getFloatField id model)
+                [ text <| "Your vote: " ++ (toString <| getSliderValue id model)
                 , row NilS
                     [ verticalCenter, spacing (scaled 2), width fill ]
                     [ el NilS [ voteRangeReduce id ] <| mkIcon "minus" I24
@@ -212,7 +222,7 @@ confirmationButton ballotId model =
                 []
 
         newVoteOption { id } =
-            VoteOption id <| getFloatField id model
+            VoteOption id <| getSliderValue id model
 
         newVote =
             Vote ballotId <| List.map newVoteOption ballot.ballotOptions

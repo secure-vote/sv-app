@@ -21,9 +21,9 @@ type alias Model =
     , delegationState : DelegationState
     , routeStack : List Route
     , fields : Dict String String
-    , intFields : Dict Int Int
-    , floatFields : Dict Int Float
-    , boolFields : Dict Int Bool
+    , intFields : Dict String Int
+    , floatFields : Dict String Float
+    , boolFields : Dict String Bool
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool

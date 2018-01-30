@@ -5,7 +5,7 @@ import Components.Icons exposing (IconSize(I24), mkIcon)
 import Components.TextF exposing (textF)
 import Dict
 import Element exposing (..)
-import Element.Attributes exposing (fill, spacing, width)
+import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, para)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
@@ -14,7 +14,7 @@ import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
 import Result as Result
 import Routes exposing (Route(DemocracyR))
-import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH))
+import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
@@ -140,32 +140,35 @@ body democracyId model =
             [ textF descriptionTextFId "Description" model
             ]
         , el SubH [] (text "Ballot Options")
-
-        --        , column NilS [] (allBallotOptions model)
+        , column NilS [] (allBallotOptions model)
         ]
 
 
+allBallotOptions model =
+    let
+        numBallotOptions =
+            List.range 0 <| getIntField numBallotOptionsId model + 1
 
---allBallotOptions model =
---    let
---        numBallotOptions =
---            List.range 0 <| getIntField numBallotOptionsId model + 1
---
---        ballotOptionView x =
---            let
---                indexStr =
---                    toString <| x + 1
---            in
---            dubCol
---                [ text <| "Option " ++ indexStr
---                , el SubSubH [] (text "Name")
---                , textF (optionNameTextFId ++ indexStr) "Option Name"
---                ]
---                [ el SubSubH [] (text "Description")
---                , textF (optionDescTextFId ++ indexStr) "Description"
---                ]
---    in
---    List.map ballotOptionView numBallotOptions
+        ballotOptionView x =
+            let
+                indexStr =
+                    toString <| x + 1
+            in
+            el VoteList [ padding (scaled 2) ] <|
+                dubCol
+                    [ el NilS [ paddingBottom 20 ] (text <| "Option " ++ indexStr)
+                    , el SubSubH [] (text "Name")
+                    , textF (optionNameTextFId ++ indexStr) "Option Name" model
+                    ]
+                    [ btn [ Attr alignRight ] (text "x Remove Option")
+                    , el SubSubH [] (text "Description")
+                    , textF (optionDescTextFId ++ indexStr) "Description" model
+                    ]
+    in
+    List.map ballotOptionView numBallotOptions
+
+
+
 --        ballotId =
 --            genNewId democracyId <| List.length democracy.ballots
 --

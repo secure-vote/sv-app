@@ -63,21 +63,14 @@ getField name model =
     Dict.get name model.fields ? ""
 
 
-getIntField : Int -> Model -> Int
+getIntField : String -> Model -> Int
 getIntField id model =
     Dict.get id model.intFields ? 0
 
 
-getFloatField : Int -> Model -> Float
+getFloatField : String -> Model -> Float
 getFloatField id model =
     Dict.get id model.floatFields ? 0
-
-
-
--- Deprecated
---getAdminToggle : Model -> Bool
---getAdminToggle model =
---    Dict.get adminToggleId model.boolFields ? False
 
 
 relativeTime : Time -> Model -> String

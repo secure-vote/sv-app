@@ -42,18 +42,6 @@ update msg model =
         SetDelegate string ->
             { model | delegate = string } ! []
 
-        ToggleBoolField fieldId ->
-            let
-                result =
-                    case Dict.get fieldId model.boolFields of
-                        Just True ->
-                            Dict.insert fieldId False model.boolFields
-
-                        _ ->
-                            Dict.insert fieldId True model.boolFields
-            in
-            { model | boolFields = result } ! []
-
         NavigateBack ->
             { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
 
