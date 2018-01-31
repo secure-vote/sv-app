@@ -26,9 +26,9 @@ voteV ballotId model =
         ballot =
             getBallot ballotId model
     in
-    ( admin ballotId ballot
+    ( admin ballotId ballot model
     , header ballot
-    , body ballotId model
+    , body ballotId ballot model
     )
 
 
@@ -36,15 +36,25 @@ voteV ballotId model =
 -- TODO: Only show admin box when admin flag is true
 
 
-admin : BallotId -> Ballot -> SvElement
-admin ballotId ballot =
+admin : BallotId -> Ballot -> Model -> SvElement
+admin ballotId ballot model =
+    let
+        isFutureVote =
+            model.now < ballot.start
+
+        editMsg =
+            MultiMsg
+                [ populateFromModel ballotId ballot
+                , NavigateTo <| EditBallotR ballotId
+                ]
+    in
     column AdminBoxS
         [ spacing (scaled 1), padding (scaled 4) ]
         [ el SubH [] (text "Ballot Admin")
         , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
         , row NilS
             [ spacing (scaled 2) ]
-            [ btn [ PriBtn, Small, Click (MultiMsg [ populateFromModel ballotId ballot, NavigateTo <| EditBallotR ballotId ]) ] (text "Edit ballot")
+            [ btn [ PriBtn, Small, Click editMsg, Disabled (not isFutureVote) ] (text "Edit ballot")
             , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
             ]
         ]
@@ -60,12 +70,9 @@ header ballot =
     )
 
 
-body : BallotId -> Model -> SvElement
-body ballotId model =
+body : BallotId -> Ballot -> Model -> SvElement
+body ballotId ballot model =
     let
-        ballot =
-            getBallot ballotId model
-
         isFutureVote =
             model.now < ballot.start
 
@@ -216,12 +223,6 @@ confirmationButton ballotId model =
         haveVoted =
             checkAlreadyVoted ballotId model
 
-        continueBtnOptions =
-            if isFutureVote || haveVoted then
-                [ Disabled ]
-            else
-                []
-
         newVoteOption { id } =
             VoteOption id <| getSliderValue id model
 
@@ -234,4 +235,4 @@ confirmationButton ballotId model =
         genNonce { value } =
             value
     in
-    btn ([ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)) ] ++ continueBtnOptions) (text "Continue")
+    btn [ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), Disabled (isFutureVote || haveVoted) ] (text "Continue")

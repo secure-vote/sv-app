@@ -1,7 +1,6 @@
 module Styles.Swarm exposing (..)
 
 import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba, white)
-import Element.Attributes exposing (class, height, px)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
@@ -209,10 +208,10 @@ swmStylesheet =
             , Shadow.deep
             ]
         , style BtnS
-            [ variation Disabled
+            [ variation BtnDisabled
                 [ cursor "not-allowed"
                 ]
-            , variation NBad
+            , variation BtnWarning
                 [ background swmErrColor
                 ]
             ]

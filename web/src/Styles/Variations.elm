@@ -9,7 +9,8 @@ type Variation
     | IssueCardMod IssueCardStatus
     | VarColor Color
     | BoldT
-    | Disabled
+    | BtnDisabled
+    | BtnWarning
     | Caps
     | SmallFont
     | NGood

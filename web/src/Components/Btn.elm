@@ -1,12 +1,12 @@
 module Components.Btn exposing (..)
 
-import Element exposing (Attribute, button, text)
-import Element.Attributes exposing (attribute, class, padding, vary)
+import Element exposing (..)
+import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(BtnS, NilS))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(NBad))
+import Styles.Variations exposing (Variation(BtnDisabled, BtnWarning, NBad))
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
@@ -15,7 +15,7 @@ type BtnProps
     | SecBtn
     | Small
     | Click Msg
-    | Disabled
+    | Disabled Bool
     | Warning
     | BtnNop -- doesn't do anything
     | Attr SvAttribute
@@ -38,11 +38,14 @@ btn props inner =
                 Click msg ->
                     [ onClick msg ]
 
-                Disabled ->
-                    [ attribute "disabled" "disabled" ]
+                Disabled bool ->
+                    if bool then
+                        [ attribute "disabled" "disabled" ]
+                    else
+                        []
 
                 Warning ->
-                    [ vary NBad True ]
+                    [ vary BtnWarning True ]
 
                 BtnNop ->
                     []

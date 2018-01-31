@@ -12,7 +12,7 @@ import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField))
 import Result as Result
-import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR))
+import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
 import Tuple exposing (first)
@@ -47,13 +47,10 @@ body ballotId model =
 updateBallot : BallotId -> Model -> SvElement
 updateBallot ballotId model =
     let
-        democId =
-            first <| findDemocracy ballotId model
-
         completeMsg =
             MultiMsg
                 [ CreateBallot <| saveBallot ballotId model
-                , NavigateBackTo <| DemocracyR democId
+                , NavigateBackTo <| VoteR ballotId
                 ]
     in
     --    TODO: Replace placeholder text
