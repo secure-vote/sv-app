@@ -11,11 +11,12 @@ import Html.Attributes as HA exposing (style)
 import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId, Vote, VoteOption)
-import Msgs exposing (Msg(NavigateTo, NoOp, SetDialog, SetField, SetFloatField))
+import Msgs exposing (Msg(MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD), Route(EditBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(NBad, NGood))
+import Views.EditBallotV exposing (populateFromModel)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
 
@@ -25,7 +26,7 @@ voteV ballotId model =
         ballot =
             getBallot ballotId model
     in
-    ( admin ballotId
+    ( admin ballotId ballot
     , header ballot
     , body ballotId model
     )
@@ -35,15 +36,15 @@ voteV ballotId model =
 -- TODO: Only show admin box when admin flag is true
 
 
-admin : BallotId -> SvElement
-admin ballotId =
+admin : BallotId -> Ballot -> SvElement
+admin ballotId ballot =
     column AdminBoxS
         [ spacing (scaled 1), padding (scaled 4) ]
         [ el SubH [] (text "Ballot Admin")
         , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
         , row NilS
             [ spacing (scaled 2) ]
-            [ btn [ PriBtn, Small, Click (NavigateTo (EditBallotR ballotId)) ] (text "Edit ballot")
+            [ btn [ PriBtn, Small, Click (MultiMsg [ populateFromModel ballotId ballot, NavigateTo <| EditBallotR ballotId ]) ] (text "Edit ballot")
             , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
             ]
         ]

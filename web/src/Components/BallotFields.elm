@@ -20,34 +20,38 @@ import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 -- TODO: Check that vote is not in the past
 
 
-ballotFieldIds : BallotFieldIds
-ballotFieldIds =
-    { name = "ballot-name-tf"
-    , desc = "ballot-description-tf"
-    , startDate = "ballot-start-date-tf"
-    , startTime = "ballot-start-date-tf"
-    , durVal = "ballot-duration-value-tf"
-    , durType = "ballot-duration-type-tf"
-    , numOpts = "num-ballot-options-id"
+ballotFieldIds : BallotId -> BallotFieldIds
+ballotFieldIds ballotId =
+    { name = "ballot-name-tf-" ++ toString ballotId
+    , desc = "ballot-description-tf-" ++ toString ballotId
+    , startDate = "ballot-start-date-tf-" ++ toString ballotId
+    , startTime = "ballot-start-date-tf-" ++ toString ballotId
+    , durVal = "ballot-duration-value-tf-" ++ toString ballotId
+    , durType = "ballot-duration-type-tf-" ++ toString ballotId
+    , extraBalOpts = "ballot-num-extra-options-id-" ++ toString ballotId
     }
 
 
-ballotOptionFieldIds : Int -> BallotOptionFieldIds
-ballotOptionFieldIds num =
-    { name = "ballot-option-name-tf-" ++ toString num
-    , desc = "ballot-option-description-tf-" ++ toString num
+ballotOptionFieldIds : BallotId -> Int -> BallotOptionFieldIds
+ballotOptionFieldIds ballotId num =
+    { name = "ballot-option-name-tf-" ++ toString ballotId ++ "-" ++ toString num
+    , desc = "ballot-option-description-tf-" ++ toString ballotId ++ "-" ++ toString num
     }
 
 
-ballotFields : Model -> SvElement
-ballotFields model =
+ballotFields : BallotId -> Model -> SvElement
+ballotFields ballotId model =
+    let
+        field =
+            ballotFieldIds ballotId
+    in
     column NilS
         [ spacing (scaled 4) ]
         [ dubCol
             [ el SubH [] (text "Ballot Name")
             , para [] "Give your ballot a name, this will be the title that voters will see in the ballot list and also take prominent position on the voting screen."
             ]
-            [ textF ballotFieldIds.name "Ballot Name" model
+            [ textF field.name "Ballot Name" model
             ]
         , dubCol
             [ el SubH [] (text "Start Date")
@@ -56,9 +60,9 @@ ballotFields model =
             [ row NilS
                 [ spacing (scaled 2) ]
                 [ mkIcon "calendar-range" I24
-                , textF ballotFieldIds.startDate "Select Date" model
+                , textF field.startDate "Select Date" model
                 , mkIcon "clock" I24
-                , textF ballotFieldIds.startTime "Start Time" model
+                , textF field.startTime "Start Time" model
                 ]
             ]
         , dubCol
@@ -67,8 +71,8 @@ ballotFields model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ textF ballotFieldIds.durVal "1" model
-                , textF ballotFieldIds.durType "Week(s)" model
+                [ textF field.durVal "1" model
+                , textF field.durType "Week(s)" model
                 ]
             , el NilS [ width fill ] (text " ")
             ]
@@ -76,26 +80,32 @@ ballotFields model =
             [ el SubH [] (text "Description")
             , para [] "Provide a description of the ballot, the purpose of the vote, what it will impact and how the decision will be made. Etc..."
             ]
-            [ textF ballotFieldIds.desc "Description" model
+            [ textF field.desc "Description" model
             ]
-        , ballotOptions model
+        , ballotOptions ballotId model
         ]
 
 
-ballotOptions : Model -> SvElement
-ballotOptions model =
+ballotOptions : BallotId -> Model -> SvElement
+ballotOptions ballotId model =
     let
+        field =
+            ballotFieldIds ballotId
+
+        optField =
+            ballotOptionFieldIds ballotId
+
         numBallotOptions =
-            List.range 0 <| getIntField ballotFieldIds.numOpts model + 1
+            List.range 0 <| getIntField field.extraBalOpts model + 1
 
         addBallotOption =
-            SetIntField ballotFieldIds.numOpts <| getIntField ballotFieldIds.numOpts model + 1
+            SetIntField field.extraBalOpts <| getIntField field.extraBalOpts model + 1
 
         removeBallotOption =
-            SetIntField ballotFieldIds.numOpts <| getIntField ballotFieldIds.numOpts model - 1
+            SetIntField field.extraBalOpts <| getIntField field.extraBalOpts model - 1
 
         showRemoveOption =
-            if getIntField ballotFieldIds.numOpts model < 1 then
+            if getIntField field.extraBalOpts model < 1 then
                 empty
             else
                 btn [ PriBtn, Small, Click removeBallotOption ] (text "- Remove an option")
@@ -110,11 +120,11 @@ ballotOptions model =
                 , dubCol
                     -- [ el NilS [ paddingXY 0 10 ] (text <| "Option " ++ indexStr)
                     [ el SubSubH [] (text "Name")
-                    , textF (ballotOptionFieldIds x).name "Option Name" model
+                    , textF (optField x).name "Option Name" model
                     ]
                     -- [ btn [ Attr alignRight ] (text "x Remove Option")
                     [ el SubSubH [] (text "Description")
-                    , textF (ballotOptionFieldIds x).desc "Description" model
+                    , textF (optField x).desc "Description" model
                     ]
                 ]
     in
@@ -128,6 +138,40 @@ ballotOptions model =
             , showRemoveOption
             ]
         ]
+
+
+saveBallot : BallotId -> Model -> ( BallotId, Ballot )
+saveBallot ballotId model =
+    let
+        fields =
+            ballotFieldIds ballotId
+
+        optField =
+            ballotOptionFieldIds ballotId
+
+        numBallotOptions =
+            List.range 0 <| getIntField fields.extraBalOpts model + 1
+
+        newBallotOption x =
+            { id = ballotId + x + 1
+            , name = getField (optField x).name model
+            , desc = getField (optField x).desc model
+            , result = Nothing
+            }
+
+        newBallot =
+            { name = getField fields.name model
+            , desc = getField fields.desc model
+
+            --            TODO: Implement date fields.
+            --            , start = Result.withDefault 0 <| String.toFloat <| getField ballotField.start model
+            --            , finish = Result.withDefault 0 <| String.toFloat <| getField ballotField.finish model
+            , start = 1510000000000
+            , finish = 1520000000000
+            , ballotOptions = List.map newBallotOption numBallotOptions
+            }
+    in
+    ( ballotId, newBallot )
 
 
 

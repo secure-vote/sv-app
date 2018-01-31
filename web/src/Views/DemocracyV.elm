@@ -3,16 +3,18 @@ module Views.DemocracyV exposing (..)
 import Components.Btn exposing (BtnProps(Click, PriBtn, Small), btn)
 import Components.Delegation exposing (delegationV)
 import Components.IssueCard exposing (issueCard)
+import Dict exposing (toList)
 import Element exposing (Element, column, el, empty, html, row, text)
 import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, paddingXY, percent, spacing, spread, vary, verticalCenter, width)
 import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Msgs exposing (Msg(NavigateTo))
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
+import Tuple exposing (first)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
 
 
@@ -21,10 +23,16 @@ democracyV democId model =
     let
         democracy =
             getDemocracy democId model
+
+        ballots =
+            List.filter ballotInDemocracy (toList model.ballots)
+
+        ballotInDemocracy ( ballotId, ballot ) =
+            List.member ballotId democracy.ballots
     in
     ( admin democId
     , header model
-    , body democracy.ballots model
+    , body ballots model
     )
 
 
@@ -50,7 +58,7 @@ header model =
     )
 
 
-body : List BallotId -> Model -> SvElement
+body : List ( BallotId, Ballot ) -> Model -> SvElement
 body ballots model =
     column IssueList
         [ spacing (scaled 3) ]
@@ -68,76 +76,74 @@ issueListSpacing =
     spacing <| scaled 2
 
 
-currentBallotList : List BallotId -> Model -> SvElement
+currentBallotList : List ( BallotId, Ballot ) -> Model -> SvElement
 currentBallotList ballots model =
     let
         filteredBallots =
             List.sortWith compareFinish <| List.filter filterStatus ballots
 
-        compareFinish a b =
-            compare (getBallot a model).finish (getBallot b model).finish
+        compareFinish ( ballotAId, ballotA ) ( ballotBId, ballotB ) =
+            compare ballotA.finish ballotB.finish
 
-        filterStatus id =
-            (getBallot id model).finish > model.now && (getBallot id model).start <= model.now
+        filterStatus ( ballotId, ballot ) =
+            ballot.finish > model.now && ballot.start <= model.now
 
-        ballotCard ballotId =
-            issueCard
-                model
-                ballotId
+        ballotCard ( ballotId, ballot ) =
+            issueCard model ballotId
     in
     column IssueList
         [ issueListSpacing ]
     <|
         if List.isEmpty filteredBallots then
-            [ el NilS [] (text "There are no current ballots") ]
+            [ text "There are no current ballots" ]
         else
             List.map ballotCard filteredBallots
 
 
-futureBallotList : List BallotId -> Model -> SvElement
+futureBallotList : List ( BallotId, Ballot ) -> Model -> SvElement
 futureBallotList ballots model =
     let
         filteredBallots =
             List.sortWith checkStart <| List.filter filterStatus ballots
 
-        checkStart a b =
-            compare (getBallot a model).start (getBallot b model).start
+        checkStart ( ballotAId, ballotA ) ( ballotBId, ballotB ) =
+            compare ballotA.start ballotB.start
 
-        filterStatus id =
-            (getBallot id model).finish > model.now && (getBallot id model).start >= model.now
+        filterStatus ( ballotId, ballot ) =
+            ballot.finish > model.now && ballot.start >= model.now
 
-        ballotCard ballotId =
+        ballotCard ( ballotId, ballot ) =
             issueCard model ballotId
     in
     column IssueList
         [ issueListSpacing ]
     <|
         if List.isEmpty filteredBallots then
-            [ el SubH [] (text "There are no upcoming ballots") ]
+            [ text "There are no upcoming ballots" ]
         else
             List.map ballotCard filteredBallots
 
 
-pastBallotList : List BallotId -> Model -> SvElement
+pastBallotList : List ( BallotId, Ballot ) -> Model -> SvElement
 pastBallotList ballots model =
     let
         filteredBallots =
             List.sortWith compareFinish <| List.filter filterStatus ballots
 
-        compareFinish a b =
-            compare (getBallot b model).finish (getBallot a model).finish
+        compareFinish ( ballotAId, ballotA ) ( ballotBId, ballotB ) =
+            compare ballotB.finish ballotA.finish
 
-        filterStatus id =
-            (getBallot id model).finish < model.now
+        filterStatus ( ballotId, ballot ) =
+            ballot.finish < model.now
 
-        ballotCard ballotId =
+        ballotCard ( ballotId, ballot ) =
             issueCard model ballotId
     in
     column IssueList
         [ issueListSpacing ]
     <|
         if List.isEmpty filteredBallots then
-            [ el SubH [] (text "There are no past ballots") ]
+            [ text "There are no past ballots" ]
         else
             List.map ballotCard filteredBallots
 

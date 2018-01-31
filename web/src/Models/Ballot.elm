@@ -51,7 +51,7 @@ type alias BallotFieldIds =
     , startTime : String
     , durVal : String
     , durType : String
-    , numOpts : String
+    , extraBalOpts : String
     }
 
 
