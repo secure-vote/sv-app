@@ -64,7 +64,7 @@ update msg model =
         CreateVote vote voteId ->
             { model | votes = Dict.insert voteId vote model.votes } ! []
 
-        CreateBallot ballot ballotId ->
+        CreateBallot ( ballotId, ballot ) ->
             { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
 
         DeleteBallot ballotId ->

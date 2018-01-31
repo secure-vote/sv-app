@@ -20,7 +20,7 @@ type Msg
     | NavigateTo Route
     | NavigateBackTo Route
     | CreateVote Vote VoteId
-    | CreateBallot Ballot BallotId
+    | CreateBallot ( BallotId, Ballot )
     | DeleteBallot BallotId
     | AddBallotToDemocracy BallotId DemocracyId
     | SetVoteConfirmState VoteConfirmState
