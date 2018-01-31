@@ -16,6 +16,7 @@ type SvClass
     | SubSubH
     | FooterText
     | BigText
+    | Grey
       -- MAX STYLES
     | ResultsBarGraph
     | ResultsSummary

@@ -8,9 +8,7 @@ import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, para)
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
-import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
@@ -51,7 +49,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Ballot Name")
             , para [] "Give your ballot a name, this will be the title that voters will see in the ballot list and also take prominent position on the voting screen."
             ]
-            [ textF field.name "Ballot Name" model
+            [ textF field.name "Ballot Name" [] model
             ]
         , dubCol
             [ el SubH [] (text "Start Date")
@@ -60,9 +58,9 @@ ballotFields ballotId model =
             [ row NilS
                 [ spacing (scaled 2) ]
                 [ mkIcon "calendar-range" I24
-                , textF field.startDate "Select Date" model
+                , textF field.startDate "Select Date" [] model
                 , mkIcon "clock" I24
-                , textF field.startTime "Start Time" model
+                , textF field.startTime "Start Time" [] model
                 ]
             ]
         , dubCol
@@ -71,8 +69,8 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ textF field.durVal "1" model
-                , textF field.durType "Week(s)" model
+                [ textF field.durVal "1" [] model
+                , textF field.durType "Week(s)" [] model
                 ]
             , el NilS [ width fill ] (text " ")
             ]
@@ -80,7 +78,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Description")
             , para [] "Provide a description of the ballot, the purpose of the vote, what it will impact and how the decision will be made. Etc..."
             ]
-            [ textF field.desc "Description" model
+            [ textF field.desc "Description" [] model
             ]
         , ballotOptions ballotId model
         ]
@@ -120,11 +118,11 @@ ballotOptions ballotId model =
                 , dubCol
                     -- [ el NilS [ paddingXY 0 10 ] (text <| "Option " ++ indexStr)
                     [ el SubSubH [] (text "Name")
-                    , textF (optField x).name "Option Name" model
+                    , textF (optField x).name "Option Name" [] model
                     ]
                     -- [ btn [ Attr alignRight ] (text "x Remove Option")
                     [ el SubSubH [] (text "Description")
-                    , textF (optField x).desc "Description" model
+                    , textF (optField x).desc "Description" [] model
                     ]
                 ]
     in

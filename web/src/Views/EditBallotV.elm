@@ -2,20 +2,15 @@ module Views.EditBallotV exposing (..)
 
 import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOptionFieldIds, saveBallot)
 import Components.Btn exposing (BtnProps(..), btn)
-import Components.TextF exposing (textF)
-import Dict
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, findDemocracy, genNewId, getBallot, getDemocracy, getField, getIntField, para)
-import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField))
-import Result as Result
 import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
-import Tuple exposing (first)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
 

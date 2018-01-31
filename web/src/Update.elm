@@ -8,7 +8,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(..), VoteConfirmState(..))
+import Msgs exposing (DelegationState(..), Msg(..), VoteConfirmState(..))
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -92,7 +92,19 @@ update msg model =
             { model | voteConfirmStatus = state } ! cmd
 
         SetDelegationState state ->
-            { model | delegationState = state } ! []
+            let
+                cmd =
+                    case state of
+                        Inactive ->
+                            []
+
+                        Pending ->
+                            [ delay (Time.second * 3) <| SetDelegationState Active ]
+
+                        Active ->
+                            []
+            in
+            { model | delegationState = state } ! cmd
 
         MultiMsg msgs ->
             multiUpdate msgs model []

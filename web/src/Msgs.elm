@@ -38,6 +38,7 @@ type MouseState
 type DelegationState
     = Active
     | Inactive
+    | Pending
 
 
 type VoteConfirmState

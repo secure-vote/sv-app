@@ -2,8 +2,6 @@ module Views.CreateBallotV exposing (..)
 
 import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOptionFieldIds, saveBallot)
 import Components.Btn exposing (BtnProps(..), btn)
-import Components.Icons exposing (IconSize(I24), mkIcon)
-import Components.TextF exposing (textF)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, para)

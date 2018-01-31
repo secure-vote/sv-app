@@ -1,6 +1,6 @@
 module Styles.Swarm exposing (..)
 
-import Color exposing (black, darkGray, gray, lightGray, lightOrange, orange, red, rgb, rgba, white)
+import Color exposing (black, darkGray, gray, lightCharcoal, lightGray, lightOrange, orange, red, rgb, rgba, white)
 import Style exposing (..)
 import Style.Border as Bdr exposing (bottom, solid)
 import Style.Color as C exposing (background)
@@ -104,6 +104,9 @@ swmStylesheet =
         , style FooterText
             [ Font.weight 400
             , Font.size 13
+            ]
+        , style Grey
+            [ C.text lightCharcoal
             ]
         , style Error
             [ Font.size <| scaled 4
