@@ -1,7 +1,8 @@
 module Components.Dialog exposing (..)
 
+import Components.Btn exposing (BtnProps(Attr, Click), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
-import Element exposing (button, column, el, row, text, within)
+import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
 import Helpers exposing (para)
@@ -53,17 +54,14 @@ dialog model =
             if model.voteConfirmStatus == Processing || model.voteConfirmStatus == Validating then
                 []
             else
-                [ button NilS [ onClick HideDialog ] (mkIcon "close" I24) ]
+                [ btn [ Click HideDialog, Attr alignRight ] (mkIcon "close" I24) ]
     in
     el DialogBackdrop [ width fill, height fill ] <|
         el DialogStyle [ center, verticalCenter, maxWidth <| px 600 ] <|
-            column NilS
-                [ padding (scaled 2), spacing (scaled 2) ]
-                [ row SubH
-                    [ spacing (scaled 3), spread ]
-                  <|
-                    [ para [] model.dialogHtml.title
-                    ]
-                        ++ closeButton
+            (column NilS
+                [ padding (scaled 4), spacing (scaled 2) ]
+                [ el SubH [] (para [] model.dialogHtml.title)
                 , innerElement
                 ]
+                |> within closeButton
+            )
