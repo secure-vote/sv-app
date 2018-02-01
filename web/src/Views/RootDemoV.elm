@@ -101,10 +101,16 @@ rootDemoView model =
             else
                 []
 
+        showAdmin =
+            if model.isAdmin then
+                admin
+            else
+                empty
+
         mainLayout =
             column NilS
                 [ spacing (scaled 2) ]
-                [ admin
+                [ showAdmin
                 , headerRow
                 , body
                 ]
