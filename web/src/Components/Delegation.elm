@@ -3,10 +3,9 @@ module Components.Delegation exposing (..)
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, Warning), btn)
 import Components.TextF exposing (textF)
 import Element exposing (el, text)
-import Element.Input exposing (disabled)
 import Helpers exposing (dubCol, getField, para)
 import Models exposing (Model)
-import Msgs exposing (DelegationState(..), Msg(MultiMsg, SetDelegate, SetDelegationState, SetField))
+import Msgs exposing (DelegationState(..), Msg(MultiMsg, Send, SetDelegate, SetDelegationState, SetField))
 import Styles.Styles exposing (SvClass(Grey, NilS, SubH))
 import Views.ViewHelpers exposing (SvElement)
 
@@ -23,7 +22,7 @@ delegationV model =
             [ el SubH [] (text "Turn on Delegation")
             , para [] "Vote delegation is disabled. You can enable vote delegation by entering the Voter ID of your nominated delegate below."
             , textF delegateTextFId "Enter Voter ID" [] model
-            , btn [ PriBtn, Click (MultiMsg [ SetDelegate (getField delegateTextFId model), SetDelegationState Pending ]) ] (text "Nominate Delegate")
+            , btn [ PriBtn, Click (MultiMsg [ SetDelegate (getField delegateTextFId model), SetDelegationState Pending, Send ( "delegate", "test tx" ) ]) ] (text "Nominate Delegate")
             ]
 
         delegationPending =

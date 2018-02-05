@@ -31,22 +31,70 @@
     </div>
     <script>
       loadElm = function() {
-        if (typeof Elm !== "undefined") {
-            var node = document.getElementById('sv-fullscreen');
-            var flags = {
-                votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
-                democracyId: 31,
-                admin: true,
-                singleDemocName: "SV Demo"
-            };
-            const app = Elm.MainDemo.embed(node, flags);
+          if (typeof Elm !== "undefined") {
+              var node = document.getElementById('sv-fullscreen');
+              var flags = {
+                  votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
+                  democracyId: 31,
+                  admin: true,
+                  singleDemocName: "SV Demo"
+              };
+              const app = Elm.MainDemo.embed(node, flags);
 
-            // Remove Loading Spinner
-            var element = document.getElementById("loading-screen");
-            element.parentNode.removeChild(element);
-        } else {
-            setTimeout(loadElm, 100);
-        }
+              // Ports
+              app.ports.send.subscribe(sendDataToBlockchain);
+              app.ports.get.subscribe(getDataFromBlockchain);
+
+              function sendDataToBlockchain(arg) {
+
+                  var [ref, data] = arg;
+
+                  // Talk to Blockchain
+                  setTimeout(function(){
+
+                      // Generate Receipt
+                      var txId = generateReceipt(data);
+
+                      // Send Receipt
+                      app.ports.receipt.send([ref, txId]);
+
+                      // Wait for Blockchain Confirmation
+                      setTimeout(function(){
+
+                          // Send Blockchain Confirmation
+                          app.ports.confirmation.send(ref);
+                      }, 3000);
+
+                  }, 3000);
+
+              }
+
+              function getDataFromBlockchain(txId) {
+
+                  // Talk to Blockchain
+                  setTimeout(function(){
+
+                      // Get Data
+                      var data = "DATAAAAAA";
+
+                      // Send Receipt
+                      app.ports.receive.send(data);
+
+                  }, 3000);
+
+              }
+
+              function generateReceipt(data) {
+                  var receipt = Math.floor(Math.random() * 1000000).toString()
+                  return receipt;
+              }
+
+              // Remove Loading Spinner
+              var element = document.getElementById("loading-screen");
+              element.parentNode.removeChild(element);
+          } else {
+              setTimeout(loadElm, 100);
+          }
       }
       loadElm();
     </script>

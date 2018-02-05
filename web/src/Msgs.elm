@@ -27,6 +27,12 @@ type Msg
     | SetDelegationState DelegationState
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
+      --     Port Msgs
+    | Send ( String, String )
+    | Receipt ( String, String )
+    | Confirm String
+    | Get String
+    | Receive String
 
 
 type MouseState

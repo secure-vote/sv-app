@@ -2,6 +2,7 @@ module Update exposing (..)
 
 --import Spinner
 
+import BlockchainPorts as Ports
 import Dict
 import Helpers exposing (getDemocracy)
 import Maybe.Extra exposing ((?))
@@ -119,6 +120,22 @@ update msg model =
                     model2 ! [ cmds, cmds1 ]
             in
             List.foldl chain (model ! []) msgs
+
+        --     Port Msgs
+        Send ( refId, data ) ->
+            ( model, Ports.send ( refId, data ) )
+
+        Receipt ( refId, txId ) ->
+            { model | txReceipts = txId :: model.txReceipts } ! []
+
+        Confirm refId ->
+            ( model, Cmd.none )
+
+        Get txId ->
+            ( model, Ports.get txId )
+
+        Receive data ->
+            ( model, Cmd.none )
 
 
 multiUpdate : List Msg -> Model -> List (Cmd Msg) -> ( Model, Cmd Msg )

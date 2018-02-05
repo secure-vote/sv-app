@@ -1,8 +1,9 @@
 module MainDemo exposing (..)
 
+import BlockchainPorts as Ports
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags)
-import Msgs exposing (Msg(SetTime))
+import Msgs exposing (Msg(Confirm, Receipt, Receive, SetTime))
 import Task exposing (perform)
 import Time exposing (Time)
 import Update exposing (update)
@@ -23,7 +24,11 @@ initCmds =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch []
+    Sub.batch
+        [ Ports.receipt Receipt
+        , Ports.confirmation Confirm
+        , Ports.receive Receive
+        ]
 
 
 

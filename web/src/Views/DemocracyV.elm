@@ -14,7 +14,6 @@ import Msgs exposing (Msg(NavigateTo))
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Tuple exposing (first)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
 
 

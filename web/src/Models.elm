@@ -17,6 +17,7 @@ type alias Model =
     , delegate : String
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
+    , txReceipts : List String
     , voteConfirmStatus : VoteConfirmState
     , delegationState : DelegationState
     , routeStack : List Route
@@ -42,6 +43,7 @@ initModel =
     , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
+    , txReceipts = []
     , voteConfirmStatus = AwaitingConfirmation
     , delegationState = Inactive
     , routeStack = [ DashboardR ]
@@ -67,6 +69,7 @@ initModelWithFlags flags =
     , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
+    , txReceipts = []
     , voteConfirmStatus = AwaitingConfirmation
     , delegationState = Inactive
     , routeStack = [ DemocracyR flags.democracyId ]
