@@ -8,7 +8,7 @@ import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, 
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
+import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
@@ -52,8 +52,7 @@ createNewBallot democId ballotId model =
     let
         completeMsg =
             MultiMsg
-                [ CreateBallot <| saveBallot ballotId model
-                , AddBallotToDemocracy ballotId democId
+                [ CreateBallot democId <| saveBallot ballotId model
                 , NavigateBackTo <| DemocracyR democId
                 ]
     in

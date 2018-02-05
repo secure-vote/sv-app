@@ -26,8 +26,8 @@ subsubhead s =
     el SubSubH [] (text s)
 
 
-voteConfirmDialogV : Vote -> VoteId -> Model -> SvElement
-voteConfirmDialogV vote voteId model =
+voteConfirmDialogV : ( VoteId, Vote ) -> Model -> SvElement
+voteConfirmDialogV ( voteId, vote ) model =
     let
         ballot =
             getBallot vote.ballotId model
@@ -37,7 +37,7 @@ voteConfirmDialogV vote voteId model =
 
         createVoteMsg =
             MultiMsg
-                [ CreateVote vote voteId
+                [ CreateVote ( voteId, vote )
                 , SetVoteConfirmState Processing
                 ]
 

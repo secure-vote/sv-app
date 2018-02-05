@@ -31,7 +31,7 @@ democracyV democId model =
     in
     ( admin democId
     , header model
-    , body ballots model
+    , body democId ballots model
     )
 
 
@@ -57,8 +57,8 @@ header model =
     )
 
 
-body : List ( BallotId, Ballot ) -> Model -> SvElement
-body ballots model =
+body : DemocracyId -> List ( BallotId, Ballot ) -> Model -> SvElement
+body democId ballots model =
     column IssueList
         [ spacing (scaled 3) ]
         [ el SubH [] (text "Open Ballots")
@@ -67,7 +67,7 @@ body ballots model =
         , futureBallotList ballots model
         , el SubH [] (text "Past Ballots")
         , pastBallotList ballots model
-        , delegationV model
+        , delegationV democId model
         ]
 
 

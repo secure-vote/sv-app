@@ -22,8 +22,8 @@ dialog model =
     let
         innerElement =
             case model.dialogHtml.route of
-                VoteConfirmationD vote voteId ->
-                    voteConfirmDialogV vote voteId model
+                VoteConfirmationD ( voteId, vote ) ->
+                    voteConfirmDialogV ( voteId, vote ) model
 
                 BallotDeleteConfirmD ballotId ->
                     ballotDeleteConfirmDialogV ballotId model

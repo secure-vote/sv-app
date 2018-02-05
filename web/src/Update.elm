@@ -40,9 +40,6 @@ update msg model =
         SetFloatField fieldId value ->
             { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
 
-        SetDelegate string ->
-            { model | delegate = string } ! []
-
         NavigateBack ->
             { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
 
@@ -62,17 +59,27 @@ update msg model =
             in
             { model | routeStack = findRoute model.routeStack } ! []
 
-        CreateVote vote voteId ->
+        CreateVote ( voteId, vote ) ->
             { model | votes = Dict.insert voteId vote model.votes } ! []
 
-        CreateBallot ( ballotId, ballot ) ->
+        CreateBallot democId ( ballotId, ballot ) ->
+            { model
+                | ballots = Dict.insert ballotId ballot model.ballots
+                , democracies = Dict.insert democId (addBallot ballotId democId model) model.democracies
+            }
+                ! []
+
+        EditBallot ( ballotId, ballot ) ->
             { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
 
         DeleteBallot ballotId ->
             { model | ballots = Dict.remove ballotId model.ballots } ! []
 
-        AddBallotToDemocracy ballotId democracyId ->
-            { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
+        AddDelegate democId string ->
+            { model | delegate = string } ! []
+
+        RemoveDelegate democId ->
+            { model | delegate = "" } ! []
 
         SetVoteConfirmState state ->
             let
@@ -156,10 +163,10 @@ multiUpdate msgs model cmds =
 
 
 addBallot : BallotId -> DemocracyId -> Model -> Democracy
-addBallot ballotId democracyId model =
+addBallot ballotId democId model =
     let
         democracy =
-            getDemocracy democracyId model
+            getDemocracy democId model
     in
     { democracy | ballots = ballotId :: democracy.ballots }
 

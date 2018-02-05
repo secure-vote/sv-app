@@ -5,7 +5,8 @@ import Components.TextF exposing (textF)
 import Element exposing (el, text)
 import Helpers exposing (dubCol, getField, para)
 import Models exposing (Model)
-import Msgs exposing (DelegationState(..), Msg(MultiMsg, Send, SetDelegate, SetDelegationState, SetField))
+import Models.Democracy exposing (DemocracyId)
+import Msgs exposing (DelegationState(..), Msg(AddDelegate, MultiMsg, RemoveDelegate, Send, SetDelegationState, SetField))
 import Styles.Styles exposing (SvClass(Grey, NilS, SubH))
 import Views.ViewHelpers exposing (SvElement)
 
@@ -15,14 +16,14 @@ delegateTextFId =
     "delegate-tf"
 
 
-delegationV : Model -> SvElement
-delegationV model =
+delegationV : DemocracyId -> Model -> SvElement
+delegationV democId model =
     let
         delegationInactive =
             [ el SubH [] (text "Turn on Delegation")
             , para [] "Vote delegation is disabled. You can enable vote delegation by entering the Voter ID of your nominated delegate below."
             , textF delegateTextFId "Enter Voter ID" [] model
-            , btn [ PriBtn, Click (MultiMsg [ SetDelegate (getField delegateTextFId model), SetDelegationState Pending, Send ( "delegate", "test tx" ) ]) ] (text "Nominate Delegate")
+            , btn [ PriBtn, Click (MultiMsg [ AddDelegate democId (getField delegateTextFId model), SetDelegationState Pending, Send ( "delegate", "test tx" ) ]) ] (text "Nominate Delegate")
             ]
 
         delegationPending =
@@ -36,7 +37,7 @@ delegationV model =
             [ el SubH [] (text "Delegation Active")
             , para [] "Vote delegation is currently active, your votes are being delegated to:"
             , el Grey [] (text <| "#" ++ getField delegateTextFId model)
-            , btn [ PriBtn, Warning, Click (MultiMsg [ SetDelegate "", SetField delegateTextFId "", SetDelegationState Inactive ]) ] (text "Cancel Vote delegation")
+            , btn [ PriBtn, Warning, Click (MultiMsg [ RemoveDelegate democId, SetField delegateTextFId "", SetDelegationState Inactive ]) ] (text "Cancel Vote delegation")
             ]
 
         leftCol =

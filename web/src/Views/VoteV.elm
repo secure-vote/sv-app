@@ -235,4 +235,4 @@ confirmationButton ballotId model =
         genNonce { value } =
             value
     in
-    btn [ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD newVote newVoteId)), Disabled (isFutureVote || haveVoted) ] (text "Continue")
+    btn [ PriBtn, Click (SetDialog "Confirmation" (VoteConfirmationD ( newVoteId, newVote ))), Disabled (isFutureVote || haveVoted) ] (text "Continue")

@@ -17,7 +17,7 @@ type Route
 
 
 type DialogRoute msg
-    = VoteConfirmationD Vote VoteId
+    = VoteConfirmationD ( VoteId, Vote )
     | BallotDeleteConfirmD BallotId
     | BallotInfoD String
     | BallotOptionD String

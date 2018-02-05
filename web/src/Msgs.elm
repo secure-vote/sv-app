@@ -14,15 +14,16 @@ type Msg
     | SetField String String
     | SetIntField String Int
     | SetFloatField String Float
-    | SetDelegate String
     | NavigateBack
     | NavigateHome
     | NavigateTo Route
     | NavigateBackTo Route
-    | CreateVote Vote VoteId
-    | CreateBallot ( BallotId, Ballot )
+    | CreateVote ( VoteId, Vote )
+    | CreateBallot DemocracyId ( BallotId, Ballot )
+    | EditBallot ( BallotId, Ballot )
     | DeleteBallot BallotId
-    | AddBallotToDemocracy BallotId DemocracyId
+    | AddDelegate DemocracyId String
+    | RemoveDelegate DemocracyId
     | SetVoteConfirmState VoteConfirmState
     | SetDelegationState DelegationState
     | MultiMsg (List Msg)

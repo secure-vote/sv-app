@@ -7,7 +7,7 @@ import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, findDemocracy, genNewId, getBallot, getDemocracy, getField, getIntField, para)
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Msgs exposing (Msg(AddBallotToDemocracy, CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(EditBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
@@ -44,7 +44,7 @@ updateBallot ballotId model =
     let
         completeMsg =
             MultiMsg
-                [ CreateBallot <| saveBallot ballotId model
+                [ EditBallot <| saveBallot ballotId model
                 , NavigateBackTo <| VoteR ballotId
                 ]
     in
