@@ -13,7 +13,17 @@ type alias Ballot =
     , start : Time
     , finish : Time
     , ballotOptions : List BallotOption
+    , state : BallotState
     }
+
+
+type BallotState
+    = BallotInitial
+    | BallotSending
+    | BallotPendingCreation
+    | BallotPendingEdits
+    | BallotPendingDeletion
+    | BallotConfirmed
 
 
 type alias BallotOptionId =
@@ -25,22 +35,6 @@ type alias BallotOption =
     , name : String
     , desc : String
     , result : Maybe Float
-    }
-
-
-type alias VoteId =
-    Int
-
-
-type alias Vote =
-    { ballotId : BallotId
-    , voteOptions : List VoteOption
-    }
-
-
-type alias VoteOption =
-    { id : BallotOptionId
-    , value : Float
     }
 
 

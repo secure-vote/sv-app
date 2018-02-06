@@ -7,7 +7,7 @@ import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, para, r
 import List exposing (filter, head, maximum)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId)
+import Models.Ballot exposing (BallotId, BallotState(..))
 import Msgs exposing (Msg(NavigateTo))
 import Routes exposing (Route(..))
 import Styles.Styles exposing (SvClass(..))
@@ -67,8 +67,23 @@ issueCard model ballotId =
             else
                 "You have not voted in this ballot yet"
 
+        --        TODO: Style this better
+        titleText name =
+            case ballot.state of
+                BallotPendingCreation ->
+                    name ++ " (Waiting to be created on blockchain)"
+
+                BallotPendingEdits ->
+                    name ++ " (Waiting to be edited on blockchain)"
+
+                BallotPendingDeletion ->
+                    name ++ " (Waiting to be deleted from blockchain)"
+
+                _ ->
+                    name
+
         title =
-            el SubSubH [ paddingBottom (scaled 1) ] (text <| ballot.name)
+            el SubSubH [ paddingBottom (scaled 1) ] (text <| titleText ballot.name)
 
         body =
             column NilS

@@ -1,9 +1,10 @@
 module Models exposing (..)
 
 import Dict exposing (Dict)
-import Models.Ballot exposing (Ballot, BallotId, BallotOption, Vote, VoteId, VoteOption)
-import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (DelegationState(Inactive), MouseState, Msg, VoteConfirmState(AwaitingConfirmation))
+import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
+import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
+import Models.Vote exposing (Vote, VoteId)
+import Msgs exposing (Msg, SendMsg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
@@ -14,12 +15,9 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
-    , delegate : String
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
-    , txReceipts : List String
-    , voteConfirmStatus : VoteConfirmState
-    , delegationState : DelegationState
+    , txReceipts : Dict String SendMsg
     , routeStack : List Route
     , fields : Dict String String
     , intFields : Dict String Int
@@ -40,12 +38,9 @@ initModel =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
-    , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
-    , txReceipts = []
-    , voteConfirmStatus = AwaitingConfirmation
-    , delegationState = Inactive
+    , txReceipts = Dict.empty
     , routeStack = [ DashboardR ]
     , fields = Dict.empty
     , intFields = Dict.empty
@@ -66,12 +61,9 @@ initModelWithFlags flags =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
-    , delegate = ""
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
-    , txReceipts = []
-    , voteConfirmStatus = AwaitingConfirmation
-    , delegationState = Inactive
+    , txReceipts = Dict.empty
     , routeStack = [ DemocracyR flags.democracyId ]
     , fields = Dict.empty
     , intFields = Dict.empty
@@ -106,12 +98,13 @@ democracies =
             -- TODO: ideally this is through a map of DemocId -> BallotId
             -- TODO: or DemocId -> Ballot
             [ 1234531245, 6345745845, 394873947 ]
+            (Delegate "" Inactive)
       )
-    , ( 37, Democracy "Democracy 1" "Lorem Ipsum" "" [ 4357435345, 4367845333, 7896767563 ] )
-    , ( 41, Democracy "Democracy 2" "Lorem Ipsum" "" [ 9065445766, 8654355233, 3578876545 ] )
-    , ( 43, Democracy "Democracy 3" "Lorem Ipsum" "" [ 9069546534, 7342132479 ] )
-    , ( 47, Democracy "Democracy 4" "Lorem Ipsum" "" [ 8956378645 ] )
-    , ( 53, Democracy "Democracy 5" "Lorem Ipsum" "" [] )
+    , ( 37, Democracy "Democracy 1" "Lorem Ipsum" "" [ 4357435345, 4367845333, 7896767563 ] (Delegate "" Inactive) )
+    , ( 41, Democracy "Democracy 2" "Lorem Ipsum" "" [ 9065445766, 8654355233, 3578876545 ] (Delegate "" Inactive) )
+    , ( 43, Democracy "Democracy 3" "Lorem Ipsum" "" [ 9069546534, 7342132479 ] (Delegate "" Inactive) )
+    , ( 47, Democracy "Democracy 4" "Lorem Ipsum" "" [ 8956378645 ] (Delegate "" Inactive) )
+    , ( 53, Democracy "Democracy 5" "Lorem Ipsum" "" [] (Delegate "" Inactive) )
 
     --    , ( 3456346785
     --      , Democracy
@@ -172,12 +165,13 @@ ballots =
                 "This increases the capital of the fund by 500,000 SUN and represents a 20% increase to the token supply. See `Documents` for more information including budget and strategy."
                 (Just 2122)
             ]
+            BallotConfirmed
       )
     , ( 6345745845
       , Ballot "Strategy Phase 2"
             strategyDescription
             {- now -} 1516004800000
-            1517804800000
+            1520004800000
             [ BallotOption 835957160
                 "Purchase new property in Brazil"
                 "This option for phase 2 will result in approx 200,000 SUN invested into new property aquisitions in San Palo and Rio de Janeiro. See `Documents` for more information."
@@ -195,6 +189,7 @@ ballots =
                 "This option for phase 2 will result in approx 200,000 SUN invested into new property aquisitions in Detroit and surrounding areas. See `Documents` for more information."
                 Nothing
             ]
+            BallotConfirmed
       )
     , ( 394873947
       , Ballot "Yearly Fund Continuation"
@@ -210,6 +205,7 @@ ballots =
                 "This option will result in the fund continuing operations."
                 Nothing
             ]
+            BallotConfirmed
       )
 
     --    Democracy 5 Ballots

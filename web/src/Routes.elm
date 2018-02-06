@@ -1,7 +1,8 @@
 module Routes exposing (..)
 
-import Models.Ballot exposing (BallotId, Vote, VoteId)
+import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
+import Models.Vote exposing (Vote, VoteId)
 
 
 type Route

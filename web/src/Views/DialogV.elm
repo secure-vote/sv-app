@@ -1,14 +1,14 @@
 module Views.DialogV exposing (..)
 
-import Components.Btn exposing (BtnProps(Click, PriBtn, SecBtn), btn)
-import Components.Icons exposing (IconSize(I48), mkIcon)
+import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn), btn)
 import Element exposing (column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
-import Helpers exposing (findDemocracy, getBallot, getFloatField, para)
+import Helpers exposing (findDemocracy, getBallot, getFloatField, getVote, para)
 import List exposing (foldr, map)
 import Models exposing (Model)
-import Models.Ballot exposing (BallotId, Vote, VoteId)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, SetVoteConfirmState), VoteConfirmState(..))
+import Models.Ballot exposing (..)
+import Models.Vote exposing (..)
+import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetVoteState))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
@@ -35,53 +35,47 @@ voteConfirmDialogV ( voteId, vote ) model =
         democracyId =
             Tuple.first <| findDemocracy vote.ballotId model
 
+        names item =
+            para [] item.name
+
+        values item =
+            para [] <| toString <| getSliderValue item.id model
+
+        isDisabled =
+            not <| (getVote voteId model).state == VoteInitial
+
         createVoteMsg =
             MultiMsg
                 [ CreateVote ( voteId, vote )
-                , SetVoteConfirmState Processing
+                , SetVoteState VoteSending ( voteId, vote )
+                , Send
+                    { name = "new-vote"
+                    , payload = "Awesome new Vote!"
+                    , onReceipt = onReceiptMsg
+                    , onConfirmation = onConfirmationMsg
+                    }
                 ]
 
-        completeMsg =
+        onReceiptMsg =
             MultiMsg
                 [ NavigateBackTo <| DemocracyR democracyId
-                , SetVoteConfirmState AwaitingConfirmation
+                , SetVoteState VotePending ( voteId, vote )
                 , HideDialog
                 ]
+
+        onConfirmationMsg =
+            SetVoteState VoteConfirmed ( voteId, vote )
     in
-    column NilS [ spacing (scaled 2) ] <|
-        case model.voteConfirmStatus of
-            AwaitingConfirmation ->
-                let
-                    names item =
-                        para [] item.name
-
-                    values item =
-                        para [] <| toString <| getSliderValue item.id model
-                in
-                [ para [] "Please confirm that your vote details below are correct."
-                , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
-                , row NilS
-                    [ spacing (scaled 2) ]
-                    [ btn [ SecBtn, Click HideDialog ] (text "Close")
-                    , btn [ PriBtn, Click createVoteMsg ] (text "Yes")
-                    ]
-                ]
-
-            Processing ->
-                [ el NilS [ center ] (para [] "Processing...")
-                , cssSpinner
-                ]
-
-            Validating ->
-                [ el NilS [ center ] (para [] "Validating...")
-                , cssSpinner
-                ]
-
-            Complete ->
-                [ el NilS [ center ] (para [] "Your vote has been cast successfully!")
-                , el Heading [ center ] (mkIcon "check-circle-outline" I48)
-                , btn [ PriBtn, Click completeMsg ] (text "Close")
-                ]
+    column NilS
+        [ spacing (scaled 2) ]
+        [ para [] "Please confirm that your vote details below are correct."
+        , table NilS [ spacing (scaled 2), padding (scaled 2) ] <| [ map names ballot.ballotOptions, map values ballot.ballotOptions ]
+        , row NilS
+            [ spacing (scaled 2) ]
+            [ btn [ SecBtn, Click HideDialog, Disabled isDisabled ] (text "Close")
+            , btn [ PriBtn, Click createVoteMsg, Disabled isDisabled ] (text "Yes")
+            ]
+        ]
 
 
 ballotDeleteConfirmDialogV : BallotId -> Model -> SvElement
@@ -93,12 +87,26 @@ ballotDeleteConfirmDialogV ballotId model =
         democracyId =
             Tuple.first <| findDemocracy ballotId model
 
-        completeMsg =
+        deleteBallotMsg =
             MultiMsg
-                [ DeleteBallot ballotId
-                , NavigateBackTo <| DemocracyR democracyId
+                [ SetBallotState BallotSending ( ballotId, ballot )
+                , Send
+                    { name = "delete-ballot"
+                    , payload = "Goodbye"
+                    , onReceipt = onReceiptMsg
+                    , onConfirmation = onConfirmationMsg
+                    }
+                ]
+
+        onReceiptMsg =
+            MultiMsg
+                [ NavigateBackTo <| DemocracyR democracyId
+                , SetBallotState BallotPendingDeletion ( ballotId, ballot )
                 , HideDialog
                 ]
+
+        onConfirmationMsg =
+            DeleteBallot ballotId
     in
     column NilS
         [ spacing (scaled 2) ]
@@ -106,7 +114,7 @@ ballotDeleteConfirmDialogV ballotId model =
         , row NilS
             [ spacing (scaled 2) ]
             [ btn [ SecBtn, Click HideDialog ] (text "Cancel")
-            , btn [ PriBtn, Click completeMsg ] (text "Delete")
+            , btn [ PriBtn, Click deleteBallotMsg ] (text "Delete")
             ]
         ]
 

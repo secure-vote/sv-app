@@ -8,11 +8,34 @@ import Models exposing (Model)
 import Msgs exposing (Msg(NoOp, SetField))
 import Styles.Styles exposing (SvClass(InputS, NilS))
 import Styles.Variations exposing (Variation)
-import Views.ViewHelpers exposing (SvElement)
+import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
-textF : String -> String -> Options -> Model -> SvElement
-textF name labelText opts model =
+type TfProps
+    = Disabled Bool
+    | BtnNop -- doesn't do anything
+
+
+textF : String -> String -> List TfProps -> Model -> SvElement
+textF name labelText props model =
+    let
+        btnPropToOpts prop =
+            case prop of
+                Disabled bool ->
+                    if bool then
+                        [ Input.disabled ]
+                    else
+                        []
+
+                BtnNop ->
+                    []
+
+        f btnProp opts =
+            opts ++ btnPropToOpts btnProp
+
+        opts =
+            List.foldl f [] props
+    in
     el NilS [ class "field" ] <|
         Input.text InputS
             []
@@ -21,10 +44,6 @@ textF name labelText opts model =
             , label = Input.labelAbove (text labelText)
             , options = opts
             }
-
-
-type alias Options =
-    List (Option SvClass Variation Msg)
 
 
 

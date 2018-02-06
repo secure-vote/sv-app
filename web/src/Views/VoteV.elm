@@ -10,7 +10,8 @@ import Html as H exposing (Html, div, input, p, span)
 import Html.Attributes as HA exposing (style)
 import Html.Events as HE
 import Models exposing (Model)
-import Models.Ballot exposing (Ballot, BallotId, Vote, VoteOption)
+import Models.Ballot exposing (Ballot, BallotId)
+import Models.Vote exposing (VoteState(VoteInitial))
 import Msgs exposing (Msg(MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetFloatField))
 import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD), Route(EditBallotR))
 import Styles.Styles exposing (SvClass(..))
@@ -224,10 +225,15 @@ confirmationButton ballotId model =
             checkAlreadyVoted ballotId model
 
         newVoteOption { id } =
-            VoteOption id <| getSliderValue id model
+            { id = id
+            , value = getSliderValue id model
+            }
 
         newVote =
-            Vote ballotId <| List.map newVoteOption ballot.ballotOptions
+            { ballotId = ballotId
+            , voteOptions = List.map newVoteOption ballot.ballotOptions
+            , state = VoteInitial
+            }
 
         newVoteId =
             genNewId ballotId <| Result.withDefault 0 <| String.toInt <| List.foldl (++) "" <| List.map toString <| List.map genNonce newVote.voteOptions

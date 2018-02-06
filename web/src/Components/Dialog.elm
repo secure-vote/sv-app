@@ -6,7 +6,7 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (para)
 import Models exposing (Model)
-import Msgs exposing (Msg(HideDialog), VoteConfirmState(..))
+import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -50,10 +50,10 @@ dialog model =
                     el Error [] (text "Not Found")
 
         closeButton =
-            if model.voteConfirmStatus == Processing || model.voteConfirmStatus == Validating then
-                []
-            else
-                [ btn [ Click HideDialog, Attr alignRight ] (mkIcon "close" I24) ]
+            --            if model.voteConfirmStatus == Sending then
+            --                []
+            --            else
+            [ btn [ Click HideDialog, Attr alignRight ] (mkIcon "close" I24) ]
     in
     el DialogBackdrop [ width fill, height fill ] <|
         el DialogStyle [ center, verticalCenter, maxWidth <| px 600 ] <|

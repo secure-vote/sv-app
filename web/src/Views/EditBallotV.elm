@@ -6,8 +6,8 @@ import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, findDemocracy, genNewId, getBallot, getDemocracy, getField, getIntField, para)
 import Models exposing (Model)
-import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
-import Msgs exposing (Msg(EditBallot, MultiMsg, NavigateBack, NavigateBackTo, SetDialog, SetField, SetIntField))
+import Models.Ballot exposing (..)
+import Msgs exposing (Msg(EditBallot, MultiMsg, NavigateBack, NavigateBackTo, Send, SetBallotState, SetDialog, SetField, SetIntField))
 import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
@@ -42,17 +42,35 @@ body ballotId model =
 updateBallot : BallotId -> Model -> SvElement
 updateBallot ballotId model =
     let
-        completeMsg =
+        ballotTuple =
+            saveBallot ballotId model
+
+        editBallotMsg =
             MultiMsg
                 [ EditBallot <| saveBallot ballotId model
-                , NavigateBackTo <| VoteR ballotId
+                , SetBallotState BallotSending ballotTuple
+                , Send
+                    { name = "new-ballot"
+                    , payload = "Awesome new Vote!"
+                    , onReceipt = onReceiptMsg
+                    , onConfirmation = onConfirmationMsg
+                    }
                 ]
+
+        onReceiptMsg =
+            MultiMsg
+                [ NavigateBackTo <| VoteR ballotId
+                , SetBallotState BallotPendingEdits ballotTuple
+                ]
+
+        onConfirmationMsg =
+            SetBallotState BallotConfirmed ballotTuple
     in
     --    TODO: Replace placeholder text
     dubCol
         [ el SubH [] (text "Complete")
         , para [] "Your ballot, <ballot name>, will commence on the <date> at <time>. The ballot will run for <duration> and is made up of <number of options> options."
-        , btn [ PriBtn, Small, Click completeMsg ] (text "Save ballot")
+        , btn [ PriBtn, Small, Click editBallotMsg ] (text "Save ballot")
         ]
         []
 

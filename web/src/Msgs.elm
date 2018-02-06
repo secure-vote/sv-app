@@ -1,7 +1,8 @@
 module Msgs exposing (..)
 
-import Models.Ballot exposing (Ballot, BallotId, Vote, VoteId)
-import Models.Democracy exposing (DemocracyId)
+import Models.Ballot exposing (Ballot, BallotId, BallotState)
+import Models.Democracy exposing (DelegateState, Democracy, DemocracyId)
+import Models.Vote exposing (Vote, VoteId, VoteState)
 import Routes exposing (DialogRoute, Route)
 import Time exposing (Time)
 
@@ -22,34 +23,24 @@ type Msg
     | CreateBallot DemocracyId ( BallotId, Ballot )
     | EditBallot ( BallotId, Ballot )
     | DeleteBallot BallotId
-    | AddDelegate DemocracyId String
-    | RemoveDelegate DemocracyId
-    | SetVoteConfirmState VoteConfirmState
-    | SetDelegationState DelegationState
+    | AddDelegate String ( DemocracyId, Democracy )
+    | RemoveDelegate ( DemocracyId, Democracy )
+    | SetVoteState VoteState ( VoteId, Vote )
+    | SetBallotState BallotState ( BallotId, Ballot )
+    | SetDelegateState DelegateState ( DemocracyId, Democracy )
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
       --     Port Msgs
-    | Send ( String, String )
+    | Send SendMsg
     | Receipt ( String, String )
     | Confirm String
     | Get String
     | Receive String
 
 
-type MouseState
-    = MouseUp
-    | MouseDown
-    | MouseOver
-
-
-type DelegationState
-    = Active
-    | Inactive
-    | Pending
-
-
-type VoteConfirmState
-    = AwaitingConfirmation
-    | Processing
-    | Validating
-    | Complete
+type alias SendMsg =
+    { name : String
+    , payload : String
+    , onReceipt : Msg
+    , onConfirmation : Msg
+    }

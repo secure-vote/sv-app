@@ -4,12 +4,11 @@ module Update exposing (..)
 
 import BlockchainPorts as Ports
 import Dict
-import Helpers exposing (getDemocracy)
+import Helpers exposing (getDemocracy, getTx)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
-import Models.Ballot exposing (BallotId)
-import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (DelegationState(..), Msg(..), VoteConfirmState(..))
+import Models.Democracy exposing (DelegateState(Active, Inactive))
+import Msgs exposing (Msg(..))
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -63,9 +62,16 @@ update msg model =
             { model | votes = Dict.insert voteId vote model.votes } ! []
 
         CreateBallot democId ( ballotId, ballot ) ->
+            let
+                democracy =
+                    getDemocracy democId model
+
+                addBallot =
+                    { democracy | ballots = ballotId :: democracy.ballots }
+            in
             { model
                 | ballots = Dict.insert ballotId ballot model.ballots
-                , democracies = Dict.insert democId (addBallot ballotId democId model) model.democracies
+                , democracies = Dict.insert democId addBallot model.democracies
             }
                 ! []
 
@@ -75,44 +81,43 @@ update msg model =
         DeleteBallot ballotId ->
             { model | ballots = Dict.remove ballotId model.ballots } ! []
 
-        AddDelegate democId string ->
-            { model | delegate = string } ! []
-
-        RemoveDelegate democId ->
-            { model | delegate = "" } ! []
-
-        SetVoteConfirmState state ->
+        AddDelegate name ( democId, democracy ) ->
             let
-                cmd =
-                    case state of
-                        AwaitingConfirmation ->
-                            []
-
-                        Processing ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmState Validating ]
-
-                        Validating ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmState Complete ]
-
-                        Complete ->
-                            []
+                addDelegate =
+                    { democracy | delegate = { name = name, state = Active } }
             in
-            { model | voteConfirmStatus = state } ! cmd
+            { model | democracies = Dict.insert democId addDelegate model.democracies } ! []
 
-        SetDelegationState state ->
+        RemoveDelegate ( democId, democracy ) ->
             let
-                cmd =
-                    case state of
-                        Inactive ->
-                            []
-
-                        Pending ->
-                            [ delay (Time.second * 3) <| SetDelegationState Active ]
-
-                        Active ->
-                            []
+                removeDelegate =
+                    { democracy | delegate = { name = "", state = Inactive } }
             in
-            { model | delegationState = state } ! cmd
+            { model | democracies = Dict.insert democId removeDelegate model.democracies } ! []
+
+        SetVoteState state ( voteId, vote ) ->
+            let
+                setVoteState =
+                    { vote | state = state }
+            in
+            { model | votes = Dict.insert voteId setVoteState model.votes } ! []
+
+        SetBallotState state ( ballotId, ballot ) ->
+            let
+                setBallotState =
+                    { ballot | state = state }
+            in
+            { model | ballots = Dict.insert ballotId setBallotState model.ballots } ! []
+
+        SetDelegateState state ( democId, democracy ) ->
+            let
+                delegate =
+                    democracy.delegate
+
+                setDelegateState =
+                    { democracy | delegate = { delegate | state = state } }
+            in
+            { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
 
         MultiMsg msgs ->
             multiUpdate msgs model []
@@ -129,14 +134,26 @@ update msg model =
             List.foldl chain (model ! []) msgs
 
         --     Port Msgs
-        Send ( refId, data ) ->
-            ( model, Ports.send ( refId, data ) )
+        Send sendMsg ->
+            let
+                refId =
+                    sendMsg.name ++ toString model.now
+            in
+            { model | txReceipts = Dict.insert refId sendMsg model.txReceipts } ! [ Ports.send ( refId, sendMsg.payload ) ]
 
         Receipt ( refId, txId ) ->
-            { model | txReceipts = txId :: model.txReceipts } ! []
+            let
+                msg =
+                    (getTx refId model).onReceipt
+            in
+            update msg model
 
         Confirm refId ->
-            ( model, Cmd.none )
+            let
+                msg =
+                    (getTx refId model).onConfirmation
+            in
+            update msg model
 
         Get txId ->
             ( model, Ports.get txId )
@@ -160,15 +177,6 @@ multiUpdate msgs model cmds =
 
         [] ->
             ( model, Cmd.batch cmds )
-
-
-addBallot : BallotId -> DemocracyId -> Model -> Democracy
-addBallot ballotId democId model =
-    let
-        democracy =
-            getDemocracy democId model
-    in
-    { democracy | ballots = ballotId :: democracy.ballots }
 
 
 delay : Time -> msg -> Cmd msg

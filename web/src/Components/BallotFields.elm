@@ -2,12 +2,12 @@ module Components.BallotFields exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
-import Components.TextF exposing (textF)
+import Components.TextF as TF exposing (TfProps(..), textF)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, para)
+import Helpers exposing (dubCol, genNewId, getBallot, getDemocracy, getField, getIntField, para)
 import Models exposing (Model)
-import Models.Ballot exposing (Ballot, BallotFieldIds, BallotId, BallotOption, BallotOptionFieldIds)
+import Models.Ballot exposing (..)
 import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
@@ -23,7 +23,7 @@ ballotFieldIds ballotId =
     { name = "ballot-name-tf-" ++ toString ballotId
     , desc = "ballot-description-tf-" ++ toString ballotId
     , startDate = "ballot-start-date-tf-" ++ toString ballotId
-    , startTime = "ballot-start-date-tf-" ++ toString ballotId
+    , startTime = "ballot-start-time-tf-" ++ toString ballotId
     , durVal = "ballot-duration-value-tf-" ++ toString ballotId
     , durType = "ballot-duration-type-tf-" ++ toString ballotId
     , extraBalOpts = "ballot-num-extra-options-id-" ++ toString ballotId
@@ -42,6 +42,9 @@ ballotFields ballotId model =
     let
         field =
             ballotFieldIds ballotId
+
+        tf name label =
+            textF name label [ tfIsDisabled ballotId model ] model
     in
     column NilS
         [ spacing (scaled 4) ]
@@ -49,7 +52,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Ballot Name")
             , para [] "Give your ballot a name, this will be the title that voters will see in the ballot list and also take prominent position on the voting screen."
             ]
-            [ textF field.name "Ballot Name" [] model
+            [ tf field.name "Ballot Name"
             ]
         , dubCol
             [ el SubH [] (text "Start Date")
@@ -58,9 +61,9 @@ ballotFields ballotId model =
             [ row NilS
                 [ spacing (scaled 2) ]
                 [ mkIcon "calendar-range" I24
-                , textF field.startDate "Select Date" [] model
+                , tf field.startDate "Select Date"
                 , mkIcon "clock" I24
-                , textF field.startTime "Start Time" [] model
+                , tf field.startTime "Start Time"
                 ]
             ]
         , dubCol
@@ -69,8 +72,8 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ textF field.durVal "1" [] model
-                , textF field.durType "Week(s)" [] model
+                [ tf field.durVal "1"
+                , tf field.durType "Week(s)"
                 ]
             , el NilS [ width fill ] (text " ")
             ]
@@ -78,7 +81,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Description")
             , para [] "Provide a description of the ballot, the purpose of the vote, what it will impact and how the decision will be made. Etc..."
             ]
-            [ textF field.desc "Description" [] model
+            [ tf field.desc "Description"
             ]
         , ballotOptions ballotId model
         ]
@@ -118,13 +121,16 @@ ballotOptions ballotId model =
                 , dubCol
                     -- [ el NilS [ paddingXY 0 10 ] (text <| "Option " ++ indexStr)
                     [ el SubSubH [] (text "Name")
-                    , textF (optField x).name "Option Name" [] model
+                    , tf (optField x).name "Option Name"
                     ]
                     -- [ btn [ Attr alignRight ] (text "x Remove Option")
                     [ el SubSubH [] (text "Description")
-                    , textF (optField x).desc "Description" [] model
+                    , tf (optField x).desc "Description"
                     ]
                 ]
+
+        tf name label =
+            textF name label [ tfIsDisabled ballotId model ] model
     in
     column NilS
         [ spacing (scaled 2) ]
@@ -167,9 +173,23 @@ saveBallot ballotId model =
             , start = 1510000000000
             , finish = 1520000000000
             , ballotOptions = List.map newBallotOption numBallotOptions
+            , state = BallotInitial
             }
     in
     ( ballotId, newBallot )
+
+
+
+-- TODO: This isn't working.
+
+
+tfIsDisabled : BallotId -> Model -> TfProps
+tfIsDisabled ballotId model =
+    let
+        ballot =
+            getBallot ballotId model
+    in
+    TF.Disabled <| not <| ballot.state == BallotInitial || ballot.state == BallotConfirmed
 
 
 
