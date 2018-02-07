@@ -4,10 +4,9 @@ import Components.Btn exposing (BtnProps(Attr, Click), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events exposing (onClick)
 import Helpers exposing (para)
 import Models exposing (Model)
-import Msgs exposing (Msg(HideDialog), VoteConfirmState(..))
+import Msgs exposing (Msg(HideDialog))
 import Routes exposing (DialogRoute(..))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -23,8 +22,8 @@ dialog model =
     let
         innerElement =
             case model.dialogHtml.route of
-                VoteConfirmationD vote voteId ->
-                    voteConfirmDialogV vote voteId model
+                VoteConfirmationD ( voteId, vote ) ->
+                    voteConfirmDialogV ( voteId, vote ) model
 
                 BallotDeleteConfirmD ballotId ->
                     ballotDeleteConfirmDialogV ballotId model
@@ -51,10 +50,10 @@ dialog model =
                     el Error [] (text "Not Found")
 
         closeButton =
-            if model.voteConfirmStatus == Processing || model.voteConfirmStatus == Validating then
-                []
-            else
-                [ btn [ Click HideDialog, Attr alignRight ] (mkIcon "close" I24) ]
+            --            if model.voteConfirmStatus == Sending then
+            --                []
+            --            else
+            [ btn [ Click HideDialog, Attr alignRight ] (mkIcon "close" I24) ]
     in
     el DialogBackdrop [ width fill, height fill ] <|
         el DialogStyle [ center, verticalCenter, maxWidth <| px 600 ] <|

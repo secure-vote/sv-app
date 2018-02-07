@@ -2,13 +2,13 @@ module Update exposing (..)
 
 --import Spinner
 
+import BlockchainPorts as Ports
 import Dict
-import Helpers exposing (getDemocracy)
+import Helpers exposing (getDemocracy, getTx)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
-import Models.Ballot exposing (BallotId)
-import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (DelegationState(..), Msg(..), VoteConfirmState(..))
+import Models.Democracy exposing (DelegateState(Active, Inactive))
+import Msgs exposing (Msg(..))
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -39,9 +39,6 @@ update msg model =
         SetFloatField fieldId value ->
             { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
 
-        SetDelegate string ->
-            { model | delegate = string } ! []
-
         NavigateBack ->
             { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
 
@@ -61,50 +58,66 @@ update msg model =
             in
             { model | routeStack = findRoute model.routeStack } ! []
 
-        CreateVote vote voteId ->
+        CreateVote ( voteId, vote ) ->
             { model | votes = Dict.insert voteId vote model.votes } ! []
 
-        CreateBallot ( ballotId, ballot ) ->
+        CreateBallot democId ( ballotId, ballot ) ->
+            let
+                democracy =
+                    getDemocracy democId model
+
+                addBallot =
+                    { democracy | ballots = ballotId :: democracy.ballots }
+            in
+            { model
+                | ballots = Dict.insert ballotId ballot model.ballots
+                , democracies = Dict.insert democId addBallot model.democracies
+            }
+                ! []
+
+        EditBallot ( ballotId, ballot ) ->
             { model | ballots = Dict.insert ballotId ballot model.ballots } ! []
 
         DeleteBallot ballotId ->
             { model | ballots = Dict.remove ballotId model.ballots } ! []
 
-        AddBallotToDemocracy ballotId democracyId ->
-            { model | democracies = Dict.insert democracyId (addBallot ballotId democracyId model) model.democracies } ! []
-
-        SetVoteConfirmState state ->
+        AddDelegate name ( democId, democracy ) ->
             let
-                cmd =
-                    case state of
-                        AwaitingConfirmation ->
-                            []
-
-                        Processing ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmState Validating ]
-
-                        Validating ->
-                            [ delay (Time.second * 3) <| SetVoteConfirmState Complete ]
-
-                        Complete ->
-                            []
+                addDelegate =
+                    { democracy | delegate = { name = name, state = Active } }
             in
-            { model | voteConfirmStatus = state } ! cmd
+            { model | democracies = Dict.insert democId addDelegate model.democracies } ! []
 
-        SetDelegationState state ->
+        RemoveDelegate ( democId, democracy ) ->
             let
-                cmd =
-                    case state of
-                        Inactive ->
-                            []
-
-                        Pending ->
-                            [ delay (Time.second * 3) <| SetDelegationState Active ]
-
-                        Active ->
-                            []
+                removeDelegate =
+                    { democracy | delegate = { name = "", state = Inactive } }
             in
-            { model | delegationState = state } ! cmd
+            { model | democracies = Dict.insert democId removeDelegate model.democracies } ! []
+
+        SetVoteState state ( voteId, vote ) ->
+            let
+                setVoteState =
+                    { vote | state = state }
+            in
+            { model | votes = Dict.insert voteId setVoteState model.votes } ! []
+
+        SetBallotState state ( ballotId, ballot ) ->
+            let
+                setBallotState =
+                    { ballot | state = state }
+            in
+            { model | ballots = Dict.insert ballotId setBallotState model.ballots } ! []
+
+        SetDelegateState state ( democId, democracy ) ->
+            let
+                delegate =
+                    democracy.delegate
+
+                setDelegateState =
+                    { democracy | delegate = { delegate | state = state } }
+            in
+            { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
 
         MultiMsg msgs ->
             multiUpdate msgs model []
@@ -119,6 +132,34 @@ update msg model =
                     model2 ! [ cmds, cmds1 ]
             in
             List.foldl chain (model ! []) msgs
+
+        --     Port Msgs
+        Send sendMsg ->
+            let
+                refId =
+                    sendMsg.name ++ toString model.now
+            in
+            { model | txReceipts = Dict.insert refId sendMsg model.txReceipts } ! [ Ports.send ( refId, sendMsg.payload ) ]
+
+        Receipt ( refId, txId ) ->
+            let
+                msg =
+                    (getTx refId model).onReceipt
+            in
+            update msg model
+
+        Confirm refId ->
+            let
+                msg =
+                    (getTx refId model).onConfirmation
+            in
+            update msg model
+
+        Get txId ->
+            ( model, Ports.get txId )
+
+        Receive data ->
+            ( model, Cmd.none )
 
 
 multiUpdate : List Msg -> Model -> List (Cmd Msg) -> ( Model, Cmd Msg )
@@ -136,15 +177,6 @@ multiUpdate msgs model cmds =
 
         [] ->
             ( model, Cmd.batch cmds )
-
-
-addBallot : BallotId -> DemocracyId -> Model -> Democracy
-addBallot ballotId democracyId model =
-    let
-        democracy =
-            getDemocracy democracyId model
-    in
-    { democracy | ballots = ballotId :: democracy.ballots }
 
 
 delay : Time -> msg -> Cmd msg

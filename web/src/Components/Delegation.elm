@@ -3,10 +3,10 @@ module Components.Delegation exposing (..)
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, Warning), btn)
 import Components.TextF exposing (textF)
 import Element exposing (el, text)
-import Element.Input exposing (disabled)
 import Helpers exposing (dubCol, getField, para)
 import Models exposing (Model)
-import Msgs exposing (DelegationState(..), Msg(MultiMsg, SetDelegate, SetDelegationState, SetField))
+import Models.Democracy exposing (DelegateState(..), Democracy, DemocracyId)
+import Msgs exposing (Msg(AddDelegate, MultiMsg, RemoveDelegate, Send, SetDelegateState, SetField))
 import Styles.Styles exposing (SvClass(Grey, NilS, SubH))
 import Views.ViewHelpers exposing (SvElement)
 
@@ -16,14 +16,47 @@ delegateTextFId =
     "delegate-tf"
 
 
-delegationV : Model -> SvElement
-delegationV model =
+delegationV : ( DemocracyId, Democracy ) -> Model -> SvElement
+delegationV ( democId, democracy ) model =
     let
+        setDelegateMsg =
+            MultiMsg
+                [ SetDelegateState Sending ( democId, democracy )
+                , Send
+                    { name = "new-delegate"
+                    , payload = "placeholder-delegate-id"
+                    , onReceipt = SetDelegateState Pending ( democId, democracy )
+                    , onConfirmation = AddDelegate (getField delegateTextFId model) ( democId, democracy )
+                    }
+                ]
+
+        removeDelegateMsg =
+            MultiMsg
+                [ SetDelegateState Sending ( democId, democracy )
+                , Send
+                    { name = "remove-delegate"
+                    , payload = "placeholder-delegate-id"
+                    , onReceipt = SetDelegateState Pending ( democId, democracy )
+                    , onConfirmation =
+                        MultiMsg
+                            [ RemoveDelegate ( democId, democracy )
+                            , SetField delegateTextFId ""
+                            ]
+                    }
+                ]
+
         delegationInactive =
             [ el SubH [] (text "Turn on Delegation")
             , para [] "Vote delegation is disabled. You can enable vote delegation by entering the Voter ID of your nominated delegate below."
             , textF delegateTextFId "Enter Voter ID" [] model
-            , btn [ PriBtn, Click (MultiMsg [ SetDelegate (getField delegateTextFId model), SetDelegationState Pending ]) ] (text "Nominate Delegate")
+            , btn [ PriBtn, Click setDelegateMsg ] (text "Nominate Delegate")
+            ]
+
+        delegationSending =
+            [ el SubH [] (text "Delegation Sending")
+            , para [] "Vote delegation is being sent to the blockchain"
+            , el Grey [] (text <| "#" ++ getField delegateTextFId model)
+            , btn [ PriBtn, Disabled True ] (text "Delegation Sending...")
             ]
 
         delegationPending =
@@ -37,7 +70,7 @@ delegationV model =
             [ el SubH [] (text "Delegation Active")
             , para [] "Vote delegation is currently active, your votes are being delegated to:"
             , el Grey [] (text <| "#" ++ getField delegateTextFId model)
-            , btn [ PriBtn, Warning, Click (MultiMsg [ SetDelegate "", SetField delegateTextFId "", SetDelegationState Inactive ]) ] (text "Cancel Vote delegation")
+            , btn [ PriBtn, Warning, Click removeDelegateMsg ] (text "Cancel Vote delegation")
             ]
 
         leftCol =
@@ -46,9 +79,12 @@ delegationV model =
             ]
 
         rightCol =
-            case model.delegationState of
+            case democracy.delegate.state of
                 Inactive ->
                     delegationInactive
+
+                Sending ->
+                    delegationSending
 
                 Pending ->
                     delegationPending

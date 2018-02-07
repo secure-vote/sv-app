@@ -9,12 +9,11 @@ import Element.Attributes exposing (alignBottom, center, class, fill, padding, p
 import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
-import Models.Democracy exposing (DemocracyId)
+import Models.Democracy exposing (Democracy, DemocracyId)
 import Msgs exposing (Msg(NavigateTo))
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Tuple exposing (first)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
 
 
@@ -32,7 +31,7 @@ democracyV democId model =
     in
     ( admin democId
     , header model
-    , body ballots model
+    , body ( democId, democracy ) ballots model
     )
 
 
@@ -58,8 +57,8 @@ header model =
     )
 
 
-body : List ( BallotId, Ballot ) -> Model -> SvElement
-body ballots model =
+body : ( DemocracyId, Democracy ) -> List ( BallotId, Ballot ) -> Model -> SvElement
+body ( democId, democracy ) ballots model =
     column IssueList
         [ spacing (scaled 3) ]
         [ el SubH [] (text "Open Ballots")
@@ -68,7 +67,7 @@ body ballots model =
         , futureBallotList ballots model
         , el SubH [] (text "Past Ballots")
         , pastBallotList ballots model
-        , delegationV model
+        , delegationV ( democId, democracy ) model
         ]
 
 

@@ -6,9 +6,10 @@ import Element exposing (Attribute, column, el, paragraph, row, text)
 import Element.Attributes exposing (center, fillPortion, maxWidth, minWidth, paddingRight, percent, px, spacing, width)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
-import Models.Ballot exposing (Ballot, BallotId)
-import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg)
+import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
+import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
+import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
+import Msgs exposing (Msg(NoOp), SendMsg)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
@@ -22,7 +23,7 @@ findDemocracy ballotId model =
         containsBallot ( democracyId, democracy ) =
             List.member ballotId democracy.ballots
     in
-    List.head (List.filter containsBallot <| Dict.toList model.democracies) ? ( 0, Democracy "Missing Democracy" "" "" [] )
+    List.head (List.filter containsBallot <| Dict.toList model.democracies) ? ( 0, Democracy "Missing Democracy" "" "" [] (Delegate "" Inactive) )
 
 
 {-| Check if a vote exists in model.votes or not.
@@ -37,13 +38,18 @@ checkAlreadyVoted ballotId model =
 
 
 getDemocracy : DemocracyId -> Model -> Democracy
-getDemocracy id model =
-    Dict.get id model.democracies ? Democracy "Missing Democracy" "" "" []
+getDemocracy democId model =
+    Dict.get democId model.democracies ? Democracy "Missing Democracy" "" "" [] (Delegate "" Inactive)
 
 
 getBallot : BallotId -> Model -> Ballot
-getBallot id model =
-    Dict.get id model.ballots ? Ballot "Missing Ballot" "" 0 0 []
+getBallot ballotId model =
+    Dict.get ballotId model.ballots ? Ballot "Missing Ballot" "" 0 0 [] BallotInitial
+
+
+getVote : VoteId -> Model -> Vote
+getVote voteId model =
+    Dict.get voteId model.votes ? Vote 0 [] VoteInitial
 
 
 getMembers : DemocracyId -> Model -> List Member
@@ -71,6 +77,11 @@ getIntField id model =
 getFloatField : String -> Model -> Float
 getFloatField id model =
     Dict.get id model.floatFields ? 0
+
+
+getTx : String -> Model -> SendMsg
+getTx refId model =
+    Dict.get refId model.txReceipts ? SendMsg "Missing Transaction" "" NoOp NoOp
 
 
 relativeTime : Time -> Model -> String
