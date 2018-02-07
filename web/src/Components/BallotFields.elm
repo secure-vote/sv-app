@@ -3,12 +3,14 @@ module Components.BallotFields exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Components.TextF as TF exposing (TfProps(..), textF)
+import DatePicker
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (dubCol, genNewId, getBallot, getDemocracy, getField, getIntField, para)
+import Html
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
+import Msgs exposing (Msg(CreateBallot, DatePickerMsg, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
@@ -61,7 +63,7 @@ ballotFields ballotId model =
             [ row NilS
                 [ spacing (scaled 2) ]
                 [ mkIcon "calendar-range" I24
-                , tf field.startDate "Select Date"
+                , html <| Html.map DatePickerMsg (DatePicker.view model.datePickerModel)
                 , mkIcon "clock" I24
                 , tf field.startTime "Start Time"
                 ]

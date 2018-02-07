@@ -1,5 +1,7 @@
 module Models exposing (..)
 
+import Date exposing (Date)
+import DatePicker
 import Dict exposing (Dict)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
@@ -29,6 +31,8 @@ type alias Model =
     , isAdmin : Bool
     , globalStyle : StyleOption
     , singleDemocName : String
+    , datePickerModel : DatePicker.Model
+    , date : Date
     }
 
 
@@ -52,6 +56,8 @@ initModel =
     , isAdmin = False
     , globalStyle = SvStyle
     , singleDemocName = ""
+    , datePickerModel = DatePicker.init (Date.fromTime 0) "#00bcd4"
+    , date = Date.fromTime 0
     }
 
 
@@ -75,6 +81,8 @@ initModelWithFlags flags =
     , isAdmin = flags.admin
     , globalStyle = SwmStyle
     , singleDemocName = flags.singleDemocName
+    , datePickerModel = DatePicker.init (Date.fromTime 0) "#00bcd4"
+    , date = Date.fromTime 0
     }
 
 

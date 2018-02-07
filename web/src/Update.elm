@@ -3,6 +3,7 @@ module Update exposing (..)
 --import Spinner
 
 import BlockchainPorts as Ports
+import DatePicker
 import Dict
 import Helpers exposing (getDemocracy, getTx)
 import Maybe.Extra exposing ((?))
@@ -118,6 +119,12 @@ update msg model =
                     { democracy | delegate = { delegate | state = state } }
             in
             { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
+
+        DatePickerMsg message ->
+            { model | datePickerModel = DatePicker.update message model.datePickerModel } ! []
+
+        DateSelected ->
+            { model | date = DatePicker.selectedDate model.datePickerModel } ! []
 
         MultiMsg msgs ->
             multiUpdate msgs model []

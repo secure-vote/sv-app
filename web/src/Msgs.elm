@@ -1,5 +1,6 @@
 module Msgs exposing (..)
 
+import DatePicker
 import Models.Ballot exposing (Ballot, BallotId, BallotState)
 import Models.Democracy exposing (DelegateState, Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState)
@@ -15,10 +16,12 @@ type Msg
     | SetField String String
     | SetIntField String Int
     | SetFloatField String Float
+      --      Navigation
     | NavigateBack
     | NavigateHome
     | NavigateTo Route
     | NavigateBackTo Route
+      --      Blockchain
     | CreateVote ( VoteId, Vote )
     | CreateBallot DemocracyId ( BallotId, Ballot )
     | EditBallot ( BallotId, Ballot )
@@ -28,14 +31,18 @@ type Msg
     | SetVoteState VoteState ( VoteId, Vote )
     | SetBallotState BallotState ( BallotId, Ballot )
     | SetDelegateState DelegateState ( DemocracyId, Democracy )
-    | MultiMsg (List Msg)
-    | ChainMsgs (List Msg)
+      --      Date/Time
+    | DatePickerMsg DatePicker.Msg
+    | DateSelected
       --     Port Msgs
     | Send SendMsg
     | Receipt ( String, String )
     | Confirm String
     | Get String
     | Receive String
+      --      Helpers
+    | MultiMsg (List Msg)
+    | ChainMsgs (List Msg)
 
 
 type alias SendMsg =

@@ -7,7 +7,6 @@ import Helpers exposing (getField)
 import Models exposing (Model)
 import Msgs exposing (Msg(NoOp, SetField))
 import Styles.Styles exposing (SvClass(InputS, NilS))
-import Styles.Variations exposing (Variation)
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
