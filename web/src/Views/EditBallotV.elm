@@ -4,7 +4,6 @@ import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOpt
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Input exposing (SelectMsg, selected)
 import Helpers exposing (dubCol, findDemocracy, genDropDown, genNewId, getBallot, getDemocracy, getDuration, getField, getIntField, getSelectField, para)
 import Maybe exposing (andThen)
 import Models exposing (Model)
@@ -96,10 +95,6 @@ populateFromModel ( ballotId, ballot ) model =
 
         ( durVal, durType ) =
             getDuration ballot.start ballot.finish
-
-        --        setSelectFieldMsgOrNop =
-        --            andThen (getSelectField fields.durType model)
-        --                \selectF ->
     in
     MultiMsg <|
         [ SetField fields.name ballot.name
@@ -109,8 +104,7 @@ populateFromModel ( ballotId, ballot ) model =
         --        , SetField ballotFieldIds.start <| toString ballot.start
         --        , SetField ballotFieldIds.finish <| toString ballot.finish
         , SetField fields.durVal (toString durVal)
-
-        --        , SetSelectField fields.durType <| selected (genDropDown fields.durType (Just durType))
+        , SetSelectField fields.durType <| genDropDown fields.durType (Just durType)
         , SetIntField fields.extraBalOpts <| numBallotOptions - 2
         ]
             ++ (List.foldr (++) [] <|

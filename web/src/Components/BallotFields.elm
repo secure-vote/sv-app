@@ -7,7 +7,7 @@ import Date
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Input as Input
-import Helpers exposing (dubCol, genDropDown, genNewId, getBallot, getDateString, getDemocracy, getField, getIntField, getSelectField, para)
+import Helpers exposing (dubCol, genNewId, getBallot, getDateString, getDemocracy, getField, getIntField, getSelectField, para)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (..)

@@ -1,6 +1,6 @@
 module Msgs exposing (..)
 
-import Element.Input exposing (SelectMsg)
+import Element.Input exposing (SelectMsg, SelectWith)
 import Models.Ballot exposing (Ballot, BallotId, BallotState)
 import Models.Democracy exposing (DelegateState, Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState)
@@ -29,8 +29,8 @@ type Msg
     | SetVoteState VoteState ( VoteId, Vote )
     | SetBallotState BallotState ( BallotId, Ballot )
     | SetDelegateState DelegateState ( DemocracyId, Democracy )
-    | SetSelectField String (SelectMsg SelectOptions)
-      --    | Select (SelectMsg SelectOptions)
+    | SetSelectField String (SelectWith SelectOptions Msg)
+    | Select String (SelectMsg SelectOptions)
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
       --     Port Msgs

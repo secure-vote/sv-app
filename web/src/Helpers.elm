@@ -10,7 +10,7 @@ import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
-import Msgs exposing (Msg(NoOp, SetSelectField), SelectOptions(..), SendMsg)
+import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
@@ -86,8 +86,8 @@ getSelectField id model =
 
 
 genDropDown : String -> Maybe SelectOptions -> SelectWith SelectOptions Msg
-genDropDown id default =
-    Input.dropMenu default (\sMsg -> SetSelectField id sMsg)
+genDropDown id opt =
+    Input.dropMenu opt (Select id)
 
 
 getTx : String -> Model -> SendMsg
@@ -232,7 +232,7 @@ getDuration start finish =
     if difference < 100 then
         ( 100, Month )
     else
-        ( 200, Week )
+        ( 200, Month )
 
 
 
