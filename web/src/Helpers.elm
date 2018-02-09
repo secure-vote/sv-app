@@ -11,6 +11,7 @@ import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
 import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
+import String exposing (slice)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
@@ -159,8 +160,8 @@ getResultPercent ballot value =
 -- "yyyy-MM-ddThh:mm"
 
 
-getDateString : Time -> String
-getDateString time =
+timeToDateString : Time -> String
+timeToDateString time =
     let
         date =
             Date.fromTime time
@@ -224,15 +225,46 @@ getDateString time =
     year ++ "-" ++ month ++ "-" ++ day ++ "T" ++ hour ++ ":" ++ minute
 
 
+oneDay =
+    86400000
+
+
+oneWeek =
+    oneDay * 7
+
+
+oneMonth =
+    oneWeek * 4
+
+
+getDuration : Time -> Time -> ( Float, SelectOptions )
 getDuration start finish =
     let
         difference =
             finish - start
     in
-    if difference < 100 then
-        ( 100, Month )
+    if ceiling difference % oneMonth == 0 then
+        ( difference / oneMonth, Month )
+    else if ceiling difference % oneWeek == 0 then
+        ( difference / oneWeek, Week )
     else
-        ( 200, Month )
+        ( difference / oneDay, Day )
+
+
+durationToTime : ( Float, Maybe SelectOptions ) -> Time
+durationToTime ( durationValue, durationType ) =
+    case durationType of
+        Just Day ->
+            oneDay * durationValue
+
+        Just Week ->
+            oneWeek * durationValue
+
+        Just Month ->
+            oneMonth * durationValue
+
+        Nothing ->
+            0
 
 
 

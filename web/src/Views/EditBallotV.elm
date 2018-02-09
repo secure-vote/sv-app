@@ -4,7 +4,7 @@ import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOpt
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, findDemocracy, genDropDown, genNewId, getBallot, getDemocracy, getDuration, getField, getIntField, getSelectField, para)
+import Helpers exposing (dubCol, findDemocracy, genDropDown, genNewId, getBallot, getDemocracy, getDuration, getField, getIntField, getSelectField, para, timeToDateString)
 import Maybe exposing (andThen)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
@@ -93,7 +93,7 @@ populateFromModel ( ballotId, ballot ) model =
             , SetField (optField num).desc ballotOption.desc
             ]
 
-        ( durVal, durType ) =
+        ( durationVal, durationType ) =
             getDuration ballot.start ballot.finish
     in
     MultiMsg <|
@@ -101,10 +101,11 @@ populateFromModel ( ballotId, ballot ) model =
         , SetField fields.desc ballot.desc
 
         --            TODO: Implement date fields.
-        --        , SetField ballotFieldIds.start <| toString ballot.start
+        , SetField fields.start <| timeToDateString ballot.start
+
         --        , SetField ballotFieldIds.finish <| toString ballot.finish
-        , SetField fields.durVal (toString durVal)
-        , SetSelectField fields.durType <| genDropDown fields.durType (Just durType)
+        , SetField fields.durationVal (toString durationVal)
+        , SetSelectField fields.durationType <| genDropDown fields.durationType (Just durationType)
         , SetIntField fields.extraBalOpts <| numBallotOptions - 2
         ]
             ++ (List.foldr (++) [] <|

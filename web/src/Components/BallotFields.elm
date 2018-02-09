@@ -6,8 +6,9 @@ import Components.TextF as TF exposing (TfProps(..), textF)
 import Date
 import Element exposing (..)
 import Element.Attributes exposing (..)
+import Element.Events exposing (onInput)
 import Element.Input as Input
-import Helpers exposing (dubCol, genNewId, getBallot, getDateString, getDemocracy, getField, getIntField, getSelectField, para)
+import Helpers exposing (dubCol, durationToTime, genNewId, getBallot, getDemocracy, getField, getIntField, getSelectField, para, timeToDateString)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (..)
@@ -25,10 +26,9 @@ ballotFieldIds : BallotId -> BallotFieldIds
 ballotFieldIds ballotId =
     { name = "ballot-name-tf-" ++ toString ballotId
     , desc = "ballot-description-tf-" ++ toString ballotId
-    , startDate = "ballot-start-date-tf-" ++ toString ballotId
-    , startTime = "ballot-start-time-tf-" ++ toString ballotId
-    , durVal = "ballot-duration-value-tf-" ++ toString ballotId
-    , durType = "ballot-duration-type-tf-" ++ toString ballotId
+    , start = "ballot-start-time-tf-" ++ toString ballotId
+    , durationVal = "ballot-duration-value-tf-" ++ toString ballotId
+    , durationType = "ballot-duration-type-tf-" ++ toString ballotId
     , extraBalOpts = "ballot-num-extra-options-id-" ++ toString ballotId
     }
 
@@ -67,7 +67,8 @@ ballotFields ballotId model =
                     node "input" <|
                         el NilS
                             [ attribute "type" "datetime-local"
-                            , attribute "value" (getDateString model.now)
+                            , attribute "value" (getField field.start model)
+                            , onInput (SetField field.start)
                             ]
                             (text "Select Date")
                 ]
@@ -84,7 +85,7 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ tf field.durVal "Duration"
+                [ tf field.durationVal "Duration"
 
                 --                , tf field.durType "Week(s)"
                 , Input.select NilS
@@ -93,7 +94,7 @@ ballotFields ballotId model =
                     , minWidth (px 100)
                     ]
                     { label = Input.hiddenLabel "Duration Type"
-                    , with = getSelectField field.durType model
+                    , with = getSelectField field.durationType model
                     , max = 5
                     , options = []
                     , menu =
@@ -186,6 +187,15 @@ saveBallot ballotId model =
         numBallotOptions =
             List.range 0 <| getIntField fields.extraBalOpts model + 1
 
+        startTime =
+            Date.toTime <| Result.withDefault (Date.fromTime model.now) <| Date.fromString <| getField fields.start model
+
+        durationValue =
+            Result.withDefault 0 (String.toFloat (getField fields.durationVal model))
+
+        durationType =
+            Input.selected <| getSelectField fields.durationType model
+
         newBallotOption x =
             { id = ballotId + x + 1
             , name = getField (optField x).name model
@@ -196,12 +206,8 @@ saveBallot ballotId model =
         newBallot =
             { name = getField fields.name model
             , desc = getField fields.desc model
-
-            --            TODO: Implement date fields.
-            --            , start = Result.withDefault 0 <| String.toFloat <| getField ballotField.start model
-            --            , finish = Result.withDefault 0 <| String.toFloat <| getField ballotField.finish model
-            , start = 1510000000000
-            , finish = 1520000000000
+            , start = startTime
+            , finish = startTime + durationToTime ( durationValue, durationType )
             , ballotOptions = List.map newBallotOption numBallotOptions
             , state = BallotInitial
             }
