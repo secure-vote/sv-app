@@ -41,10 +41,9 @@ type alias BallotOption =
 type alias BallotFieldIds =
     { name : String
     , desc : String
-    , startDate : String
-    , startTime : String
-    , durVal : String
-    , durType : String
+    , start : String
+    , durationVal : String
+    , durationType : String
     , extraBalOpts : String
     }
 

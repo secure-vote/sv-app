@@ -56,13 +56,15 @@ const genElmLoader = () => {
     let extra = '';
 
     if (__DEV__) {
-        extra += "&debug=true"
+        extra += "&debug=true&warn=false"
+    } else {
+        extra += "&warn=true"
     }
 
     return {
         test:    /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loader:  'elm-webpack-loader?verbose=true&warn=true' + extra,
+        loader:  'elm-webpack-loader?verbose=true' + extra,
     }
 }
 

@@ -4,22 +4,22 @@ import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOpt
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, genNewId, getDemocracy, getField, getIntField, para)
+import Helpers exposing (dubCol, genDropDown, genNewId, getDemocracy, getField, getIntField, para, timeToDateString)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetField, SetIntField))
+import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetField, SetIntField, SetSelectField), SelectOptions(Day))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
 
-createBallotV : DemocracyId -> Model -> SvView
-createBallotV democId model =
+createBallotV : DemocracyId -> BallotId -> Model -> SvView
+createBallotV democId ballotId model =
     ( empty
     , header
-    , body democId model
+    , body democId ballotId model
     )
 
 
@@ -31,15 +31,8 @@ header =
     )
 
 
-body : DemocracyId -> Model -> SvElement
-body democId model =
-    let
-        democracy =
-            getDemocracy democId model
-
-        ballotId =
-            genNewId democId <| List.length democracy.ballots
-    in
+body : DemocracyId -> BallotId -> Model -> SvElement
+body democId ballotId model =
     column NilS
         [ spacing (scaled 4) ]
         [ ballotFields ballotId model
@@ -81,3 +74,16 @@ createNewBallot democId ballotId model =
         , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
         ]
         []
+
+
+populateFromModel : BallotId -> Model -> Msg
+populateFromModel ballotId model =
+    let
+        fields =
+            ballotFieldIds ballotId
+    in
+    MultiMsg <|
+        [ SetField fields.start <| timeToDateString model.now
+        , SetField fields.durationVal "1"
+        , SetSelectField fields.durationType <| genDropDown fields.durationType (Just Day)
+        ]

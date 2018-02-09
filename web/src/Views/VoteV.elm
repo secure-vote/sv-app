@@ -45,7 +45,7 @@ admin ballotId ballot model =
 
         editMsg =
             MultiMsg
-                [ populateFromModel ballotId ballot
+                [ populateFromModel ( ballotId, ballot ) model
                 , NavigateTo <| EditBallotR ballotId
                 ]
     in

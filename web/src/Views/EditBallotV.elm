@@ -4,10 +4,11 @@ import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOpt
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, findDemocracy, genNewId, getBallot, getDemocracy, getField, getIntField, para)
+import Helpers exposing (dubCol, findDemocracy, genDropDown, genNewId, getBallot, getDemocracy, getDuration, getField, getIntField, getSelectField, para, timeToDateString)
+import Maybe exposing (andThen)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (Msg(EditBallot, MultiMsg, NavigateBack, NavigateBackTo, Send, SetBallotState, SetDialog, SetField, SetIntField))
+import Msgs exposing (Msg(..), SelectOptions(Day, Month))
 import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
@@ -75,8 +76,8 @@ updateBallot ballotId model =
         []
 
 
-populateFromModel : BallotId -> Ballot -> Msg
-populateFromModel ballotId ballot =
+populateFromModel : ( BallotId, Ballot ) -> Model -> Msg
+populateFromModel ( ballotId, ballot ) model =
     let
         fields =
             ballotFieldIds ballotId
@@ -91,14 +92,20 @@ populateFromModel ballotId ballot =
             [ SetField (optField num).name ballotOption.name
             , SetField (optField num).desc ballotOption.desc
             ]
+
+        ( durationVal, durationType ) =
+            getDuration ballot.start ballot.finish
     in
     MultiMsg <|
         [ SetField fields.name ballot.name
         , SetField fields.desc ballot.desc
 
         --            TODO: Implement date fields.
-        --        , SetField ballotFieldIds.start <| toString ballot.start
+        , SetField fields.start <| timeToDateString ballot.start
+
         --        , SetField ballotFieldIds.finish <| toString ballot.finish
+        , SetField fields.durationVal (toString durationVal)
+        , SetSelectField fields.durationType <| genDropDown fields.durationType (Just durationType)
         , SetIntField fields.extraBalOpts <| numBallotOptions - 2
         ]
             ++ (List.foldr (++) [] <|

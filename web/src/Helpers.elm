@@ -4,12 +4,14 @@ import Date
 import Dict
 import Element exposing (Attribute, column, el, paragraph, row, text)
 import Element.Attributes exposing (center, fillPortion, maxWidth, minWidth, paddingRight, percent, px, spacing, width)
+import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
-import Msgs exposing (Msg(NoOp), SendMsg)
+import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
+import String exposing (slice)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
@@ -79,6 +81,16 @@ getFloatField id model =
     Dict.get id model.floatFields ? 0
 
 
+getSelectField : String -> Model -> SelectWith SelectOptions Msg
+getSelectField id model =
+    Dict.get id model.selectFields ? genDropDown id Nothing
+
+
+genDropDown : String -> Maybe SelectOptions -> SelectWith SelectOptions Msg
+genDropDown id opt =
+    Input.dropMenu opt (Select id)
+
+
 getTx : String -> Model -> SendMsg
 getTx refId model =
     Dict.get refId model.txReceipts ? SendMsg "Missing Transaction" "" NoOp NoOp
@@ -141,6 +153,118 @@ getResultPercent ballot value =
             abs <| result ? 0
     in
     round <| value * 100 / (List.sum <| List.map getResults ballot.ballotOptions)
+
+
+
+-- getDateString return format
+-- "yyyy-MM-ddThh:mm"
+
+
+timeToDateString : Time -> String
+timeToDateString time =
+    let
+        date =
+            Date.fromTime time
+
+        addZero num =
+            if num < 10 then
+                "0" ++ toString num
+            else
+                toString num
+
+        year =
+            toString (Date.year date)
+
+        month =
+            case Date.month date of
+                Date.Jan ->
+                    "01"
+
+                Date.Feb ->
+                    "02"
+
+                Date.Mar ->
+                    "03"
+
+                Date.Apr ->
+                    "04"
+
+                Date.May ->
+                    "05"
+
+                Date.Jun ->
+                    "06"
+
+                Date.Jul ->
+                    "07"
+
+                Date.Aug ->
+                    "08"
+
+                Date.Sep ->
+                    "09"
+
+                Date.Oct ->
+                    "10"
+
+                Date.Nov ->
+                    "11"
+
+                Date.Dec ->
+                    "12"
+
+        day =
+            addZero (Date.day date)
+
+        hour =
+            addZero (Date.hour date)
+
+        minute =
+            addZero (Date.minute date)
+    in
+    year ++ "-" ++ month ++ "-" ++ day ++ "T" ++ hour ++ ":" ++ minute
+
+
+oneDay =
+    86400000
+
+
+oneWeek =
+    oneDay * 7
+
+
+oneMonth =
+    oneWeek * 4
+
+
+getDuration : Time -> Time -> ( Float, SelectOptions )
+getDuration start finish =
+    let
+        difference =
+            finish - start
+    in
+    if ceiling difference % oneMonth == 0 then
+        ( difference / oneMonth, Month )
+    else if ceiling difference % oneWeek == 0 then
+        ( difference / oneWeek, Week )
+    else
+        ( difference / oneDay, Day )
+
+
+durationToTime : ( Float, Maybe SelectOptions ) -> Time
+durationToTime ( durationValue, durationType ) =
+    case durationType of
+        Just Day ->
+            oneDay * durationValue
+
+        Just Week ->
+            oneWeek * durationValue
+
+        Just Month ->
+            oneMonth * durationValue
+
+        Nothing ->
+            0
 
 
 

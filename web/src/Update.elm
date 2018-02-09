@@ -4,7 +4,8 @@ module Update exposing (..)
 
 import BlockchainPorts as Ports
 import Dict
-import Helpers exposing (getDemocracy, getTx)
+import Element.Input as Input
+import Helpers exposing (getDemocracy, getSelectField, getTx)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel)
 import Models.Democracy exposing (DelegateState(Active, Inactive))
@@ -38,6 +39,19 @@ update msg model =
 
         SetFloatField fieldId value ->
             { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
+
+        SetSelectField fieldId selectWith ->
+            { model | selectFields = Dict.insert fieldId selectWith model.selectFields } ! []
+
+        Select fieldId selectMsg ->
+            let
+                selectField =
+                    getSelectField fieldId model
+
+                selectWith =
+                    Input.updateSelection selectMsg selectField
+            in
+            { model | selectFields = Dict.insert fieldId selectWith model.selectFields } ! []
 
         NavigateBack ->
             { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
