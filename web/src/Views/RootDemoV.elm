@@ -78,8 +78,8 @@ rootDemoView model =
                     notFoundView
 
                 -- createDemocracyV model
-                CreateBallotR democracyId ->
-                    createBallotV democracyId model
+                CreateBallotR democracyId ballotId ->
+                    createBallotV democracyId ballotId model
 
                 EditBallotR ballotId ->
                     editBallotV ballotId model

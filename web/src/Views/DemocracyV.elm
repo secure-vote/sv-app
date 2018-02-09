@@ -10,10 +10,11 @@ import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemo
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(NavigateTo))
+import Msgs exposing (Msg(MultiMsg, NavigateTo))
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
+import Views.CreateBallotV exposing (populateFromModel)
 import Views.ViewHelpers exposing (SvAttribute, SvElement, SvHeader, SvView, notFoundView)
 
 
@@ -29,23 +30,29 @@ democracyV democId model =
         ballotInDemocracy ( ballotId, ballot ) =
             List.member ballotId democracy.ballots
     in
-    ( admin democId
+    ( admin ( democId, democracy ) model
     , header model
     , body ( democId, democracy ) ballots model
     )
 
 
+admin : ( DemocracyId, Democracy ) -> Model -> SvElement
+admin ( democId, democracy ) model =
+    let
+        ballotId =
+            genNewId democId <| List.length democracy.ballots
 
--- TODO: Only show admin box when admin flag is true
-
-
-admin : DemocracyId -> SvElement
-admin democId =
+        createBallotMsg =
+            MultiMsg
+                [ populateFromModel ballotId model
+                , NavigateTo (CreateBallotR democId ballotId)
+                ]
+    in
     column AdminBoxS
         [ spacing (scaled 1), padding (scaled 4) ]
         [ el SubH [] (text "Welcome, Admin")
         , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
-        , btn [ PriBtn, Small, Click (NavigateTo (CreateBallotR democId)) ] (text "Create new ballot")
+        , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
         ]
 
 
