@@ -3,12 +3,15 @@ module Components.BallotFields exposing (..)
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
 import Components.TextF as TF exposing (TfProps(..), textF)
+import Date
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, genNewId, getBallot, getDemocracy, getField, getIntField, para)
+import Element.Input as Input
+import Helpers exposing (dubCol, genDropDown, genNewId, getBallot, getDateString, getDemocracy, getField, getIntField, getSelectField, para)
+import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, SetField, SetIntField))
+import Msgs exposing (Msg(..), SelectOptions(..))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
@@ -60,11 +63,20 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ mkIcon "calendar-range" I24
-                , tf field.startDate "Select Date"
-                , mkIcon "clock" I24
-                , tf field.startTime "Start Time"
+                [ el NilS [ class "field" ] <|
+                    node "input" <|
+                        el NilS
+                            [ attribute "type" "datetime-local"
+                            , attribute "value" (getDateString model.now)
+                            ]
+                            (text "Select Date")
                 ]
+
+            --                [ mkIcon "calendar-range" I24
+            --                , textF field.startDate "Select Date" [ tfIsDisabled ballotId model, Date ] model
+            --                , mkIcon "clock" I24
+            --                , tf field.startTime "Start Time"
+            --                ]
             ]
         , dubCol
             [ el SubH [] (text "Ballot Duration")
@@ -72,8 +84,26 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ tf field.durVal "1"
-                , tf field.durType "Week(s)"
+                [ tf field.durVal "Duration"
+
+                --                , tf field.durType "Week(s)"
+                , Input.select NilS
+                    [ padding 10
+                    , spacing 20
+                    , minWidth (px 100)
+                    ]
+                    { label = Input.hiddenLabel "Duration Type"
+                    , with = getSelectField field.durType model
+                    , max = 5
+                    , options = []
+                    , menu =
+                        Input.menuAbove NilS
+                            []
+                            [ Input.choice Day (text "Day(s)")
+                            , Input.choice Week (text "Week(s)")
+                            , Input.choice Month (text "Month(s)")
+                            ]
+                    }
                 ]
             , el NilS [ width fill ] (text " ")
             ]

@@ -14,7 +14,7 @@ import Msgs exposing (Msg(NavigateTo))
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Views.ViewHelpers exposing (SvElement, SvHeader, SvView, notFoundView)
+import Views.ViewHelpers exposing (SvAttribute, SvElement, SvHeader, SvView, notFoundView)
 
 
 democracyV : DemocracyId -> Model -> SvView
@@ -71,6 +71,7 @@ body ( democId, democracy ) ballots model =
         ]
 
 
+issueListSpacing : SvAttribute
 issueListSpacing =
     spacing <| scaled 2
 

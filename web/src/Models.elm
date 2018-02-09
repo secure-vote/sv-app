@@ -1,10 +1,11 @@
 module Models exposing (..)
 
 import Dict exposing (Dict)
+import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId)
-import Msgs exposing (Msg, SendMsg)
+import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
@@ -23,6 +24,7 @@ type alias Model =
     , intFields : Dict String Int
     , floatFields : Dict String Float
     , boolFields : Dict String Bool
+    , selectFields : Dict String (SelectWith SelectOptions Msg)
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
@@ -46,6 +48,7 @@ initModel =
     , intFields = Dict.empty
     , floatFields = Dict.empty
     , boolFields = Dict.empty
+    , selectFields = Dict.empty
     , now = 0
     , isLoading = True
     , isDemocracyLevel = False
@@ -69,6 +72,7 @@ initModelWithFlags flags =
     , intFields = Dict.empty
     , floatFields = Dict.empty
     , boolFields = Dict.empty
+    , selectFields = Dict.empty
     , now = 0
     , isLoading = True
     , isDemocracyLevel = True
