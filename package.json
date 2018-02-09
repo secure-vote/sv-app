@@ -19,6 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "build-web": "webpack",
+    "build-netlify": "webpack",
     "web": "webpack-dev-server --port 3000 --open",
     "build-cordova": "cp -a _dist/. sv-cordova/www/ ; cd sv-cordova ; cordova build ios",
     "run-cordova": "cd sv-cordova ; cordova run ios"
