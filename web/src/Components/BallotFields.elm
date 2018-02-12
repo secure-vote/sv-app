@@ -2,8 +2,9 @@ module Components.BallotFields exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
-import Components.TextF as TF exposing (TfProps(..), textF)
+import Components.TextF as TF exposing (TextField, TfProps(..), textF)
 import Date
+import Dict exposing (Dict)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onInput)
@@ -40,14 +41,68 @@ ballotOptionFieldIds ballotId num =
     }
 
 
-ballotFields : BallotId -> Model -> SvElement
-ballotFields ballotId model =
+textFields : Model -> BallotId -> Dict String TextField
+textFields model ballotId =
     let
         field =
             ballotFieldIds ballotId
 
-        tf name label =
-            textF name label [ tfIsDisabled ballotId model ] model
+        optField =
+            ballotOptionFieldIds ballotId
+
+        value id =
+            getField id model
+
+        numBallotOptions =
+            List.range 0 <| getIntField field.extraBalOpts model + 1
+
+        --            Validations
+        empty str =
+            ( String.isEmpty str, "This Field is Required" )
+
+        inPast date =
+            ( Date.toTime (Result.withDefault (Date.fromTime model.now) (Date.fromString date)) < model.now, "Date must be in the future" )
+
+        negative num =
+            ( Result.withDefault 0 (String.toFloat num) <= 0, "Number must be positive" )
+
+        --
+        tf id type_ label validation =
+            ( id
+            , { id = id
+              , type_ = type_
+              , label = label
+              , props = []
+              , validation = List.map (\func -> func (value id)) validation
+              }
+            )
+
+        getOptionFields num =
+            [ tf (optField num).name TF.Text "Option Name" [ empty ]
+            , tf (optField num).desc TF.Text "Description" [ empty ]
+            ]
+    in
+    Dict.fromList <|
+        [ tf field.name TF.Text "Ballot Name" [ empty ]
+        , tf field.desc TF.Text "Description" [ empty ]
+        , tf field.start TF.Date "Select Date" [ empty, inPast ]
+        , tf field.durationVal TF.Number "Duration" [ empty, negative ]
+        ]
+            ++ List.concatMap getOptionFields numBallotOptions
+
+
+blankTf =
+    TextField "" TF.Text "" [] []
+
+
+ballotFieldsV : BallotId -> Model -> SvElement
+ballotFieldsV ballotId model =
+    let
+        field =
+            ballotFieldIds ballotId
+
+        tf name =
+            textF model <| Dict.get name (textFields model ballotId) ? blankTf
     in
     column NilS
         [ spacing (scaled 4) ]
@@ -55,7 +110,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Ballot Name")
             , para [] "Give your ballot a name, this will be the title that voters will see in the ballot list and also take prominent position on the voting screen."
             ]
-            [ tf field.name "Ballot Name"
+            [ tf field.name
             ]
         , dubCol
             [ el SubH [] (text "Start Date")
@@ -63,14 +118,8 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ el NilS [ class "field" ] <|
-                    node "input" <|
-                        el NilS
-                            [ attribute "type" "datetime-local"
-                            , attribute "value" (getField field.start model)
-                            , onInput (SetField field.start)
-                            ]
-                            (text "Select Date")
+                [ mkIcon "calendar-range" I24
+                , tf field.start
                 ]
 
             --                [ mkIcon "calendar-range" I24
@@ -85,7 +134,7 @@ ballotFields ballotId model =
             ]
             [ row NilS
                 [ spacing (scaled 2) ]
-                [ tf field.durationVal "Duration"
+                [ tf field.durationVal
 
                 --                , tf field.durType "Week(s)"
                 , Input.select NilS
@@ -112,7 +161,7 @@ ballotFields ballotId model =
             [ el SubH [] (text "Description")
             , para [] "Provide a description of the ballot, the purpose of the vote, what it will impact and how the decision will be made. Etc..."
             ]
-            [ tf field.desc "Description"
+            [ tf field.desc
             ]
         , ballotOptions ballotId model
         ]
@@ -152,16 +201,16 @@ ballotOptions ballotId model =
                 , dubCol
                     -- [ el NilS [ paddingXY 0 10 ] (text <| "Option " ++ indexStr)
                     [ el SubSubH [] (text "Name")
-                    , tf (optField x).name "Option Name"
+                    , tf (optField x).name
                     ]
                     -- [ btn [ Attr alignRight ] (text "x Remove Option")
                     [ el SubSubH [] (text "Description")
-                    , tf (optField x).desc "Description"
+                    , tf (optField x).desc
                     ]
                 ]
 
-        tf name label =
-            textF name label [ tfIsDisabled ballotId model ] model
+        tf name =
+            textF model <| Dict.get name (textFields model ballotId) ? blankTf
     in
     column NilS
         [ spacing (scaled 2) ]
@@ -216,7 +265,7 @@ saveBallot ballotId model =
 
 
 
--- TODO: This isn't working.
+-- TODO: This isn't working for Date and Number fields.
 
 
 tfIsDisabled : BallotId -> Model -> TfProps
@@ -228,7 +277,17 @@ tfIsDisabled ballotId model =
     TF.Disabled <| not <| ballot.state == BallotInitial || ballot.state == BallotConfirmed
 
 
+checkAllFieldsValid : BallotId -> Model -> Bool
+checkAllFieldsValid ballotId model =
+    let
+        getValidaiton ( id, tf ) =
+            tf.validation
+    in
+    List.any Tuple.first (List.concatMap getValidaiton (Dict.toList (textFields model ballotId)))
 
+
+
+--    List.any Tuple.first (List.concatMap (validation ballotId model) fields)
 --
 --        errorTimeFormat timeId =
 --            Textf.error "Please enter an Epoch time"

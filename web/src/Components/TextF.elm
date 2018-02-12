@@ -1,8 +1,9 @@
 module Components.TextF exposing (..)
 
-import Element exposing (el, text)
-import Element.Attributes exposing (class, fill, width)
-import Element.Input as Input exposing (Option)
+import Element exposing (el, node, text)
+import Element.Attributes exposing (attribute, class, fill, width)
+import Element.Events exposing (onInput)
+import Element.Input as Input exposing (Option, errorBelow)
 import Helpers exposing (getField)
 import Models exposing (Model)
 import Msgs exposing (Msg(NoOp, SetField))
@@ -16,9 +17,36 @@ type TfProps
     | BtnNop -- doesn't do anything
 
 
-textF : String -> String -> List TfProps -> Model -> SvElement
-textF name labelText props model =
+type TfType
+    = Text
+    | Date
+    | Number
+
+
+type alias TextField =
+    { id : String
+    , type_ : TfType
+    , label : String
+    , props : List TfProps
+    , validation : List ( Bool, String )
+    }
+
+
+textF : Model -> TextField -> SvElement
+textF model tf =
     let
+        value =
+            getField tf.id model
+
+        isError ( bool, msg ) =
+            if bool then
+                Just (errorBelow (text msg))
+            else
+                Nothing
+
+        validation =
+            List.filterMap isError tf.validation
+
         btnPropToOpts prop =
             case prop of
                 Disabled bool ->
@@ -27,23 +55,44 @@ textF name labelText props model =
                     else
                         []
 
-                BtnNop ->
+                _ ->
                     []
 
         f btnProp opts =
             opts ++ btnPropToOpts btnProp
 
         opts =
-            List.foldl f [] props
+            List.foldl f [] tf.props ++ validation
     in
+    --    TODO: Date and Number Fields need Labels and Error Messages
     el NilS [ class "field" ] <|
-        Input.text InputS
-            []
-            { onChange = SetField name
-            , value = getField name model
-            , label = Input.labelAbove (text labelText)
-            , options = opts
-            }
+        case tf.type_ of
+            Date ->
+                node "input" <|
+                    el NilS
+                        [ attribute "type" "datetime-local"
+                        , attribute "value" value
+                        , onInput (SetField tf.id)
+                        ]
+                        (text tf.label)
+
+            Number ->
+                node "input" <|
+                    el NilS
+                        [ attribute "type" "number"
+                        , attribute "value" value
+                        , onInput (SetField tf.id)
+                        ]
+                        (text tf.label)
+
+            Text ->
+                Input.text InputS
+                    []
+                    { onChange = SetField tf.id
+                    , value = value
+                    , label = Input.labelAbove (text tf.label)
+                    , options = opts
+                    }
 
 
 

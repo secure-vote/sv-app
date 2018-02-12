@@ -1,6 +1,6 @@
 module Views.CreateBallotV exposing (..)
 
-import Components.BallotFields exposing (ballotFieldIds, ballotFields, ballotOptionFieldIds, saveBallot)
+import Components.BallotFields exposing (ballotFieldIds, ballotFieldsV, ballotOptionFieldIds, checkAllFieldsValid, saveBallot)
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
@@ -35,7 +35,7 @@ body : DemocracyId -> BallotId -> Model -> SvElement
 body democId ballotId model =
     column NilS
         [ spacing (scaled 4) ]
-        [ ballotFields ballotId model
+        [ ballotFieldsV ballotId model
         , createNewBallot democId ballotId model
         ]
 
@@ -71,7 +71,7 @@ createNewBallot democId ballotId model =
     dubCol
         [ el SubH [] (text "Complete")
         , para [] "Your ballot, <ballot name>, will commence on the <date> at <time>. The ballot will run for <duration> and is made up of <number of options> options."
-        , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
+        , btn [ PriBtn, Small, Click createBallotMsg, Disabled (checkAllFieldsValid ballotId model) ] (text "Create new ballot")
         ]
         []
 
