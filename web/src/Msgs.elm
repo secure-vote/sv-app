@@ -16,6 +16,8 @@ type Msg
     | SetField String String
     | SetIntField String Int
     | SetFloatField String Float
+    | SetSelectField String (SelectWith DurationType Msg)
+    | Select String (SelectMsg DurationType)
     | NavigateBack
     | NavigateHome
     | NavigateTo Route
@@ -29,16 +31,18 @@ type Msg
     | SetVoteState VoteState ( VoteId, Vote )
     | SetBallotState BallotState ( BallotId, Ballot )
     | SetDelegateState DelegateState ( DemocracyId, Democracy )
-    | SetSelectField String (SelectWith SelectOptions Msg)
-    | Select String (SelectMsg SelectOptions)
+    | Debug String
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
       --     Port Msgs
-    | Send SendMsg
-    | Receipt ( String, String )
-    | Confirm String
-    | Get String
-    | Receive String
+    | BlockchainSend SendMsg
+    | BlockchainReceipt ( String, String )
+    | BlockchainConfirm String
+    | BlockchainGet String
+    | BlockchainReceive String
+    | LocalStorageWrite { key : String, value : String }
+    | LocalStorageRead String
+    | LocalStorageReceive { key : String, value : String }
 
 
 type alias SendMsg =
@@ -49,7 +53,7 @@ type alias SendMsg =
     }
 
 
-type SelectOptions
+type DurationType
     = Day
     | Week
     | Month

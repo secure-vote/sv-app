@@ -13,7 +13,7 @@ import Helpers exposing (dubCol, durationToTime, genNewId, getBallot, getDemocra
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (Msg(..), SelectOptions(..))
+import Msgs exposing (DurationType(..), Msg(..))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)

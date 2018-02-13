@@ -10,7 +10,7 @@ import Models exposing (Member, Model)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
-import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
+import Msgs exposing (DurationType(..), Msg(..), SendMsg)
 import String exposing (slice)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
@@ -81,12 +81,12 @@ getFloatField id model =
     Dict.get id model.floatFields ? 0
 
 
-getSelectField : String -> Model -> SelectWith SelectOptions Msg
+getSelectField : String -> Model -> SelectWith DurationType Msg
 getSelectField id model =
     Dict.get id model.selectFields ? genDropDown id Nothing
 
 
-genDropDown : String -> Maybe SelectOptions -> SelectWith SelectOptions Msg
+genDropDown : String -> Maybe DurationType -> SelectWith DurationType Msg
 genDropDown id opt =
     Input.dropMenu opt (Select id)
 
@@ -237,7 +237,7 @@ oneMonth =
     oneWeek * 4
 
 
-getDuration : Time -> Time -> ( Float, SelectOptions )
+getDuration : Time -> Time -> ( Float, DurationType )
 getDuration start finish =
     let
         difference =
@@ -251,7 +251,7 @@ getDuration start finish =
         ( difference / oneDay, Day )
 
 
-durationToTime : ( Float, Maybe SelectOptions ) -> Time
+durationToTime : ( Float, Maybe DurationType ) -> Time
 durationToTime ( durationValue, durationType ) =
     case durationType of
         Just Day ->

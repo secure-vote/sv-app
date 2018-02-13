@@ -6,7 +6,7 @@ import Element exposing (el, text)
 import Helpers exposing (dubCol, getField, para)
 import Models exposing (Model)
 import Models.Democracy exposing (DelegateState(..), Democracy, DemocracyId)
-import Msgs exposing (Msg(AddDelegate, MultiMsg, RemoveDelegate, Send, SetDelegateState, SetField))
+import Msgs exposing (Msg(AddDelegate, BlockchainSend, MultiMsg, RemoveDelegate, SetDelegateState, SetField))
 import Styles.Styles exposing (SvClass(Grey, NilS, SubH))
 import Views.ViewHelpers exposing (SvElement)
 
@@ -25,7 +25,7 @@ delegationV ( democId, democracy ) model =
         setDelegateMsg =
             MultiMsg
                 [ SetDelegateState Sending ( democId, democracy )
-                , Send
+                , BlockchainSend
                     { name = "new-delegate"
                     , payload = "placeholder-delegate-id"
                     , onReceipt = SetDelegateState Pending ( democId, democracy )
@@ -36,7 +36,7 @@ delegationV ( democId, democracy ) model =
         removeDelegateMsg =
             MultiMsg
                 [ SetDelegateState Sending ( democId, democracy )
-                , Send
+                , BlockchainSend
                     { name = "remove-delegate"
                     , payload = "placeholder-delegate-id"
                     , onReceipt = SetDelegateState Pending ( democId, democracy )

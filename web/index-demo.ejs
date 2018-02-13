@@ -45,6 +45,15 @@
               app.ports.send.subscribe(sendDataToBlockchain);
               app.ports.get.subscribe(getDataFromBlockchain);
 
+              app.ports.writeLocalStorageImpl.subscribe(function({key, value}) {
+                  localStorage.setItem("sv_" + key, JSON.stringify(value))
+              });
+
+              app.ports.readLocalStorageImpl.subscribe(function(key) {
+                  var ls = localStorage.getItem("sv_" + key)
+                  app.ports.gotLocalStorageImpl.send({key: key, value: JSON.parse(ls)});
+              });
+
               function sendDataToBlockchain(arg) {
 
                   var [ref, data] = arg;

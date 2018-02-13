@@ -1,4 +1,7 @@
-port module BlockchainPorts exposing (..)
+port module Ports exposing (..)
+
+import Json.Decode exposing (Value)
+
 
 -------------------------------
 -- Add data to the blockchain
@@ -38,3 +41,16 @@ port get : String -> Cmd msg
 
 
 port receive : (String -> msg) -> Sub msg
+
+
+
+-- Local Storage Ports
+
+
+port writeLocalStorageImpl : { key : String, value : String } -> Cmd msg
+
+
+port readLocalStorageImpl : String -> Cmd msg
+
+
+port gotLocalStorageImpl : ({ key : String, value : String } -> msg) -> Sub msg

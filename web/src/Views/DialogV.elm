@@ -8,7 +8,7 @@ import List exposing (foldr, map)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Vote exposing (..)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetVoteState))
+import Msgs exposing (Msg(BlockchainSend, CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, NoOp, SetBallotState, SetVoteState))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
@@ -48,7 +48,7 @@ voteConfirmDialogV ( voteId, vote ) model =
             MultiMsg
                 [ CreateVote ( voteId, vote )
                 , SetVoteState VoteSending ( voteId, vote )
-                , Send
+                , BlockchainSend
                     { name = "new-vote"
                     , payload = "Awesome new Vote!"
                     , onReceipt = onReceiptMsg
@@ -90,7 +90,7 @@ ballotDeleteConfirmDialogV ballotId model =
         deleteBallotMsg =
             MultiMsg
                 [ SetBallotState BallotSending ( ballotId, ballot )
-                , Send
+                , BlockchainSend
                     { name = "delete-ballot"
                     , payload = "Goodbye"
                     , onReceipt = onReceiptMsg

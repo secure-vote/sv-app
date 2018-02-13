@@ -2,14 +2,14 @@ module Update exposing (..)
 
 --import Spinner
 
-import BlockchainPorts as Ports
 import Dict
 import Element.Input as Input
 import Helpers exposing (getDemocracy, getSelectField, getTx)
 import Maybe.Extra exposing ((?))
-import Models exposing (Model, initModel)
+import Models exposing (Model, initModel, lSKeys)
 import Models.Democracy exposing (DelegateState(Active, Inactive))
 import Msgs exposing (Msg(..))
+import Ports
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -133,6 +133,21 @@ update msg model =
             in
             { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
 
+        Debug str ->
+            let
+                currentLog =
+                    Dict.get lSKeys.debugLog model.localStorage ? ""
+
+                -- TODO: model.now does't update in real time.
+                -- TODO: convert model.now from float to ISO format
+                newLog =
+                    "\n" ++ toString model.now ++ " : " ++ str ++ currentLog
+
+                mdl =
+                    { model | localStorage = Dict.insert lSKeys.debugLog newLog model.localStorage }
+            in
+            update (LocalStorageWrite { key = lSKeys.debugLog, value = newLog }) mdl
+
         MultiMsg msgs ->
             multiUpdate msgs model []
 
@@ -148,32 +163,61 @@ update msg model =
             List.foldl chain (model ! []) msgs
 
         --     Port Msgs
-        Send sendMsg ->
+        BlockchainSend sendMsg ->
             let
+                -- TODO: model.now does't update in real time.
+                -- TODO: convert model.now from float to ISO format
                 refId =
                     sendMsg.name ++ toString model.now
-            in
-            { model | txReceipts = Dict.insert refId sendMsg model.txReceipts } ! [ Ports.send ( refId, sendMsg.payload ) ]
 
-        Receipt ( refId, txId ) ->
+                mdl =
+                    { model | txReceipts = Dict.insert refId sendMsg model.txReceipts }
+
+                msgs =
+                    [ Debug <| "Blockchain Send : sendMsg = { name = '" ++ sendMsg.name ++ "', payload = '" ++ sendMsg.payload ++ "' }" ]
+            in
+            multiUpdate msgs mdl [ Ports.send ( refId, sendMsg.payload ) ]
+
+        BlockchainReceipt ( refId, txId ) ->
             let
-                msg =
-                    (getTx refId model).onReceipt
+                msgs =
+                    [ (getTx refId model).onReceipt
+                    , Debug <| "Blockchain Receipt : TxID = " ++ txId
+                    ]
             in
-            update msg model
+            multiUpdate msgs model []
 
-        Confirm refId ->
+        BlockchainConfirm refId ->
             let
-                msg =
-                    (getTx refId model).onConfirmation
+                msgs =
+                    [ (getTx refId model).onConfirmation
+                    , Debug <| "Blockchain Confirmation : RefId = " ++ refId
+                    ]
             in
-            update msg model
+            multiUpdate msgs model []
 
-        Get txId ->
-            ( model, Ports.get txId )
+        BlockchainGet txId ->
+            let
+                msgs =
+                    [ Debug <| "Blockchain Get : TxId = " ++ txId ]
+            in
+            multiUpdate msgs model [ Ports.get txId ]
 
-        Receive data ->
-            ( model, Cmd.none )
+        BlockchainReceive data ->
+            let
+                msgs =
+                    [ Debug <| "Blockchain Receive : data = " ++ data ]
+            in
+            multiUpdate msgs model []
+
+        LocalStorageWrite payload ->
+            ( model, Ports.writeLocalStorageImpl payload )
+
+        LocalStorageRead key ->
+            ( model, Ports.readLocalStorageImpl key )
+
+        LocalStorageReceive { key, value } ->
+            { model | localStorage = Dict.insert key value model.localStorage } ! []
 
 
 multiUpdate : List Msg -> Model -> List (Cmd Msg) -> ( Model, Cmd Msg )

@@ -8,7 +8,7 @@ import Helpers exposing (dubCol, genDropDown, genNewId, getDemocracy, getField, 
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(CreateBallot, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetField, SetIntField, SetSelectField), SelectOptions(Day))
+import Msgs exposing (DurationType(Day), Msg(..))
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
@@ -50,7 +50,7 @@ createNewBallot democId ballotId model =
             MultiMsg
                 [ CreateBallot democId ballotTuple
                 , SetBallotState BallotSending ballotTuple
-                , Send
+                , BlockchainSend
                     { name = "new-ballot"
                     , payload = "Awesome new Vote!"
                     , onReceipt = onReceiptMsg
