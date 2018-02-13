@@ -4,7 +4,7 @@ module Update exposing (..)
 
 import Dict
 import Element.Input as Input
-import Helpers exposing (getDemocracy, getSelectField, getTx)
+import Helpers exposing (getDebugLog, getDemocracy, getSelectField, getTx)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model, initModel, lSKeys)
 import Models.Democracy exposing (DelegateState(Active, Inactive))
@@ -135,13 +135,10 @@ update msg model =
 
         Debug str ->
             let
-                currentLog =
-                    Dict.get lSKeys.debugLog model.localStorage ? ""
-
                 -- TODO: model.now does't update in real time.
                 -- TODO: convert model.now from float to ISO format
                 newLog =
-                    "\n" ++ toString model.now ++ " : " ++ str ++ currentLog
+                    "\n" ++ toString model.now ++ " : " ++ str ++ getDebugLog model
 
                 mdl =
                     { model | localStorage = Dict.insert lSKeys.debugLog newLog model.localStorage }

@@ -225,7 +225,7 @@ swmStylesheet =
         , style AdminBoxS
             [ background bgLightGrey
             ]
-        , style ParaS <| [] ++ textVariations
+        , style ParaS <| [ prop "white-space" "pre-wrap" ] ++ textVariations
         , style Notify
             [ Bdr.all 1.0
             , solid
