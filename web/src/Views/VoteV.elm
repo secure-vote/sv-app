@@ -12,7 +12,7 @@ import Html.Events as HE
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Vote exposing (VoteState(VoteInitial))
-import Msgs exposing (Msg(MultiMsg, NavigateTo, NoOp, SetDialog, SetField, SetFloatField))
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD), Route(EditBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -46,7 +46,7 @@ admin ballotId ballot model =
         editMsg =
             MultiMsg
                 [ populateFromModel ( ballotId, ballot ) model
-                , NavigateTo <| EditBallotR ballotId
+                , Nav <| NTo <| EditBallotR ballotId
                 ]
     in
     column AdminBoxS
@@ -142,7 +142,7 @@ optionList ballotId model =
 
         {- TODO: Why is this a string?? -}
         sliderInputMsg id =
-            String.toFloat >> Result.withDefault 0 >> SetFloatField (voteOptionSliderId id)
+            String.toFloat >> Result.withDefault 0 >> SFloat (voteOptionSliderId id) >> SetField
 
         sliderAlterMsg id newVal =
             if isFutureVote || haveVoted then

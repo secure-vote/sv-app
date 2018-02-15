@@ -6,7 +6,7 @@ import Json.Decode exposing (Value)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId)
-import Msgs exposing (DurationType(..), Msg(..), SendMsg)
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
@@ -20,7 +20,7 @@ type alias Model =
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , localStorage : Dict String String
-    , txReceipts : Dict String SendMsg
+    , txReceipts : Dict String BcRequest
     , routeStack : List Route
     , fields : Dict String String
     , intFields : Dict String Int

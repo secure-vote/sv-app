@@ -13,7 +13,7 @@ import Helpers exposing (dubCol, durationToTime, genNewId, getBallot, getDemocra
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (DurationType(..), Msg(..))
+import Msgs exposing (..)
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
@@ -180,10 +180,10 @@ ballotOptions ballotId model =
             List.range 0 <| getIntField field.extraBalOpts model + 1
 
         addBallotOption =
-            SetIntField field.extraBalOpts <| getIntField field.extraBalOpts model + 1
+            SetField <| SInt field.extraBalOpts <| getIntField field.extraBalOpts model + 1
 
         removeBallotOption =
-            SetIntField field.extraBalOpts <| getIntField field.extraBalOpts model - 1
+            SetField <| SInt field.extraBalOpts <| getIntField field.extraBalOpts model - 1
 
         showRemoveOption =
             if getIntField field.extraBalOpts model < 1 then

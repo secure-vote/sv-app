@@ -10,7 +10,7 @@ import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemo
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (Msg(MultiMsg, NavigateTo))
+import Msgs exposing (..)
 import Routes exposing (Route(CreateBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -45,7 +45,7 @@ admin ( democId, democracy ) model =
         createBallotMsg =
             MultiMsg
                 [ populateFromModel ballotId model
-                , NavigateTo (CreateBallotR democId ballotId)
+                , Nav <| NTo (CreateBallotR democId ballotId)
                 ]
     in
     column AdminBoxS

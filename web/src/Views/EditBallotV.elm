@@ -8,7 +8,7 @@ import Helpers exposing (dubCol, findDemocracy, genDropDown, genNewId, getBallot
 import Maybe exposing (andThen)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
-import Msgs exposing (DurationType(Day, Month), Msg(..))
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(BallotDeleteConfirmD), Route(DemocracyR, VoteR))
 import Styles.Styles exposing (SvClass(NilS, SubH))
 import Styles.Swarm exposing (scaled)
@@ -48,24 +48,25 @@ updateBallot ballotId model =
 
         editBallotMsg =
             MultiMsg
-                [ EditBallot <| saveBallot ballotId model
-                , SetBallotState BallotSending ballotTuple
-                , BlockchainSend
-                    { name = "new-ballot"
-                    , payload = "Awesome new Vote!"
-                    , onReceipt = onReceiptMsg
-                    , onConfirmation = onConfirmationMsg
-                    }
+                [ CRUD <| EditBallot <| saveBallot ballotId model
+                , SetState <| SBallot BallotSending ballotTuple
+                , ToBc <|
+                    BcSend
+                        { name = "new-ballot"
+                        , payload = "Awesome new Vote!"
+                        , onReceipt = onReceiptMsg
+                        , onConfirmation = onConfirmationMsg
+                        }
                 ]
 
         onReceiptMsg =
             MultiMsg
-                [ NavigateBackTo <| VoteR ballotId
-                , SetBallotState BallotPendingEdits ballotTuple
+                [ Nav <| NBackTo <| VoteR ballotId
+                , SetState <| SBallot BallotPendingEdits ballotTuple
                 ]
 
         onConfirmationMsg =
-            SetBallotState BallotConfirmed ballotTuple
+            SetState <| SBallot BallotConfirmed ballotTuple
     in
     --    TODO: Replace placeholder text
     dubCol
@@ -89,24 +90,24 @@ populateFromModel ( ballotId, ballot ) model =
             List.length ballot.ballotOptions
 
         ballotOptionMsgs ballotOption num =
-            [ SetField (optField num).name ballotOption.name
-            , SetField (optField num).desc ballotOption.desc
+            [ SetField <| SText (optField num).name ballotOption.name
+            , SetField <| SText (optField num).desc ballotOption.desc
             ]
 
         ( durationVal, durationType ) =
             getDuration ballot.start ballot.finish
     in
     MultiMsg <|
-        [ SetField fields.name ballot.name
-        , SetField fields.desc ballot.desc
+        [ SetField <| SText fields.name ballot.name
+        , SetField <| SText fields.desc ballot.desc
 
         --            TODO: Implement date fields.
-        , SetField fields.start <| timeToDateString ballot.start
+        , SetField <| SText fields.start <| timeToDateString ballot.start
 
-        --        , SetField ballotFieldIds.finish <| toString ballot.finish
-        , SetField fields.durationVal (toString durationVal)
-        , SetSelectField fields.durationType <| genDropDown fields.durationType (Just durationType)
-        , SetIntField fields.extraBalOpts <| numBallotOptions - 2
+        --        , SetTextField ballotFieldIds.finish <| toString ballot.finish
+        , SetField <| SText fields.durationVal (toString durationVal)
+        , SetField <| SSelect fields.durationType <| genDropDown fields.durationType (Just durationType)
+        , SetField <| SInt fields.extraBalOpts <| numBallotOptions - 2
         ]
             ++ (List.foldr (++) [] <|
                     List.map2 ballotOptionMsgs ballot.ballotOptions <|

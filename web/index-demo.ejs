@@ -42,17 +42,10 @@
               const app = Elm.MainDemo.embed(node, flags);
 
               // Ports
-              app.ports.send.subscribe(sendDataToBlockchain);
-              app.ports.get.subscribe(getDataFromBlockchain);
-
-              app.ports.writeLocalStorageImpl.subscribe(function({key, value}) {
-                  localStorage.setItem("sv_" + key, JSON.stringify(value))
-              });
-
-              app.ports.readLocalStorageImpl.subscribe(function(key) {
-                  var ls = localStorage.getItem("sv_" + key)
-                  app.ports.gotLocalStorageImpl.send({key: key, value: JSON.parse(ls)});
-              });
+              app.ports.sendBcData.subscribe(errWrapper("sendBcData")(sendDataToBlockchain));
+              app.ports.getBcData.subscribe(errWrapper("getBcData")(getDataFromBlockchain));
+              app.ports.writeLsImpl.subscribe(errWrapper("writeLsImpl")(writeToLocalStorage));
+              app.ports.readLsImpl.subscribe(errWrapper("readLsImpl")(readFromLocalStorage));
 
               function sendDataToBlockchain(arg) {
 
@@ -65,13 +58,13 @@
                       var txId = generateReceipt(data);
 
                       // Send Receipt
-                      app.ports.receipt.send([ref, txId]);
+                      app.ports.receiptBcData.send([ref, txId]);
 
                       // Wait for Blockchain Confirmation
                       setTimeout(function(){
 
                           // Send Blockchain Confirmation
-                          app.ports.confirmation.send(ref);
+                          app.ports.confirmBcData.send(ref);
                       }, 5000);
 
                   }, 3000);
@@ -87,7 +80,7 @@
                       var data = "DATAAAAAA";
 
                       // Send Receipt
-                      app.ports.receive.send(data);
+                      app.ports.receiveBcData.send(data);
 
                   }, 3000);
 
@@ -96,6 +89,28 @@
               function generateReceipt(data) {
                   var receipt = Math.floor(Math.random() * 1000000).toString()
                   return receipt;
+              }
+
+              function writeToLocalStorage({key, value}) {
+                  localStorage.setItem("sv_" + key, JSON.stringify(value))
+              }
+
+              function readFromLocalStorage(key) {
+                  var ls = localStorage.getItem("sv_" + key)
+                  app.ports.gotLsImpl.send({key: key, value: JSON.parse(ls)});
+              }
+
+              function errWrapper(fName) {
+                  return function(f) {
+                      return function(...args){
+                          try {
+                              return f.apply(this, args);
+                          } catch (err) {
+                              // error handling here
+                              console.error("Function", fName, "produced error:", err);
+                          }
+                      }
+                  }
               }
 
               // Remove Loading Spinner

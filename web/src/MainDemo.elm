@@ -2,7 +2,7 @@ module MainDemo exposing (..)
 
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags, lSKeys)
-import Msgs exposing (Msg(BlockchainConfirm, BlockchainReceipt, BlockchainReceive, LocalStorageRead, LocalStorageReceive, SetTime))
+import Msgs exposing (..)
 import Ports
 import Task exposing (perform, succeed)
 import Time exposing (Time)
@@ -19,23 +19,18 @@ initCmds : Cmd Msg
 initCmds =
     Cmd.batch <|
         [ perform SetTime Time.now
-        , perform LocalStorageRead (succeed lSKeys.debugLog)
+        , perform (ToLs << LsRead) (succeed lSKeys.debugLog)
         ]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.receipt BlockchainReceipt
-        , Ports.confirmation BlockchainConfirm
-        , Ports.receive BlockchainReceive
-        , Ports.gotLocalStorageImpl LocalStorageReceive
+        [ Ports.receiptBcData <| FromBc << BcReceipt
+        , Ports.confirmBcData <| FromBc << BcConfirm
+        , Ports.receiveBcData <| FromBc << BcReceive
+        , Ports.gotLsImpl <| FromLs << LsReceive
         ]
-
-
-
---    Sub.map SpinnerMsg Spinner.subscription
--- MAIN
 
 
 main : Program Flags Model Msg

@@ -6,7 +6,7 @@ import Element.Events exposing (onInput)
 import Element.Input as Input exposing (Option, errorBelow)
 import Helpers exposing (getField)
 import Models exposing (Model)
-import Msgs exposing (Msg(NoOp, SetField))
+import Msgs exposing (..)
 import Styles.Styles exposing (SvClass(InputS, NilS))
 import Styles.Variations exposing (Variation)
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
@@ -72,7 +72,7 @@ textF model tf =
                     el NilS
                         [ attribute "type" "datetime-local"
                         , attribute "value" value
-                        , onInput (SetField tf.id)
+                        , onInput (SetField << SText tf.id)
                         ]
                         (text tf.label)
 
@@ -81,14 +81,14 @@ textF model tf =
                     el NilS
                         [ attribute "type" "number"
                         , attribute "value" value
-                        , onInput (SetField tf.id)
+                        , onInput (SetField << SText tf.id)
                         ]
                         (text tf.label)
 
             Text ->
                 Input.text InputS
                     []
-                    { onChange = SetField tf.id
+                    { onChange = SetField << SText tf.id
                     , value = value
                     , label = Input.labelAbove (text tf.label)
                     , options = opts
@@ -102,7 +102,7 @@ textF model tf =
 --    Textf.render Mdl
 --        [ id ]
 --        model.mdl
---        ([ Options.onInput <| SetField id
+--        ([ Options.onInput <| SetTextField id
 --         , Textf.value <| Dict.get id model.fields ? ""
 --         , Textf.label label
 --         , Textf.floatingLabel

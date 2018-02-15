@@ -13,7 +13,7 @@ import Html as H exposing (Html, div, i, node, span)
 import Html.Attributes as HA
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Msgs exposing (Msg(NavigateBack, NavigateHome, NavigateTo, SetDialog))
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
@@ -51,7 +51,7 @@ rootDemoView model =
 
         navBack =
             if List.length model.routeStack > 1 then
-                [ btn [ Click NavigateBack ] (mkIcon "arrow-left" I24) ]
+                [ btn [ Click <| Nav <| NBack ] (mkIcon "arrow-left" I24) ]
             else
                 [ empty ]
 
@@ -59,7 +59,7 @@ rootDemoView model =
             if List.head model.routeStack == Just DebugR then
                 [ empty ]
             else
-                [ btn [ Click (NavigateTo DebugR) ] (mkIcon "alert-circle-outline" I24) ]
+                [ btn [ Click <| Nav <| NTo DebugR ] (mkIcon "alert-circle-outline" I24) ]
 
         ( hLeft, hCenter, hRight ) =
             header

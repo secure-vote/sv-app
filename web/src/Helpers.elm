@@ -10,7 +10,7 @@ import Models exposing (Member, Model, lSKeys)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
-import Msgs exposing (DurationType(..), Msg(..), SendMsg)
+import Msgs exposing (..)
 import String exposing (slice)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
@@ -91,9 +91,9 @@ genDropDown id opt =
     Input.dropMenu opt (Select id)
 
 
-getTx : String -> Model -> SendMsg
+getTx : String -> Model -> BcRequest
 getTx refId model =
-    Dict.get refId model.txReceipts ? SendMsg "Missing Transaction" "" NoOp NoOp
+    Dict.get refId model.txReceipts ? BcRequest "Missing Transaction" "" NoOp NoOp
 
 
 getDebugLog : Model -> String

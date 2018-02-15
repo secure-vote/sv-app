@@ -9,21 +9,21 @@ import Json.Decode exposing (Value)
 -- Send data is of the format (ReferenceId, Data)
 
 
-port send : ( String, String ) -> Cmd msg
+port sendBcData : ( String, String ) -> Cmd msg
 
 
 
 -- Receipt data is of the format (ReferenceId, TxId)
 
 
-port receipt : (( String, String ) -> msg) -> Sub msg
+port receiptBcData : (( String, String ) -> msg) -> Sub msg
 
 
 
 -- Confirmation data is of the format (ReferenceId)
 
 
-port confirmation : (String -> msg) -> Sub msg
+port confirmBcData : (String -> msg) -> Sub msg
 
 
 
@@ -33,24 +33,24 @@ port confirmation : (String -> msg) -> Sub msg
 -- get data is of the format (TxId)
 
 
-port get : String -> Cmd msg
+port getBcData : String -> Cmd msg
 
 
 
 -- Receive data is of the format (data)
 
 
-port receive : (String -> msg) -> Sub msg
+port receiveBcData : (String -> msg) -> Sub msg
 
 
 
 -- Local Storage Ports
 
 
-port writeLocalStorageImpl : { key : String, value : String } -> Cmd msg
+port writeLsImpl : { key : String, value : String } -> Cmd msg
 
 
-port readLocalStorageImpl : String -> Cmd msg
+port readLsImpl : String -> Cmd msg
 
 
-port gotLocalStorageImpl : ({ key : String, value : String } -> msg) -> Sub msg
+port gotLsImpl : ({ key : String, value : String } -> msg) -> Sub msg

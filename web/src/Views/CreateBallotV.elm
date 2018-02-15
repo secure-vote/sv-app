@@ -8,7 +8,7 @@ import Helpers exposing (dubCol, genDropDown, genNewId, getDemocracy, getField, 
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Democracy exposing (Democracy, DemocracyId)
-import Msgs exposing (DurationType(Day), Msg(..))
+import Msgs exposing (..)
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(NilS, SubH, SubSubH, VoteList))
 import Styles.Swarm exposing (scaled)
@@ -48,24 +48,25 @@ createNewBallot democId ballotId model =
 
         createBallotMsg =
             MultiMsg
-                [ CreateBallot democId ballotTuple
-                , SetBallotState BallotSending ballotTuple
-                , BlockchainSend
-                    { name = "new-ballot"
-                    , payload = "Awesome new Vote!"
-                    , onReceipt = onReceiptMsg
-                    , onConfirmation = onConfirmationMsg
-                    }
+                [ CRUD <| CreateBallot democId ballotTuple
+                , SetState <| SBallot BallotSending ballotTuple
+                , ToBc <|
+                    BcSend
+                        { name = "new-ballot"
+                        , payload = "Awesome new Vote!"
+                        , onReceipt = onReceiptMsg
+                        , onConfirmation = onConfirmationMsg
+                        }
                 ]
 
         onReceiptMsg =
             MultiMsg
-                [ NavigateBackTo <| DemocracyR democId
-                , SetBallotState BallotPendingCreation ballotTuple
+                [ Nav <| NBackTo <| DemocracyR democId
+                , SetState <| SBallot BallotPendingCreation ballotTuple
                 ]
 
         onConfirmationMsg =
-            SetBallotState BallotConfirmed ballotTuple
+            SetState <| SBallot BallotConfirmed ballotTuple
     in
     --    TODO: Replace placeholder text
     dubCol
@@ -83,7 +84,7 @@ populateFromModel ballotId model =
             ballotFieldIds ballotId
     in
     MultiMsg <|
-        [ SetField fields.start <| timeToDateString model.now
-        , SetField fields.durationVal "1"
-        , SetSelectField fields.durationType <| genDropDown fields.durationType (Just Day)
+        [ SetField <| SText fields.start <| timeToDateString model.now
+        , SetField <| SText fields.durationVal "1"
+        , SetField <| SSelect fields.durationType <| genDropDown fields.durationType (Just Day)
         ]
