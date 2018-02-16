@@ -10,7 +10,7 @@ import Time exposing (Time)
 
 type Msg
     = NoOp
-    | SetTime Time
+    | Tick Time
     | SetDialog String (DialogRoute Msg)
     | HideDialog
     | Nav NavMsg

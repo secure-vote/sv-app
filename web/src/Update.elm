@@ -22,7 +22,8 @@ update msg model =
         Msgs.NoOp ->
             ( model, Cmd.none )
 
-        SetTime time ->
+        Tick time ->
+            --        Updates every second
             { model | now = time } ! []
 
         SetDialog title route ->
@@ -55,7 +56,6 @@ update msg model =
 
         Debug str ->
             let
-                -- TODO: model.now does't update in real time.
                 -- TODO: convert model.now from float to ISO format
                 newLog =
                     "\n" ++ toString model.now ++ " : " ++ str ++ getDebugLog model
@@ -203,7 +203,6 @@ updateToBlockchain msg model =
     case msg of
         BcSend sendMsg ->
             let
-                -- TODO: model.now does't update in real time.
                 -- TODO: convert model.now from float to ISO format
                 refId =
                     sendMsg.name ++ toString model.now

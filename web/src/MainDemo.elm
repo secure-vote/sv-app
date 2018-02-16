@@ -3,9 +3,9 @@ module MainDemo exposing (..)
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModelWithFlags, lSKeys)
 import Msgs exposing (..)
-import Ports
+import Ports exposing (..)
 import Task exposing (perform, succeed)
-import Time exposing (Time)
+import Time exposing (every, second)
 import Update exposing (update)
 import Views.RootDemoV exposing (rootDemoView)
 
@@ -18,18 +18,18 @@ init flags =
 initCmds : Cmd Msg
 initCmds =
     Cmd.batch <|
-        [ perform SetTime Time.now
-        , perform (ToLs << LsRead) (succeed lSKeys.debugLog)
+        [ perform (ToLs << LsRead) (succeed lSKeys.debugLog)
         ]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.receiptBcData <| FromBc << BcReceipt
-        , Ports.confirmBcData <| FromBc << BcConfirm
-        , Ports.receiveBcData <| FromBc << BcReceive
-        , Ports.gotLsImpl <| FromLs << LsReceive
+        [ every second Tick
+        , receiptBcData <| FromBc << BcReceipt
+        , confirmBcData <| FromBc << BcConfirm
+        , receiveBcData <| FromBc << BcReceive
+        , gotLsImpl <| FromLs << LsReceive
         ]
 
 
