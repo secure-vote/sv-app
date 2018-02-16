@@ -203,7 +203,6 @@ updateToBlockchain msg model =
     case msg of
         BcSend sendMsg ->
             let
-                -- TODO: convert model.now from float to ISO format
                 refId =
                     sendMsg.name ++ toString model.now
 
