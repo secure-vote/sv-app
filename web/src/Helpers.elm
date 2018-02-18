@@ -6,11 +6,11 @@ import Element exposing (Attribute, column, el, paragraph, row, text)
 import Element.Attributes exposing (center, fillPortion, maxWidth, minWidth, paddingRight, percent, px, spacing, width)
 import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Maybe.Extra exposing ((?))
-import Models exposing (Member, Model)
+import Models exposing (Member, Model, lSKeys)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
-import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
+import Msgs exposing (..)
 import String exposing (slice)
 import Styles.Styles exposing (SvClass(NilS, ParaS))
 import Styles.Swarm exposing (scaled)
@@ -81,19 +81,24 @@ getFloatField id model =
     Dict.get id model.floatFields ? 0
 
 
-getSelectField : String -> Model -> SelectWith SelectOptions Msg
+getSelectField : String -> Model -> SelectWith DurationType Msg
 getSelectField id model =
     Dict.get id model.selectFields ? genDropDown id Nothing
 
 
-genDropDown : String -> Maybe SelectOptions -> SelectWith SelectOptions Msg
+genDropDown : String -> Maybe DurationType -> SelectWith DurationType Msg
 genDropDown id opt =
     Input.dropMenu opt (Select id)
 
 
-getTx : String -> Model -> SendMsg
+getTx : String -> Model -> BcRequest
 getTx refId model =
-    Dict.get refId model.txReceipts ? SendMsg "Missing Transaction" "" NoOp NoOp
+    Dict.get refId model.txReceipts ? BcRequest "Missing Transaction" "" NoOp NoOp
+
+
+getDebugLog : Model -> String
+getDebugLog model =
+    Dict.get lSKeys.debugLog model.localStorage ? ""
 
 
 relativeTime : Time -> Model -> String
@@ -237,7 +242,7 @@ oneMonth =
     oneWeek * 4
 
 
-getDuration : Time -> Time -> ( Float, SelectOptions )
+getDuration : Time -> Time -> ( Float, DurationType )
 getDuration start finish =
     let
         difference =
@@ -251,7 +256,7 @@ getDuration start finish =
         ( difference / oneDay, Day )
 
 
-durationToTime : ( Float, Maybe SelectOptions ) -> Time
+durationToTime : ( Float, Maybe DurationType ) -> Time
 durationToTime ( durationValue, durationType ) =
     case durationType of
         Just Day ->

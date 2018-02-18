@@ -8,7 +8,7 @@ import List exposing (foldr, map)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Vote exposing (..)
-import Msgs exposing (Msg(CreateVote, DeleteBallot, HideDialog, MultiMsg, NavigateBack, NavigateBackTo, NoOp, Send, SetBallotState, SetVoteState))
+import Msgs exposing (..)
 import Routes exposing (Route(DemocracyR))
 import Styles.Styles exposing (SvClass(Heading, NilS, SubH, SubSubH))
 import Styles.Swarm exposing (scaled)
@@ -46,25 +46,26 @@ voteConfirmDialogV ( voteId, vote ) model =
 
         createVoteMsg =
             MultiMsg
-                [ CreateVote ( voteId, vote )
-                , SetVoteState VoteSending ( voteId, vote )
-                , Send
-                    { name = "new-vote"
-                    , payload = "Awesome new Vote!"
-                    , onReceipt = onReceiptMsg
-                    , onConfirmation = onConfirmationMsg
-                    }
+                [ CRUD <| CreateVote ( voteId, vote )
+                , SetState <| SVote VoteSending ( voteId, vote )
+                , ToBc <|
+                    BcSend
+                        { name = "new-vote"
+                        , payload = "Awesome new Vote!"
+                        , onReceipt = onReceiptMsg
+                        , onConfirmation = onConfirmationMsg
+                        }
                 ]
 
         onReceiptMsg =
             MultiMsg
-                [ NavigateBackTo <| DemocracyR democracyId
-                , SetVoteState VotePending ( voteId, vote )
+                [ Nav <| NBackTo <| DemocracyR democracyId
+                , SetState <| SVote VotePending ( voteId, vote )
                 , HideDialog
                 ]
 
         onConfirmationMsg =
-            SetVoteState VoteConfirmed ( voteId, vote )
+            SetState <| SVote VoteConfirmed ( voteId, vote )
     in
     column NilS
         [ spacing (scaled 2) ]
@@ -89,24 +90,25 @@ ballotDeleteConfirmDialogV ballotId model =
 
         deleteBallotMsg =
             MultiMsg
-                [ SetBallotState BallotSending ( ballotId, ballot )
-                , Send
-                    { name = "delete-ballot"
-                    , payload = "Goodbye"
-                    , onReceipt = onReceiptMsg
-                    , onConfirmation = onConfirmationMsg
-                    }
+                [ SetState <| SBallot BallotSending ( ballotId, ballot )
+                , ToBc <|
+                    BcSend
+                        { name = "delete-ballot"
+                        , payload = "Goodbye"
+                        , onReceipt = onReceiptMsg
+                        , onConfirmation = onConfirmationMsg
+                        }
                 ]
 
         onReceiptMsg =
             MultiMsg
-                [ NavigateBackTo <| DemocracyR democracyId
-                , SetBallotState BallotPendingDeletion ( ballotId, ballot )
+                [ Nav <| NBackTo <| DemocracyR democracyId
+                , SetState <| SBallot BallotPendingDeletion ( ballotId, ballot )
                 , HideDialog
                 ]
 
         onConfirmationMsg =
-            DeleteBallot ballotId
+            CRUD <| DeleteBallot ballotId
     in
     column NilS
         [ spacing (scaled 2) ]

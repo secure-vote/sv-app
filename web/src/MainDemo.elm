@@ -1,11 +1,11 @@
 module MainDemo exposing (..)
 
-import BlockchainPorts as Ports
 import Html exposing (Html)
-import Models exposing (Flags, Model, initModelWithFlags)
-import Msgs exposing (Msg(Confirm, Receipt, Receive, SetTime))
-import Task exposing (perform)
-import Time exposing (Time)
+import Models exposing (Flags, Model, initModelWithFlags, lSKeys)
+import Msgs exposing (..)
+import Ports exposing (..)
+import Task exposing (perform, succeed)
+import Time exposing (every, second)
 import Update exposing (update)
 import Views.RootDemoV exposing (rootDemoView)
 
@@ -18,22 +18,19 @@ init flags =
 initCmds : Cmd Msg
 initCmds =
     Cmd.batch <|
-        [ perform SetTime Time.now
+        [ perform (ToLs << LsRead) (succeed lSKeys.debugLog)
         ]
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ Ports.receipt Receipt
-        , Ports.confirmation Confirm
-        , Ports.receive Receive
+        [ every second Tick
+        , receiptBcData <| FromBc << BcReceipt
+        , confirmBcData <| FromBc << BcConfirm
+        , receiveBcData <| FromBc << BcReceive
+        , gotLsImpl <| FromLs << LsReceive
         ]
-
-
-
---    Sub.map SpinnerMsg Spinner.subscription
--- MAIN
 
 
 main : Program Flags Model Msg

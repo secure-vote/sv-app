@@ -10,38 +10,75 @@ import Time exposing (Time)
 
 type Msg
     = NoOp
-    | SetTime Time
+    | Tick Time
     | SetDialog String (DialogRoute Msg)
     | HideDialog
-    | SetField String String
-    | SetIntField String Int
-    | SetFloatField String Float
-    | NavigateBack
-    | NavigateHome
-    | NavigateTo Route
-    | NavigateBackTo Route
-    | CreateVote ( VoteId, Vote )
+    | Nav NavMsg
+    | SetField SetFieldMsg
+    | Select String (SelectMsg DurationType)
+    | SetState SetStateMsg
+    | CRUD CRUDMsg
+    | Debug String
+      --     Port Msgs
+    | ToBc ToBlockchainMsg
+    | FromBc FromBlockchainMsg
+    | ToLs ToLocalStorageMsg
+    | FromLs FromLocalStorageMsg
+      --    Helper Msgs
+    | MultiMsg (List Msg)
+    | ChainMsgs (List Msg)
+
+
+type NavMsg
+    = NBack
+    | NHome
+    | NTo Route
+    | NBackTo Route
+
+
+type SetFieldMsg
+    = SText String String
+    | SInt String Int
+    | SFloat String Float
+    | SSelect String (SelectWith DurationType Msg)
+
+
+type SetStateMsg
+    = SVote VoteState ( VoteId, Vote )
+    | SBallot BallotState ( BallotId, Ballot )
+    | SDelegate DelegateState ( DemocracyId, Democracy )
+
+
+type CRUDMsg
+    = CreateVote ( VoteId, Vote )
     | CreateBallot DemocracyId ( BallotId, Ballot )
     | EditBallot ( BallotId, Ballot )
     | DeleteBallot BallotId
     | AddDelegate String ( DemocracyId, Democracy )
     | RemoveDelegate ( DemocracyId, Democracy )
-    | SetVoteState VoteState ( VoteId, Vote )
-    | SetBallotState BallotState ( BallotId, Ballot )
-    | SetDelegateState DelegateState ( DemocracyId, Democracy )
-    | SetSelectField String (SelectWith SelectOptions Msg)
-    | Select String (SelectMsg SelectOptions)
-    | MultiMsg (List Msg)
-    | ChainMsgs (List Msg)
-      --     Port Msgs
-    | Send SendMsg
-    | Receipt ( String, String )
-    | Confirm String
-    | Get String
-    | Receive String
 
 
-type alias SendMsg =
+type ToBlockchainMsg
+    = BcSend BcRequest
+    | BcGet String
+
+
+type FromBlockchainMsg
+    = BcReceipt ( String, String )
+    | BcConfirm String
+    | BcReceive String
+
+
+type ToLocalStorageMsg
+    = LsWrite { key : String, value : String }
+    | LsRead String
+
+
+type FromLocalStorageMsg
+    = LsReceive { key : String, value : String }
+
+
+type alias BcRequest =
     { name : String
     , payload : String
     , onReceipt : Msg
@@ -49,7 +86,7 @@ type alias SendMsg =
     }
 
 
-type SelectOptions
+type DurationType
     = Day
     | Week
     | Month

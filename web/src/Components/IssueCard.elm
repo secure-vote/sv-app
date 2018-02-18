@@ -8,7 +8,7 @@ import List exposing (filter, head, maximum)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, BallotState(..))
-import Msgs exposing (Msg(NavigateTo))
+import Msgs exposing (..)
 import Routes exposing (Route(..))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -27,9 +27,9 @@ issueCard model ballotId =
 
         clickMsg =
             if ballotDone then
-                NavigateTo <| ResultsR ballotId
+                Nav <| NTo <| ResultsR ballotId
             else
-                NavigateTo <| VoteR ballotId
+                Nav <| NTo <| VoteR ballotId
 
         cardColor =
             if ballotDone then

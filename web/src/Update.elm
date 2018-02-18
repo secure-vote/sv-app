@@ -2,14 +2,14 @@ module Update exposing (..)
 
 --import Spinner
 
-import BlockchainPorts as Ports
 import Dict
 import Element.Input as Input
-import Helpers exposing (getDemocracy, getSelectField, getTx)
+import Helpers exposing (getDebugLog, getDemocracy, getSelectField, getTx)
 import Maybe.Extra exposing ((?))
-import Models exposing (Model, initModel)
+import Models exposing (Model, initModel, lSKeys)
 import Models.Democracy exposing (DelegateState(Active, Inactive))
-import Msgs exposing (Msg(..))
+import Msgs exposing (..)
+import Ports
 import Process
 import Routes exposing (Route(NotFoundRoute))
 import Task
@@ -22,7 +22,8 @@ update msg model =
         Msgs.NoOp ->
             ( model, Cmd.none )
 
-        SetTime time ->
+        Tick time ->
+            --        Updates every second
             { model | now = time } ! []
 
         SetDialog title route ->
@@ -31,17 +32,11 @@ update msg model =
         HideDialog ->
             { model | showDialog = False } ! []
 
-        SetField fieldName value ->
-            { model | fields = Dict.insert fieldName value model.fields } ! []
+        Nav msg ->
+            updateNav msg model
 
-        SetIntField fieldId value ->
-            { model | intFields = Dict.insert fieldId value model.intFields } ! []
-
-        SetFloatField fieldId value ->
-            { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
-
-        SetSelectField fieldId selectWith ->
-            { model | selectFields = Dict.insert fieldId selectWith model.selectFields } ! []
+        SetField msg ->
+            updateField msg model
 
         Select fieldId selectMsg ->
             let
@@ -53,16 +48,65 @@ update msg model =
             in
             { model | selectFields = Dict.insert fieldId selectWith model.selectFields } ! []
 
-        NavigateBack ->
+        SetState msg ->
+            updateState msg model
+
+        CRUD msg ->
+            updateCRUD msg model
+
+        Debug str ->
+            let
+                -- TODO: convert model.now from float to ISO format
+                newLog =
+                    "\n" ++ toString model.now ++ " : " ++ str ++ getDebugLog model
+
+                mdl =
+                    { model | localStorage = Dict.insert lSKeys.debugLog newLog model.localStorage }
+            in
+            update (ToLs <| LsWrite { key = lSKeys.debugLog, value = newLog }) mdl
+
+        --     Port Msgs
+        ToBc msg ->
+            updateToBlockchain msg model
+
+        FromBc msg ->
+            updateFromBlockchain msg model
+
+        ToLs msg ->
+            updateToLocalStorage msg model
+
+        FromLs msg ->
+            updateFromLocalStorage msg model
+
+        --            Helper Msgs
+        MultiMsg msgs ->
+            multiUpdate msgs model []
+
+        ChainMsgs msgs ->
+            let
+                chain msg1 ( model1, cmds ) =
+                    let
+                        ( model2, cmds1 ) =
+                            update msg1 model1
+                    in
+                    model2 ! [ cmds, cmds1 ]
+            in
+            List.foldl chain (model ! []) msgs
+
+
+updateNav : NavMsg -> Model -> ( Model, Cmd Msg )
+updateNav msg model =
+    case msg of
+        NBack ->
             { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
 
-        NavigateHome ->
+        NHome ->
             { model | routeStack = List.drop (List.length model.routeStack - 1) model.routeStack } ! []
 
-        NavigateTo newRoute ->
+        NTo newRoute ->
             { model | routeStack = newRoute :: model.routeStack } ! []
 
-        NavigateBackTo oldRoute ->
+        NBackTo oldRoute ->
             let
                 findRoute routeStack =
                     if List.head routeStack == Just oldRoute then
@@ -72,6 +116,51 @@ update msg model =
             in
             { model | routeStack = findRoute model.routeStack } ! []
 
+
+updateField msg model =
+    case msg of
+        SText fieldName value ->
+            { model | fields = Dict.insert fieldName value model.fields } ! []
+
+        SInt fieldId value ->
+            { model | intFields = Dict.insert fieldId value model.intFields } ! []
+
+        SFloat fieldId value ->
+            { model | floatFields = Dict.insert fieldId value model.floatFields } ! []
+
+        SSelect fieldId selectWith ->
+            { model | selectFields = Dict.insert fieldId selectWith model.selectFields } ! []
+
+
+updateState msg model =
+    case msg of
+        SVote state ( voteId, vote ) ->
+            let
+                setVoteState =
+                    { vote | state = state }
+            in
+            { model | votes = Dict.insert voteId setVoteState model.votes } ! []
+
+        SBallot state ( ballotId, ballot ) ->
+            let
+                setBallotState =
+                    { ballot | state = state }
+            in
+            { model | ballots = Dict.insert ballotId setBallotState model.ballots } ! []
+
+        SDelegate state ( democId, democracy ) ->
+            let
+                delegate =
+                    democracy.delegate
+
+                setDelegateState =
+                    { democracy | delegate = { delegate | state = state } }
+            in
+            { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
+
+
+updateCRUD msg model =
+    case msg of
         CreateVote ( voteId, vote ) ->
             { model | votes = Dict.insert voteId vote model.votes } ! []
 
@@ -109,71 +198,71 @@ update msg model =
             in
             { model | democracies = Dict.insert democId removeDelegate model.democracies } ! []
 
-        SetVoteState state ( voteId, vote ) ->
-            let
-                setVoteState =
-                    { vote | state = state }
-            in
-            { model | votes = Dict.insert voteId setVoteState model.votes } ! []
 
-        SetBallotState state ( ballotId, ballot ) ->
-            let
-                setBallotState =
-                    { ballot | state = state }
-            in
-            { model | ballots = Dict.insert ballotId setBallotState model.ballots } ! []
-
-        SetDelegateState state ( democId, democracy ) ->
-            let
-                delegate =
-                    democracy.delegate
-
-                setDelegateState =
-                    { democracy | delegate = { delegate | state = state } }
-            in
-            { model | democracies = Dict.insert democId setDelegateState model.democracies } ! []
-
-        MultiMsg msgs ->
-            multiUpdate msgs model []
-
-        ChainMsgs msgs ->
-            let
-                chain msg1 ( model1, cmds ) =
-                    let
-                        ( model2, cmds1 ) =
-                            update msg1 model1
-                    in
-                    model2 ! [ cmds, cmds1 ]
-            in
-            List.foldl chain (model ! []) msgs
-
-        --     Port Msgs
-        Send sendMsg ->
+updateToBlockchain msg model =
+    case msg of
+        BcSend sendMsg ->
             let
                 refId =
                     sendMsg.name ++ toString model.now
-            in
-            { model | txReceipts = Dict.insert refId sendMsg model.txReceipts } ! [ Ports.send ( refId, sendMsg.payload ) ]
 
-        Receipt ( refId, txId ) ->
+                mdl =
+                    { model | txReceipts = Dict.insert refId sendMsg model.txReceipts }
+
+                msgs =
+                    [ Debug <| "Blockchain Send : sendMsg = { name = '" ++ sendMsg.name ++ "', payload = '" ++ sendMsg.payload ++ "' }" ]
+            in
+            multiUpdate msgs mdl [ Ports.sendBcData ( refId, sendMsg.payload ) ]
+
+        BcGet txId ->
             let
-                msg =
-                    (getTx refId model).onReceipt
+                msgs =
+                    [ Debug <| "Blockchain Get : TxId = " ++ txId ]
             in
-            update msg model
+            multiUpdate msgs model [ Ports.getBcData txId ]
 
-        Confirm refId ->
+
+updateFromBlockchain msg model =
+    case msg of
+        BcReceipt ( refId, txId ) ->
             let
-                msg =
-                    (getTx refId model).onConfirmation
+                msgs =
+                    [ (getTx refId model).onReceipt
+                    , Debug <| "Blockchain Receipt : TxID = " ++ txId
+                    ]
             in
-            update msg model
+            multiUpdate msgs model []
 
-        Get txId ->
-            ( model, Ports.get txId )
+        BcConfirm refId ->
+            let
+                msgs =
+                    [ (getTx refId model).onConfirmation
+                    , Debug <| "Blockchain Confirmation : RefId = " ++ refId
+                    ]
+            in
+            multiUpdate msgs model []
 
-        Receive data ->
-            ( model, Cmd.none )
+        BcReceive data ->
+            let
+                msgs =
+                    [ Debug <| "Blockchain Receive : data = " ++ data ]
+            in
+            multiUpdate msgs model []
+
+
+updateToLocalStorage msg model =
+    case msg of
+        LsWrite payload ->
+            ( model, Ports.writeLsImpl payload )
+
+        LsRead key ->
+            ( model, Ports.readLsImpl key )
+
+
+updateFromLocalStorage msg model =
+    case msg of
+        LsReceive { key, value } ->
+            { model | localStorage = Dict.insert key value model.localStorage } ! []
 
 
 multiUpdate : List Msg -> Model -> List (Cmd Msg) -> ( Model, Cmd Msg )

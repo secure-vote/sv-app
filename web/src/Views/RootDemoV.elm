@@ -13,12 +13,13 @@ import Html as H exposing (Html, div, i, node, span)
 import Html.Attributes as HA
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
-import Msgs exposing (Msg(NavigateBack, NavigateHome, SetDialog))
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
 import Styles.Swarm exposing (scaled, swmStylesheet)
 import Views.CreateBallotV exposing (createBallotV)
+import Views.DebugV exposing (debugV)
 import Views.DemocracyV exposing (democracyV)
 import Views.EditBallotV exposing (editBallotV)
 import Views.ResultsV exposing (resultsV)
@@ -50,9 +51,15 @@ rootDemoView model =
 
         navBack =
             if List.length model.routeStack > 1 then
-                [ btn [ Click NavigateBack ] (mkIcon "arrow-left" I24) ]
+                [ btn [ Click <| Nav <| NBack ] (mkIcon "arrow-left" I24) ]
             else
                 [ empty ]
+
+        debug =
+            if List.head model.routeStack == Just DebugR then
+                [ empty ]
+            else
+                [ btn [ Click <| Nav <| NTo DebugR ] (mkIcon "alert-circle-outline" I24) ]
 
         ( hLeft, hCenter, hRight ) =
             header
@@ -84,6 +91,9 @@ rootDemoView model =
                 EditBallotR ballotId ->
                     editBallotV ballotId model
 
+                DebugR ->
+                    debugV model
+
                 NotFoundRoute ->
                     notFoundView
 
@@ -92,7 +102,7 @@ rootDemoView model =
                 [ spacing (scaled 2), alignLeft, alignBottom, spread ]
                 [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
                 , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter
-                , row NilS [ width fill, alignRight ] hRight
+                , row NilS [ width fill, alignRight ] <| hRight ++ debug
                 ]
 
         showDialog =

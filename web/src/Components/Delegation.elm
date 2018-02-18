@@ -6,7 +6,7 @@ import Element exposing (el, text)
 import Helpers exposing (dubCol, getField, para)
 import Models exposing (Model)
 import Models.Democracy exposing (DelegateState(..), Democracy, DemocracyId)
-import Msgs exposing (Msg(AddDelegate, MultiMsg, RemoveDelegate, Send, SetDelegateState, SetField))
+import Msgs exposing (..)
 import Styles.Styles exposing (SvClass(Grey, NilS, SubH))
 import Views.ViewHelpers exposing (SvElement)
 
@@ -24,28 +24,30 @@ delegationV ( democId, democracy ) model =
 
         setDelegateMsg =
             MultiMsg
-                [ SetDelegateState Sending ( democId, democracy )
-                , Send
-                    { name = "new-delegate"
-                    , payload = "placeholder-delegate-id"
-                    , onReceipt = SetDelegateState Pending ( democId, democracy )
-                    , onConfirmation = AddDelegate (getField tfId model) ( democId, democracy )
-                    }
+                [ SetState <| SDelegate Sending ( democId, democracy )
+                , ToBc <|
+                    BcSend
+                        { name = "new-delegate"
+                        , payload = "placeholder-delegate-id"
+                        , onReceipt = SetState <| SDelegate Pending ( democId, democracy )
+                        , onConfirmation = CRUD <| AddDelegate (getField tfId model) ( democId, democracy )
+                        }
                 ]
 
         removeDelegateMsg =
             MultiMsg
-                [ SetDelegateState Sending ( democId, democracy )
-                , Send
-                    { name = "remove-delegate"
-                    , payload = "placeholder-delegate-id"
-                    , onReceipt = SetDelegateState Pending ( democId, democracy )
-                    , onConfirmation =
-                        MultiMsg
-                            [ RemoveDelegate ( democId, democracy )
-                            , SetField tfId ""
-                            ]
-                    }
+                [ SetState <| SDelegate Sending ( democId, democracy )
+                , ToBc <|
+                    BcSend
+                        { name = "remove-delegate"
+                        , payload = "placeholder-delegate-id"
+                        , onReceipt = SetState <| SDelegate Pending ( democId, democracy )
+                        , onConfirmation =
+                            MultiMsg
+                                [ CRUD <| RemoveDelegate ( democId, democracy )
+                                , SetField <| SText tfId ""
+                                ]
+                        }
                 ]
 
         tfValidation =

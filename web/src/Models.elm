@@ -2,10 +2,11 @@ module Models exposing (..)
 
 import Dict exposing (Dict)
 import Element.Input as Input exposing (SelectMsg, SelectWith)
+import Json.Decode exposing (Value)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
 import Models.Vote exposing (Vote, VoteId)
-import Msgs exposing (Msg(..), SelectOptions(..), SendMsg)
+import Msgs exposing (..)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
@@ -18,13 +19,14 @@ type alias Model =
     , members : Dict MemberId Member
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
-    , txReceipts : Dict String SendMsg
+    , localStorage : Dict String String
+    , txReceipts : Dict String BcRequest
     , routeStack : List Route
     , fields : Dict String String
     , intFields : Dict String Int
     , floatFields : Dict String Float
     , boolFields : Dict String Bool
-    , selectFields : Dict String (SelectWith SelectOptions Msg)
+    , selectFields : Dict String (SelectWith DurationType Msg)
     , now : Time
     , isLoading : Bool
     , isDemocracyLevel : Bool
@@ -42,6 +44,7 @@ initModel =
     , votes = Dict.fromList votes
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
+    , localStorage = Dict.empty
     , txReceipts = Dict.empty
     , routeStack = [ DashboardR ]
     , fields = Dict.empty
@@ -66,6 +69,7 @@ initModelWithFlags flags =
     , votes = Dict.fromList votes
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
+    , localStorage = Dict.empty
     , txReceipts = Dict.empty
     , routeStack = [ DemocracyR flags.democracyId ]
     , fields = Dict.empty
@@ -88,6 +92,10 @@ type alias Flags =
     , admin : Bool
     , singleDemocName : String
     }
+
+
+lSKeys =
+    { debugLog = "debugLog" }
 
 
 democracies : List ( comparable, Democracy )
