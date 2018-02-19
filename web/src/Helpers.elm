@@ -3,16 +3,16 @@ module Helpers exposing (..)
 import Date
 import Dict
 import Element exposing (Attribute, column, el, paragraph, row, text)
-import Element.Attributes exposing (center, fillPortion, maxWidth, minWidth, paddingRight, percent, px, spacing, width)
+import Element.Attributes exposing (..)
 import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model, lSKeys)
-import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotInitial))
+import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotNone))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
-import Models.Vote exposing (Vote, VoteId, VoteState(VoteInitial))
+import Models.Vote exposing (Vote, VoteId, VoteState(VoteNone))
 import Msgs exposing (..)
 import String exposing (slice)
-import Styles.Styles exposing (SvClass(NilS, ParaS))
+import Styles.Styles exposing (SvClass(CardS, NilS, ParaS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation)
 import Time exposing (Time)
@@ -46,12 +46,21 @@ getDemocracy democId model =
 
 getBallot : BallotId -> Model -> Ballot
 getBallot ballotId model =
-    Dict.get ballotId model.ballots ? Ballot "Missing Ballot" "" 0 0 [] BallotInitial
+    Dict.get ballotId model.ballots ? Ballot "Missing Ballot" "" 0 0 [] BallotNone
 
 
 getVote : VoteId -> Model -> Vote
 getVote voteId model =
-    Dict.get voteId model.votes ? Vote 0 [] VoteInitial
+    Dict.get voteId model.votes ? Vote 0 [] VoteNone
+
+
+getVoteFromBallot : BallotId -> Model -> Vote
+getVoteFromBallot ballotId model =
+    let
+        containsBallot vote =
+            ballotId == vote.ballotId
+    in
+    List.head (List.filter containsBallot <| Dict.values model.votes) ? Vote 0 [] VoteNone
 
 
 getMembers : DemocracyId -> Model -> List Member
@@ -293,3 +302,8 @@ dubCol col1 col2 =
         [ column NilS [ width (percent 40) ] [ column NilS [ spacing (scaled 2) ] col1 ]
         , column NilS [ width (percent 60), center ] [ column NilS [ minWidth (px 360), maxWidth (px 416), spacing (scaled 2) ] col2 ]
         ]
+
+
+card : SvElement -> SvElement
+card inner =
+    el CardS [ paddingXY (scaled 5) (scaled 3) ] inner

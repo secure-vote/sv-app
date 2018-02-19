@@ -1,13 +1,15 @@
 module Components.IssueCard exposing (..)
 
+import Components.Icons exposing (IconSize(I24), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, para, relativeTime)
+import Helpers exposing (checkAlreadyVoted, getBallot, getResultPercent, getVoteFromBallot, para, relativeTime)
 import List exposing (filter, head, maximum)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (BallotId, BallotState(..))
+import Models.Vote exposing (VoteState(VotePending))
 import Msgs exposing (..)
 import Routes exposing (Route(..))
 import Styles.Styles exposing (SvClass(..))
@@ -22,119 +24,118 @@ issueCard model ballotId =
         ballot =
             getBallot ballotId model
 
+        vote =
+            getVoteFromBallot ballotId model
+
         ballotDone =
             ballot.finish < model.now
 
-        clickMsg =
-            if ballotDone then
-                Nav <| NTo <| ResultsR ballotId
-            else
-                Nav <| NTo <| VoteR ballotId
+        isPending =
+            ballot.state
+                == BallotPendingCreation
+                || ballot.state
+                == BallotPendingEdits
+                || ballot.state
+                == BallotPendingDeletion
+                || vote.state
+                == VotePending
 
-        cardColor =
+        state =
             if ballotDone then
-                vary (IssueCardMod IssuePast) True
+                IssuePast
             else if ballot.start > model.now then
-                vary (IssueCardMod VoteFuture) True
+                IssueFuture
+            else if isPending then
+                IssuePending
             else if checkAlreadyVoted ballotId model then
-                vary (IssueCardMod VoteDone) True
+                IssueDone
             else
-                vary (IssueCardMod VoteWaiting) True
+                IssueVoteNow
 
-        resultString { name, result } =
-            name ++ " - " ++ toString (getResultPercent ballot <| result ? 0) ++ "%, "
+        struct =
+            case state of
+                IssuePast ->
+                    { icon = "clipboard-text"
+                    , time = "Closed " ++ relativeTime ballot.finish model ++ " ago"
+                    , status = "View Results"
+                    , msg = Nav <| NTo <| ResultsR ballotId
+                    }
 
-        --      [TS] Pretty messy, will probably need a refactor.
-        --      Also, Just picks the first result in a tie.
-        showWinningBallot =
-            case head (filter (\{ result } -> result == maximum (List.map (\{ result } -> result ? 0) ballot.ballotOptions)) ballot.ballotOptions) of
-                Just winningBallot ->
-                    winningBallot.name
+                IssueFuture ->
+                    { icon = "circle-outline"
+                    , time = "Opens in " ++ relativeTime ballot.start model
+                    , status = "Upcoming"
+                    , msg = Nav <| NTo <| VoteR ballotId
+                    }
 
-                Nothing ->
-                    "No Winner"
+                IssueDone ->
+                    { icon = "check-circle-outline"
+                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , status = "Vote received"
+                    , msg = Nav <| NTo <| VoteR ballotId
+                    }
 
-        displayResults =
-            "Winning Result: " ++ showWinningBallot
+                IssuePending ->
+                    { icon = "google-circles-communities"
+                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , status = "Vote pending"
+                    , msg = Nav <| NTo <| VoteR ballotId
+                    }
 
-        voteStatus =
-            if ballotDone then
-                displayResults
-            else if ballot.start > model.now then
-                "This ballot is not open yet"
-            else if checkAlreadyVoted ballotId model then
-                "You have voted in this ballot"
-            else
-                "You have not voted in this ballot yet"
+                IssueVoteNow ->
+                    { icon = "alert-circle-outline"
+                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , status = "Vote now"
+                    , msg = Nav <| NTo <| VoteR ballotId
+                    }
 
         --        TODO: Style this better
-        titleText name =
+        pendingText =
             case ballot.state of
                 BallotPendingCreation ->
-                    name ++ " (Waiting to be created on blockchain)"
+                    " (Waiting to be created on blockchain)"
 
                 BallotPendingEdits ->
-                    name ++ " (Waiting to be edited on blockchain)"
+                    " (Waiting to be edited on blockchain)"
 
                 BallotPendingDeletion ->
-                    name ++ " (Waiting to be deleted from blockchain)"
+                    " (Waiting to be deleted from blockchain)"
 
                 _ ->
-                    name
+                    ""
+
+        statusColor =
+            vary (IssueStatusMod state) True
+
+        issueCardStatus =
+            vary (IssueCardMod state) (state == IssueVoteNow)
+
+        icon =
+            el IssueStatusS [ verticalCenter, statusColor ] (mkIcon struct.icon I24)
 
         title =
-            el SubSubH [ paddingBottom (scaled 1) ] (text <| titleText ballot.name)
+            el SubSubH [] (text <| ballot.name ++ pendingText)
 
         body =
-            column NilS
-                [ spacing <| scaled 1 ]
-                [ para [] ballot.desc ]
+            para [] ballot.desc
 
-        timeText =
-            if ballotDone then
-                "Vote closed " ++ relativeTime ballot.finish model ++ " ago"
-            else if ballot.start > model.now then
-                "Vote opens in " ++ relativeTime ballot.start model
-            else
-                "Vote closes in " ++ relativeTime ballot.finish model
-
-        footer =
-            row CardFooter
-                [ spread, padding (scaled 1), cardColor ]
-                [ el NilS [ alignLeft ] (para [ vary Caps True, vary SmallFont True, verticalCenter ] voteStatus)
-                , el NilS
-                    [ alignRight ]
-                    (para [] timeText)
+        status =
+            column CardFooter
+                [ verticalSpread, spacing (scaled 1) ]
+                [ el IssueStatusS [ statusColor ] (text struct.status)
+                , para [] struct.time
                 ]
     in
-    column IssueCard
-        [ onClick clickMsg, cardColor ]
-        [ column NilS
-            [ padding <| scaled 1 ]
-            [ title
-            , body
+    row IssueCard
+        [ onClick struct.msg, issueCardStatus, padding (scaled 1), spread ]
+        [ row NilS
+            [ spacing (scaled 1) ]
+            [ icon
+            , column NilS
+                [ spacing (scaled 1) ]
+                [ title
+                , body
+                ]
             ]
-        , footer
+        , status
         ]
-
-
-
--- # FROM ONGOING ISSUES - should only show admin options for future ballots
--- alternatively the admin options for ongoing ballots should only ever be a stop button
---
---
---                adminOptions =
---                    let
---                        multiMsg =
---                            MultiMsg
---                                [ populateFromModel ballotId model
---                                , NavigateTo <| EditVoteR ballotId
---                                ]
---                    in
---                    if getAdminToggle model then
---                        [ div [ class "pa2 absolute top-0 right-0" ]
---                            [ btn 84345845675 model [ Icon, Click multiMsg ] [ Icon.i "edit" ]
---                            ]
---                        ]
---                    else
---                        []

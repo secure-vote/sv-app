@@ -26,6 +26,18 @@ swmOkColor =
     rgb 63 165 149
 
 
+swmCardHltColor =
+    rgb 254 234 210
+
+
+swmPendColor =
+    rgb 255 202 144
+
+
+swmGreyColor =
+    rgb 161 161 161
+
+
 swmErrColor =
     rgb 194 36 59
 
@@ -71,13 +83,24 @@ shadowSmall =
         }
 
 
+
+--        box-shadow: 0 3px 10px 0 rgba(0,0,0,0.5);
+
+
 shadowLarge =
     Shadow.box
-        { offset = ( 0, 1 )
-        , size = 3
-        , blur = 5
-        , color = Color.gray
+        { offset = ( 0, 3 )
+        , size = 0
+        , blur = 10
+        , color = rgba 0 0 0 0.5
         }
+
+
+bottomBorder =
+    [ Bdr.bottom 1.0
+    , solid
+    , C.border <| rgb 233 233 233
+    ]
 
 
 swmStylesheet : StyleSheet SvClass Variation
@@ -99,8 +122,9 @@ swmStylesheet =
                 ++ headingCommon
         , style SubSubH <|
             [ Font.size <| scaled 2
+            , Font.weight 400
             ]
-                ++ headingCommon
+                ++ textVariations
         , style FooterText
             [ Font.weight 400
             , Font.size 13
@@ -151,35 +175,31 @@ swmStylesheet =
             --                , prop "transform" "translateX(-50%)"
             --                ]
             ]
-        , style IssueCard
-            [ Bdr.all 1.0
-            , solid
-            , C.border <| rgb 200 200 200
-            , shadowSmall
-            , cursor "pointer"
-            , background lightGray
+        , style IssueCard <|
+            [ cursor "pointer"
             , T.all
-            , hover
-                [ shadowLarge ]
+            , variation (IssueCardMod IssueVoteNow)
+                [ background swmCardHltColor
+                ]
+            ]
+                ++ bottomBorder
+        , style IssueStatusS
+            [ variation (IssueStatusMod IssueDone)
+                [ C.text swmOkColor
+                ]
+            , variation (IssueStatusMod IssuePending)
+                [ C.text swmPendColor
+                ]
+            , variation (IssueStatusMod IssueVoteNow)
+                [ C.text swmHltColor
+                ]
+            , variation (IssueStatusMod IssueFuture)
+                [ C.text swmGreyColor ]
+            , variation (IssueStatusMod IssuePast)
+                [ C.text swmGreyColor ]
             ]
         , style CardFooter
-            [ Font.weight 400
-            , Font.size 13
-            , Bdr.top 1.0
-            , solid
-            , C.border <| rgb 180 180 180
-            , variation (IssueCardMod VoteDone)
-                [ background swmOkColor
-                , C.text white
-                ]
-            , variation (IssueCardMod VoteWaiting)
-                [ background swmHltColor
-                , C.text white
-                ]
-            , variation (IssueCardMod VoteFuture)
-                [ background lightGray ]
-            , variation (IssueCardMod IssuePast)
-                [ background lightGray ]
+            [ Font.alignRight
             ]
         , style ResultsColumn
             [ Bdr.right 1.0
@@ -225,7 +245,15 @@ swmStylesheet =
         , style AdminBoxS
             [ background bgLightGrey
             ]
-        , style ParaS <| [ prop "white-space" "pre-wrap" ] ++ textVariations
+        , style CardS
+            [ background white
+            , shadowLarge
+            ]
+        , style ParaS <|
+            [ prop "white-space" "pre-wrap"
+            , Font.weight 300
+            ]
+                ++ textVariations
         , style Notify
             [ Bdr.all 1.0
             , solid

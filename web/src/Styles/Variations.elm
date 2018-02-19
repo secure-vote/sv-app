@@ -6,6 +6,7 @@ import Color exposing (Color)
 type Variation
     = TabBtnActive
     | NoTabRowBorder
+    | IssueStatusMod IssueCardStatus
     | IssueCardMod IssueCardStatus
     | VarColor Color
     | BoldT
@@ -18,7 +19,8 @@ type Variation
 
 
 type IssueCardStatus
-    = VoteDone
-    | VoteWaiting
-    | VoteFuture
+    = IssueDone
+    | IssuePending
+    | IssueVoteNow
+    | IssueFuture
     | IssuePast

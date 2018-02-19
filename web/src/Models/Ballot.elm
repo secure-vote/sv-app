@@ -24,6 +24,7 @@ type BallotState
     | BallotPendingEdits
     | BallotPendingDeletion
     | BallotConfirmed
+    | BallotNone
 
 
 type alias BallotOptionId =

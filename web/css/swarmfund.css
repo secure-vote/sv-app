@@ -841,11 +841,6 @@ a {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.16), 0 2px 5px rgba(0, 0, 0, 0.23);
 }
 
-.mdi {
-    font-size: 18px;
-    color: #3f4244;
-}
-
 button .mdi {
     font-size: 16px;
 }

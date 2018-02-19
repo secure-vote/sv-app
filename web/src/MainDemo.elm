@@ -18,7 +18,8 @@ init flags =
 initCmds : Cmd Msg
 initCmds =
     Cmd.batch <|
-        [ perform (ToLs << LsRead) (succeed lSKeys.debugLog)
+        [ perform Tick Time.now
+        , perform (ToLs << LsRead) (succeed lSKeys.debugLog)
         ]
 
 
