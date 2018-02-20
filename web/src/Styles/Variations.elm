@@ -12,6 +12,7 @@ type Variation
     | BoldT
     | BtnDisabled
     | BtnWarning
+    | BtnSmall
     | Caps
     | SmallFont
     | NGood

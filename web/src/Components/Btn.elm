@@ -6,7 +6,7 @@ import Element.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(BtnS, NilS))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(BtnDisabled, BtnWarning, NBad))
+import Styles.Variations exposing (Variation(BtnDisabled, BtnSmall, BtnWarning, NBad))
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
@@ -14,6 +14,7 @@ type BtnProps
     = PriBtn
     | SecBtn
     | Small
+    | VSmall
     | Click Msg
     | Disabled Bool
     | Warning
@@ -34,6 +35,9 @@ btn props inner =
 
                 Small ->
                     [ class "btn-outer--small" ]
+
+                VSmall ->
+                    [ vary BtnSmall True ]
 
                 Click msg ->
                     [ onClick msg ]

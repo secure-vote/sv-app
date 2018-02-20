@@ -49,7 +49,7 @@ admin ( democId, democracy ) model =
                 ]
     in
     column AdminBoxS
-        [ spacing (scaled 1), padding (scaled 4) ]
+        [ spacing (scaled 1), padding (scaled 2) ]
         [ el SubH [] (text "Welcome, Admin")
         , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
         , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
@@ -59,7 +59,7 @@ admin ( democId, democracy ) model =
 header : Model -> SvHeader
 header model =
     ( []
-    , [ text model.singleDemocName ]
+    , [ text "Overview" ]
     , []
     )
 

@@ -108,10 +108,7 @@ swmStylesheet =
     styleSheet
         [ style NilS []
         , style HeaderStyle
-            [ bottom 1.0
-            , solid
-            , C.border lightGray
-            ]
+            bottomBorder
         , style Heading <|
             [ Font.size <| scaled 4
             ]
@@ -213,10 +210,7 @@ swmStylesheet =
             [ Font.typeface [ Font.monospace ]
             ]
         , style VoteList
-            [ Bdr.bottom 1.0
-            , solid
-            , C.border <| rgb 180 180 180
-            ]
+            bottomBorder
         , style DialogBackdrop
             [ background bgShadow
             , Shadow.box
@@ -237,14 +231,17 @@ swmStylesheet =
             , variation BtnWarning
                 [ background swmErrColor
                 ]
+            , variation BtnSmall
+                [ prop "width" "initial"
+                , prop "flex" "none"
+                ]
             ]
         , style InputS
             [ prop "pointer-events" "auto"
             , Font.size 16
             ]
         , style AdminBoxS
-            [ background bgLightGrey
-            ]
+            []
         , style CardS
             [ background white
             , shadowLarge

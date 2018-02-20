@@ -9,6 +9,7 @@ import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (Element, column, el, empty, html, layout, row, text, within)
 import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, padding, paddingBottom, px, spacing, spread, width)
+import Helpers exposing (card)
 import Html as H exposing (Html, div, i, node, span)
 import Html.Attributes as HA
 import Maybe.Extra exposing ((?))
@@ -98,12 +99,13 @@ rootDemoView model =
                     notFoundView
 
         headerRow =
-            row HeaderStyle
-                [ spacing (scaled 2), alignLeft, alignBottom, spread ]
-                [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
-                , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter
-                , row NilS [ width fill, alignRight ] <| hRight ++ debug
-                ]
+            card <|
+                row HeaderStyle
+                    [ spacing (scaled 2), spread ]
+                    [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
+                    , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter
+                    , row NilS [ width fill, alignRight ] <| hRight ++ debug
+                    ]
 
         showDialog =
             if model.showDialog then
@@ -113,13 +115,13 @@ rootDemoView model =
 
         showAdmin =
             if model.isAdmin then
-                admin
+                card admin
             else
                 empty
 
         mainLayout =
             column NilS
-                [ spacing (scaled 2) ]
+                [ spacing (scaled 4) ]
                 [ showAdmin
                 , headerRow
                 , body

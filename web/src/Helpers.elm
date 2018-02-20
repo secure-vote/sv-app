@@ -306,4 +306,4 @@ dubCol col1 col2 =
 
 card : SvElement -> SvElement
 card inner =
-    el CardS [ paddingXY (scaled 5) (scaled 3) ] inner
+    column CardS [ paddingXY (scaled 5) (scaled 3), width (percent 100) ] [ inner ]
