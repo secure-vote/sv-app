@@ -43,5 +43,7 @@ type SvClass
     | InputS
     | AdminBoxS
     | CardS
+    | Slider
+    | SliderBackground
       -- END TOM
     | NilS

@@ -2,9 +2,8 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small, VSmall, Warning), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
-import Element exposing (button, column, el, empty, html, row, text)
+import Element exposing (..)
 import Element.Attributes exposing (..)
-import Element.Events exposing (onClick)
 import Helpers exposing (card, checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, para, relativeTime)
 import Html as H
 import Html.Attributes as HA
@@ -172,32 +171,24 @@ optionList ballotId model =
                 []
 
         htmlSlider id =
-            el InputS [ width fill, verticalCenter ] <|
+            el Slider [ width fill, verticalCenter ] <|
                 html <|
-                    H.div []
-                        [ H.input
-                            (sliderOptions
-                                ++ [ HA.type_ "range"
-                                   , HA.min "-3"
-                                   , HA.max "3"
-                                   , HA.step "1"
-                                   , HA.style [ ( "width", "100%" ), ( "background", "none" ) ]
-                                   , HA.value <| toString <| getSliderValue id model
-                                   , HE.onInput <| sliderInputMsg id
-                                   , HA.list "tickmarks"
-                                   ]
-                            )
-                            []
-                        , H.datalist [ HA.id "tickmarks" ]
-                            [ H.option [ HA.value "-3" ] []
-                            , H.option [ HA.value "-2" ] []
-                            , H.option [ HA.value "-1" ] []
-                            , H.option [ HA.value "0" ] []
-                            , H.option [ HA.value "1" ] []
-                            , H.option [ HA.value "2" ] []
-                            , H.option [ HA.value "3" ] []
-                            ]
-                        ]
+                    H.input
+                        (sliderOptions
+                            ++ [ HA.type_ "range"
+                               , HA.min "-3"
+                               , HA.max "3"
+                               , HA.step "1"
+                               , HA.value <| toString <| getSliderValue id model
+                               , HE.onInput <| sliderInputMsg id
+                               , HA.style
+                                    [ ( "-webkit-appearance", "none" )
+                                    , ( "background", "none" )
+                                    , ( "width", "100%" )
+                                    ]
+                               ]
+                        )
+                        []
 
         sliderCol id =
             column NilS
@@ -212,7 +203,8 @@ optionList ballotId model =
                             [ para [] "Disagree"
                             , para [] "Agree"
                             ]
-                        , htmlSlider id
+                        , el SliderBackground [ width fill, height (px 9) ] empty
+                            |> within [ htmlSlider id ]
                         ]
                     , btn [ PriBtn, VSmall, Click <| voteRangeIncrease id ] <| mkIcon "plus" I24
                     ]
