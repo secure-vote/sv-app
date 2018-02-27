@@ -4,7 +4,7 @@ import Components.Btn exposing (BtnProps(Click), btn)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (getBallot, getResultPercent, para, readableTime)
+import Helpers exposing (card, getBallot, getResultPercent, para, readableTime)
 import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
@@ -35,7 +35,7 @@ header : Ballot -> SvHeader
 header ballot =
     ( []
     , [ text <| "Results: " ++ ballot.name ]
-    , [ btn [ Click (SetDialog "Ballot Info" (BallotInfoD ballot.desc)) ] (mkIcon "information-outline" I24) ]
+    , []
     )
 
 
@@ -110,38 +110,39 @@ body ballot model =
                         (List.map getResults ballot.ballotOptions)
                 )
     in
-    row NilS
-        [ spacing <| scaled 4 ]
-        [ column NilS
-            [ width <| fillPortion 1, spacing (scaled 1) ]
-            [ el SubSubH [] <| text "Ballot Description"
-            , el NilS
-                [ paddingBottom (scaled 1) ]
-                (para [] ballot.desc)
+    card <|
+        row NilS
+            [ spacing <| scaled 4 ]
+            [ column NilS
+                [ width <| fillPortion 1, spacing (scaled 1) ]
+                [ el SubSubH [] <| text "Ballot Description"
+                , el NilS
+                    [ paddingBottom (scaled 1) ]
+                    (para [] ballot.desc)
+                , column NilS
+                    [ paddingBottom (scaled 1) ]
+                    [ row NilS [] <|
+                        [ bold "Start Time: "
+                        , text <| readableTime ballot.start
+                        ]
+                    , row NilS [] <|
+                        [ bold "End Time: "
+                        , text <| readableTime ballot.finish
+                        ]
+                    ]
+                , el SubH
+                    [ paddingBottom (scaled 1)
+                    , paddingTop (scaled 2)
+                    ]
+                    (text "Results")
+                , results
+                ]
             , column NilS
-                [ paddingBottom (scaled 1) ]
-                [ row NilS [] <|
-                    [ bold "Start Time: "
-                    , text <| readableTime ballot.start
-                    ]
-                , row NilS [] <|
-                    [ bold "End Time: "
-                    , text <| readableTime ballot.finish
-                    ]
+                [ width <| fillPortion 1 ]
+                [ el SubSubH [ center ] <|
+                    para [] <|
+                        "Aggregate votes for: "
+                            ++ ballot.name
+                , resultsGraph
                 ]
-            , el SubH
-                [ paddingBottom (scaled 1)
-                , paddingTop (scaled 2)
-                ]
-                (text "Results")
-            , results
             ]
-        , column NilS
-            [ width <| fillPortion 1 ]
-            [ el SubSubH [ center ] <|
-                para [] <|
-                    "Aggregate votes for: "
-                        ++ ballot.name
-            , resultsGraph
-            ]
-        ]
