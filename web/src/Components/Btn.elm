@@ -6,13 +6,14 @@ import Element.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(BtnS, NilS))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(BtnDisabled, BtnSmall, BtnWarning, NBad))
+import Styles.Variations exposing (Variation(BtnDisabled, BtnSmall, BtnText, BtnWarning, NBad))
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
 type BtnProps
     = PriBtn
     | SecBtn
+    | Text
     | Small
     | VSmall
     | Click Msg
@@ -28,10 +29,13 @@ btn props inner =
         btnPropToAttr prop =
             case prop of
                 PriBtn ->
-                    [ class "btn" ]
+                    [ class "btn", padding (scaled 1) ]
 
                 SecBtn ->
-                    [ class "btn-secondary" ]
+                    [ class "btn-secondary", padding (scaled 1) ]
+
+                Text ->
+                    [ vary BtnText True ]
 
                 Small ->
                     [ class "btn-outer--small" ]
@@ -64,7 +68,7 @@ btn props inner =
         attrs =
             List.foldl f [] props
     in
-    button BtnS ([ padding (scaled 1) ] ++ attrs) inner
+    button BtnS attrs inner
 
 
 

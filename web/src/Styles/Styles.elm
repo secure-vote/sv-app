@@ -36,6 +36,10 @@ type SvClass
     | IssueCardResults
     | CardFooter
     | VoteList
+    | PetitionList
+    | PetitionBarLeft
+    | PetitionBarRight
+    | PetitionBarTick
     | DialogBackdrop
     | DialogStyle
       -- TOM STYLES

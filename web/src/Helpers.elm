@@ -282,6 +282,22 @@ durationToTime ( durationValue, durationType ) =
 
 
 
+-- TODO: Format Floats
+
+
+formatNumber : Int -> String
+formatNumber x =
+    let
+        split y =
+            if String.length y < 4 then
+                y
+            else
+                split (String.slice 0 -3 y) ++ "," ++ String.right 3 y
+    in
+    split (toString x)
+
+
+
 {- | Generate a new id based on a previous id and nonce; possibly wraps due to JS integer limitations -}
 
 

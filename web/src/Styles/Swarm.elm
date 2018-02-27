@@ -52,13 +52,11 @@ swmErrColor =
 
 textVariations =
     [ variation (VarColor red) [ C.text red ]
+    , variation GreenT [ C.text swmOkColor, Font.bold ]
     , variation BoldT [ Font.bold ]
-    , variation Caps
-        [ uppercase
-        ]
-    , variation SmallFont
-        [ Font.size 11
-        ]
+    , variation AlignR [ Font.alignRight ]
+    , variation Caps [ uppercase ]
+    , variation SmallFont [ Font.size 11 ]
     ]
 
 
@@ -122,11 +120,11 @@ swmStylesheet =
             ]
                 ++ headingCommon
         , style SubH <|
-            [ Font.size <| scaled 3
+            [ Font.size 24
             ]
                 ++ headingCommon
         , style SubSubH <|
-            [ Font.size <| scaled 2
+            [ Font.size 18
             , Font.weight 400
             ]
                 ++ textVariations
@@ -219,6 +217,21 @@ swmStylesheet =
             ]
         , style VoteList
             bottomBorder
+        , style PetitionList
+            bottomBorder
+        , style PetitionBarLeft
+            [ background swmErrColor
+            , variation PetitionGreen [ background swmOkColor ]
+            ]
+        , style PetitionBarRight
+            [ background swmLightGreyColor
+            ]
+        , style PetitionBarTick
+            [ Bdr.right 1.0
+            , solid
+            , C.border swmGreyColor
+            , prop "margin-top" "-7px"
+            ]
         , style DialogBackdrop
             [ background bgShadow
             , Shadow.box
@@ -243,6 +256,10 @@ swmStylesheet =
                 [ prop "width" "initial"
                 , prop "flex" "none"
                 ]
+            , variation BtnText
+                [ C.text swmHltColor
+                , Font.bold
+                ]
             ]
         , style InputS
             [ prop "pointer-events" "auto"
@@ -256,6 +273,7 @@ swmStylesheet =
             ]
         , style ParaS <|
             [ prop "white-space" "pre-wrap"
+            , Font.size 14
             , Font.weight 300
             ]
                 ++ textVariations
