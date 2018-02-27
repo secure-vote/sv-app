@@ -45,5 +45,6 @@ type SvClass
     | CardS
     | Slider
     | SliderBackground
+    | SliderLabel
       -- END TOM
     | NilS

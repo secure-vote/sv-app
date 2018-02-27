@@ -17,6 +17,8 @@ type Variation
     | SmallFont
     | NGood
     | NBad
+    | SliderGreen
+    | SliderRed
 
 
 type IssueCardStatus

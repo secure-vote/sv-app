@@ -42,6 +42,7 @@ btn props inner =
                 Click msg ->
                     [ onClick msg ]
 
+                -- TODO: Btn is not safely disabled. Can be removed with Dev Tools
                 Disabled bool ->
                     if bool then
                         [ attribute "disabled" "disabled" ]

@@ -38,8 +38,12 @@ swmGreyColor =
     rgb 161 161 161
 
 
-swmDarkGreyColor =
+swmLightGreyColor =
     rgb 216 216 216
+
+
+swmDarkGreyColor =
+    rgb 55 58 61
 
 
 swmErrColor =
@@ -258,7 +262,7 @@ swmStylesheet =
         , style Notify
             [ Bdr.all 1.0
             , solid
-            , C.border <| rgb 180 180 180
+            , C.border swmGreyColor
             , C.text white
             , Font.center
             , variation NGood
@@ -276,9 +280,21 @@ swmStylesheet =
             [ prop "margin-top" "3px"
             ]
         , style SliderBackground
-            [ background swmDarkGreyColor
+            [ background swmLightGreyColor
             , Bdr.all 1.0
             , solid
             , C.border swmGreyColor
+            , variation SliderGreen
+                [ background swmOkColor
+                ]
+            , variation SliderRed
+                [ background swmErrColor
+                ]
+            ]
+        , style SliderLabel
+            [ background swmDarkGreyColor
+            , C.text white
+            , Font.size 12
+            , Bdr.rounded 8
             ]
         ]

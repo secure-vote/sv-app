@@ -2,6 +2,7 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small, VSmall, Warning), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
+import Components.Slider exposing (slider)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (card, checkAlreadyVoted, genNewId, getBallot, getField, getFloatField, para, relativeTime)
@@ -9,13 +10,13 @@ import Html as H
 import Html.Attributes as HA
 import Html.Events as HE
 import Models exposing (Model)
-import Models.Ballot exposing (Ballot, BallotId)
+import Models.Ballot exposing (Ballot, BallotId, BallotOption)
 import Models.Vote exposing (VoteState(VoteInitial))
 import Msgs exposing (..)
 import Routes exposing (DialogRoute(BallotDeleteConfirmD, BallotInfoD, BallotOptionD, HowToVoteD, VoteConfirmationD), Route(EditBallotR))
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(BoldT, NBad, NGood))
+import Styles.Variations exposing (Variation(BoldT, NBad, NGood, SliderGreen, SliderRed))
 import Views.EditBallotV exposing (populateFromModel)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
@@ -78,6 +79,9 @@ body ballotId ballot model =
         haveVoted =
             checkAlreadyVoted ballotId model
 
+        isDisabled =
+            isFutureVote || haveVoted
+
         voteTime =
             if isFutureVote then
                 relativeTime ballot.start model
@@ -113,7 +117,7 @@ body ballotId ballot model =
                 , statusNotify
                 ]
             ]
-                ++ optionList ballotId model
+                ++ List.indexedMap (optionListItem model isDisabled) ballot.ballotOptions
                 ++ [ confirmationButton ballotId model
                    ]
 
@@ -128,97 +132,47 @@ getSliderValue id model =
     getFloatField (voteOptionSliderId id) model
 
 
-optionList : BallotId -> Model -> List SvElement
-optionList ballotId model =
+optionListItem : Model -> Bool -> Int -> BallotOption -> SvElement
+optionListItem model isDisabled index { id, name, desc } =
     let
-        ballot =
-            getBallot ballotId model
-
-        isFutureVote =
-            model.now < ballot.start
-
-        haveVoted =
-            checkAlreadyVoted ballotId model
-
         {- TODO: Why is this a string?? -}
-        sliderInputMsg id =
+        sliderInputMsg =
             String.toFloat >> Result.withDefault 0 >> SFloat (voteOptionSliderId id) >> SetField
 
-        sliderAlterMsg id newVal =
-            if isFutureVote || haveVoted then
-                NoOp
-            else
-                sliderInputMsg id newVal
-
-        voteRangeReduce id =
+        voteRangeReduce =
             let
                 newVal =
                     max (getSliderValue id model - 1) -3
             in
-            sliderAlterMsg id <| toString newVal
+            sliderInputMsg <| toString newVal
 
-        voteRangeIncrease id =
+        voteRangeIncrease =
             let
                 newVal =
                     min (getSliderValue id model + 1) 3
             in
-            sliderAlterMsg id <| toString newVal
+            sliderInputMsg <| toString newVal
 
-        sliderOptions =
-            if isFutureVote || haveVoted then
-                [ HA.attribute "disabled" "disabled" ]
-            else
-                []
-
-        htmlSlider id =
-            el Slider [ width fill, verticalCenter ] <|
-                html <|
-                    H.input
-                        (sliderOptions
-                            ++ [ HA.type_ "range"
-                               , HA.min "-3"
-                               , HA.max "3"
-                               , HA.step "1"
-                               , HA.value <| toString <| getSliderValue id model
-                               , HE.onInput <| sliderInputMsg id
-                               , HA.style
-                                    [ ( "-webkit-appearance", "none" )
-                                    , ( "background", "none" )
-                                    , ( "width", "100%" )
-                                    ]
-                               ]
-                        )
-                        []
+        value =
+            getSliderValue id model
 
         sliderCol id =
             column NilS
-                [ center, spacing (scaled 1), width <| fillPortion 2 ]
+                [ center, spacing (scaled 1), paddingXY (scaled 4) 0 ]
                 [ row NilS
-                    [ verticalCenter, spacing (scaled 2), width fill ]
-                    [ btn [ PriBtn, VSmall, Click <| voteRangeReduce id ] <| mkIcon "minus" I24
-                    , column NilS
-                        [ width fill, spacing (scaled 2) ]
-                        [ row NilS
-                            [ spread ]
-                            [ para [] "Disagree"
-                            , para [] "Agree"
-                            ]
-                        , el SliderBackground [ width fill, height (px 9) ] empty
-                            |> within [ htmlSlider id ]
-                        ]
-                    , btn [ PriBtn, VSmall, Click <| voteRangeIncrease id ] <| mkIcon "plus" I24
+                    [ verticalCenter, spacing (scaled 4), width fill ]
+                    [ btn [ PriBtn, VSmall, Click <| voteRangeReduce, Disabled isDisabled ] <| mkIcon "minus" I24
+                    , slider model sliderInputMsg isDisabled value
+                    , btn [ PriBtn, VSmall, Click <| voteRangeIncrease, Disabled isDisabled ] <| mkIcon "plus" I24
                     ]
                 ]
-
-        optionListItem index { id, name, desc } =
-            column VoteList
-                [ padding (scaled 2), spacing (scaled 2) ]
-                [ el SubSubH [] <| para [] <| (toString <| index + 1) ++ ". " ++ name
-                , para [] desc
-                , sliderCol id
-                ]
     in
-    List.indexedMap optionListItem ballot.ballotOptions
+    column VoteList
+        [ padding (scaled 4), spacing (scaled 2) ]
+        [ el SubSubH [] <| para [] <| (toString <| index + 1) ++ ". " ++ name
+        , para [] desc
+        , sliderCol id
+        ]
 
 
 confirmationButton : BallotId -> Model -> SvElement
