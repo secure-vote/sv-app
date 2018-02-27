@@ -66,7 +66,7 @@ slider model msg isDisabled value =
             [ para [] "Disagree"
             , para [] "Agree"
             ]
-        , sliderLabel value
+        , sliderLabel isDisabled value
         , row NilS
             []
             (List.map sliderBg <|
@@ -76,8 +76,8 @@ slider model msg isDisabled value =
         ]
 
 
-sliderLabel : Float -> SvElement
-sliderLabel value =
+sliderLabel : Bool -> Float -> SvElement
+sliderLabel isDisabled value =
     let
         struct =
             case value of
@@ -105,9 +105,12 @@ sliderLabel value =
                 _ ->
                     { l = 0, r = 0, txt = "" }
     in
-    row NilS
-        []
-        [ el NilS [ width (fillPortion struct.l) ] empty
-        , el SliderLabel [ paddingXY (scaled 2) 3 ] (text struct.txt)
-        , el NilS [ width (fillPortion struct.r) ] empty
-        ]
+    if isDisabled then
+        empty
+    else
+        row NilS
+            []
+            [ el NilS [ width (fillPortion struct.l) ] empty
+            , el SliderLabel [ paddingXY (scaled 2) 3 ] (text struct.txt)
+            , el NilS [ width (fillPortion struct.r) ] empty
+            ]
