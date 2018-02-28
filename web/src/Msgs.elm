@@ -3,6 +3,7 @@ module Msgs exposing (..)
 import Element.Input exposing (SelectMsg, SelectWith)
 import Models.Ballot exposing (Ballot, BallotId, BallotState)
 import Models.Democracy exposing (DelegateState, Democracy, DemocracyId)
+import Models.Petition exposing (PetitionId)
 import Models.Vote exposing (Vote, VoteId, VoteState)
 import Routes exposing (DialogRoute, Route)
 import Time exposing (Time)
@@ -56,6 +57,7 @@ type CRUDMsg
     | DeleteBallot BallotId
     | AddDelegate String ( DemocracyId, Democracy )
     | RemoveDelegate ( DemocracyId, Democracy )
+    | UpdateSupport ( PetitionId, Bool )
 
 
 type ToBlockchainMsg

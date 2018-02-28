@@ -1,15 +1,26 @@
 module Views.PetitionsV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
+import Dict
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (card, formatNumber, para, relativeTime)
+import Helpers exposing (card, formatNumber, getSupport, para, relativeTime)
 import Models exposing (Model)
+import Models.Petition exposing (Petition, PetitionId)
+import Msgs exposing (..)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(AlignR, BoldT, GreenT, PetitionGreen))
 import Time exposing (Time)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
+
+
+submitToBoard =
+    15000
+
+
+obligatoryVote =
+    30000
 
 
 petitionsV : Model -> SvView
@@ -31,11 +42,14 @@ header =
 body : Model -> SvElement
 body model =
     let
+        petitions =
+            List.sortBy (\( key, value ) -> value.finish) <| Dict.toList model.petitions
+
         currentPetitions =
-            List.sortBy .finish <| List.filter (\{ finish } -> finish >= model.now) petitions
+            List.filter (\( key, value ) -> value.finish >= model.now) petitions
 
         pastPetitions =
-            List.reverse <| List.sortBy .finish <| List.filter (\{ finish } -> finish < model.now) petitions
+            List.reverse <| List.filter (\( key, value ) -> value.finish < model.now) petitions
     in
     column NilS
         [ spacing (scaled 4) ]
@@ -70,8 +84,20 @@ body model =
         ]
 
 
-currentListItem : Model -> Petition -> SvElement
-currentListItem model { name, desc, start, finish, support } =
+currentListItem : Model -> ( PetitionId, Petition ) -> SvElement
+currentListItem model ( petId, { name, desc, start, finish, support } ) =
+    let
+        supportButton =
+            if getSupport petId model then
+                [ el NilS [ height fill ] empty
+                , btn [ Attr alignRight, Click <| CRUD <| UpdateSupport ( petId, False ) ] (text "Remove support ✖")
+                , btn [ PriBtn, VSmall, Disabled True ] (text "You Supported This")
+                ]
+            else
+                [ el NilS [ height fill ] empty
+                , btn [ PriBtn, VSmall, Click <| CRUD <| UpdateSupport ( petId, True ) ] (text "Give Support")
+                ]
+    in
     column PetitionList
         [ spacing (scaled 1), padding (scaled 2) ]
         [ row NilS
@@ -87,19 +113,17 @@ currentListItem model { name, desc, start, finish, support } =
                 , progressBar support
                 ]
             , column NilS
-                [ minWidth (px 150) ]
-                [ el NilS [ height fill ] empty
-                , btn [ PriBtn, VSmall ] (text "Give Support")
-                ]
+                [ minWidth (px 160), spacing (scaled 1) ]
+                supportButton
             ]
         ]
 
 
-pastListItem : Model -> Petition -> SvElement
-pastListItem model { name, desc, start, finish, support } =
+pastListItem : Model -> ( PetitionId, Petition ) -> SvElement
+pastListItem model ( petId, { name, desc, start, finish, support } ) =
     let
         successText =
-            if support < 15000 then
+            if support < submitToBoard then
                 "Unsuccessful Petition"
             else
                 "Successful Petition"
@@ -131,10 +155,10 @@ progressBar : Int -> SvElement
 progressBar support =
     let
         gotSupport =
-            support >= 15000
+            support >= submitToBoard
 
         doubleSupport =
-            support >= 30000
+            support >= obligatoryVote
 
         addTick bool str =
             if bool then
@@ -146,7 +170,7 @@ progressBar support =
         [ width fill, spacing (scaled 2) ]
         [ row NilS
             [ spacing (scaled 1) ]
-            [ para [ width fill, vary BoldT True ] <| formatNumber support ++ " / 15,000 support received"
+            [ para [ width fill, vary BoldT True ] <| formatNumber support ++ " / " ++ formatNumber submitToBoard ++ " support received"
             , para [ vary GreenT gotSupport ] <| addTick gotSupport "Submitted to board"
             , para [ width fill, vary GreenT doubleSupport, vary AlignR True ] <| addTick doubleSupport "Obligatory Vote"
             ]
@@ -154,7 +178,7 @@ progressBar support =
             []
             [ el PetitionBarLeft
                 [ height (px 5)
-                , width (percent (min (toFloat support / 300) 100))
+                , width (percent (min (toFloat support / obligatoryVote * 100) 100))
                 , vary PetitionGreen gotSupport
                 ]
                 empty
@@ -168,21 +192,3 @@ progressBar support =
                     ]
                 ]
         ]
-
-
-petitions =
-    [ Petition "Remove H. Harold from the foundation board" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1522708000000 8560
-    , Petition "Advertise the Swarm fund on television" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1526708000000 32120
-    , Petition "Raise additional funds" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1524708000000 16503
-    , Petition "Liquidate the fund to invest in Doge" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519608000000 1519708000000 1000
-    , Petition "Petition Title" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1517708000000 1518708000000 16503
-    ]
-
-
-type alias Petition =
-    { name : String
-    , desc : String
-    , start : Time
-    , finish : Time
-    , support : Int
-    }

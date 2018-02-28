@@ -5,6 +5,7 @@ import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Json.Decode exposing (Value)
 import Models.Ballot exposing (Ballot, BallotId, BallotOption, BallotState(BallotConfirmed))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
+import Models.Petition exposing (Petition, PetitionId)
 import Models.Vote exposing (Vote, VoteId)
 import Msgs exposing (..)
 import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
@@ -17,6 +18,8 @@ type alias Model =
     , ballots : Dict BallotId Ballot
     , votes : Dict VoteId Vote
     , members : Dict MemberId Member
+    , petitions : Dict PetitionId Petition
+    , support : Dict PetitionId Bool
     , showDialog : Bool
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , localStorage : Dict String String
@@ -42,6 +45,8 @@ initModel =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , petitions = Dict.fromList petitions
+    , support = Dict.empty
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , localStorage = Dict.empty
@@ -67,6 +72,8 @@ initModelWithFlags flags =
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
     , votes = Dict.fromList votes
+    , petitions = Dict.fromList petitions
+    , support = Dict.empty
     , showDialog = False
     , dialogHtml = { title = "", route = NotFoundD }
     , localStorage = Dict.empty
@@ -283,4 +290,13 @@ ballotCategories =
     , ( "Budgeting", "Financial" )
     , ( "Projects", "SwarmFoundation" )
     , ( "GreenLighting", "Projects" )
+    ]
+
+
+petitions =
+    [ ( 57347395783, Petition "Remove H. Harold from the foundation board" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1522708000000 8560 )
+    , ( 68567845673, Petition "Advertise the Swarm fund on television" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1526708000000 32120 )
+    , ( 79054563456, Petition "Raise additional funds" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519708000000 1524708000000 16503 )
+    , ( 13256896855, Petition "Liquidate the fund to invest in Doge" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1519608000000 1519708000000 10000 )
+    , ( 99356566456, Petition "Petition Title" "Ballot description, Lorem ipsum dolor sit amet, ei qui dicant sanctus detracto, vim homero meliore ei. Cu pro putant audire, accusam elaboraret eu sea, at congue nemore quo." 1517708000000 1518708000000 16503 )
     ]
