@@ -81,8 +81,7 @@ rootDemoView model =
                     voteV ballotId model
 
                 ResultsR ballotId ->
-                    --                    resultsV ballotId model
-                    petitionsV model
+                    resultsV ballotId model
 
                 CreateDemocracyR ->
                     notFoundView
