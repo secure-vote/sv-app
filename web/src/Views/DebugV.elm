@@ -2,7 +2,7 @@ module Views.DebugV exposing (..)
 
 import Dict
 import Element exposing (..)
-import Helpers exposing (getDebugLog, para)
+import Helpers exposing (card, getDebugLog, para)
 import Models exposing (Model)
 import Styles.Styles exposing (SvClass(NilS))
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
@@ -26,7 +26,8 @@ header =
 
 body : Model -> SvElement
 body model =
-    column NilS
-        []
-        [ para [] <| getDebugLog model
-        ]
+    card <|
+        column NilS
+            []
+            [ para [] <| getDebugLog model
+            ]
