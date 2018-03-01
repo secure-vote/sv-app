@@ -10,6 +10,7 @@ type Variation
     | IssueCardMod IssueCardStatus
     | VarColor Color
     | BoldT
+    | SmallT
     | GreenT
     | AlignR
     | BtnDisabled
@@ -17,7 +18,6 @@ type Variation
     | BtnSmall
     | BtnText
     | Caps
-    | SmallFont
     | NGood
     | NBad
     | SliderGreen

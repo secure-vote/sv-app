@@ -10,7 +10,7 @@ import Models.Petition exposing (Petition, PetitionId)
 import Msgs exposing (..)
 import Styles.Styles exposing (SvClass(..))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(AlignR, BoldT, GreenT, PetitionGreen))
+import Styles.Variations exposing (Variation(..))
 import Time exposing (Time)
 import Views.ViewHelpers exposing (SvElement, SvHeader, SvView)
 
@@ -109,7 +109,11 @@ currentListItem model ( petId, { name, desc, start, finish, support } ) =
             [ spacing (scaled 4) ]
             [ column NilS
                 [ spacing (scaled 2) ]
-                [ paragraph ParaS [] [ text desc, btn [ Text ] (text " View full petition details >") ]
+                [ paragraph ParaS
+                    [ vary SmallT True ]
+                    [ text desc
+                    , btn [ Text ] (text " View full petition details >")
+                    ]
                 , progressBar support
                 ]
             , column NilS

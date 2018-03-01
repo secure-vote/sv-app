@@ -125,7 +125,7 @@ rootDemoView model =
                 empty
 
         mainLayout =
-            column NilS
+            column Body
                 [ spacing (scaled 4) ]
                 [ showAdmin
                 , headerRow

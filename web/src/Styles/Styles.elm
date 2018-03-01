@@ -9,7 +9,8 @@ type StyleOption
 
 
 type SvClass
-    = HeaderStyle
+    = Body
+    | HeaderStyle
     | Heading
     | MenuBarHeading
     | SubH

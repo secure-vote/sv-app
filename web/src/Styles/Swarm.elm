@@ -56,7 +56,7 @@ textVariations =
     , variation BoldT [ Font.bold ]
     , variation AlignR [ Font.alignRight ]
     , variation Caps [ uppercase ]
-    , variation SmallFont [ Font.size 11 ]
+    , variation SmallT [ Font.size 14 ]
     ]
 
 
@@ -113,6 +113,10 @@ swmStylesheet : StyleSheet SvClass Variation
 swmStylesheet =
     styleSheet
         [ style NilS []
+        , style Body
+            [ Font.size 16
+            , Font.weight 300
+            ]
         , style HeaderStyle
             bottomBorder
         , style Heading <|
@@ -222,9 +226,11 @@ swmStylesheet =
         , style PetitionBarLeft
             [ background swmErrColor
             , variation PetitionGreen [ background swmOkColor ]
+            , T.all
             ]
         , style PetitionBarRight
             [ background swmLightGreyColor
+            , T.all
             ]
         , style PetitionBarTick
             [ Bdr.right 1.0
@@ -273,8 +279,6 @@ swmStylesheet =
             ]
         , style ParaS <|
             [ prop "white-space" "pre-wrap"
-            , Font.size 14
-            , Font.weight 300
             ]
                 ++ textVariations
         , style Notify
