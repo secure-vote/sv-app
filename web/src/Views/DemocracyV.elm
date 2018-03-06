@@ -48,12 +48,13 @@ admin ( democId, democracy ) model =
                 , Nav <| NTo (CreateBallotR democId ballotId)
                 ]
     in
-    column AdminBoxS
-        [ spacing (scaled 1), padding (scaled 2) ]
-        [ el SubH [] (text "Welcome, Admin")
-        , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
-        , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
-        ]
+    card <|
+        column AdminBoxS
+            [ spacing (scaled 1), padding (scaled 2) ]
+            [ el SubH [] (text "Welcome, Admin")
+            , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
+            , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
+            ]
 
 
 header : Model -> SvHeader

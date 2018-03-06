@@ -120,16 +120,10 @@ rootDemoView model =
             else
                 []
 
-        showAdmin =
-            if model.isAdmin then
-                card admin
-            else
-                empty
-
         mainLayout =
             column Body
                 [ spacing (scaled 4) ]
-                [ showAdmin
+                [ when model.isAdmin admin
                 , headerRow
                 , body
                 ]
