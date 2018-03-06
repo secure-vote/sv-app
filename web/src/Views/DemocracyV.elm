@@ -4,9 +4,9 @@ import Components.Btn exposing (BtnProps(Click, PriBtn, Small), btn)
 import Components.Delegation exposing (delegationV)
 import Components.IssueCard exposing (issueCard)
 import Dict exposing (toList)
-import Element exposing (Element, column, el, empty, html, row, text)
-import Element.Attributes exposing (alignBottom, center, class, fill, padding, paddingTop, paddingXY, percent, spacing, spread, vary, verticalCenter, width)
-import Helpers exposing (checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
+import Element exposing (..)
+import Element.Attributes exposing (..)
+import Helpers exposing (card, checkAlreadyVoted, dubCol, genNewId, getBallot, getDemocracy, getIntField, getMembers, getResultPercent, para, relativeTime)
 import Models exposing (Model)
 import Models.Ballot exposing (Ballot, BallotId)
 import Models.Democracy exposing (Democracy, DemocracyId)
@@ -49,7 +49,7 @@ admin ( democId, democracy ) model =
                 ]
     in
     column AdminBoxS
-        [ spacing (scaled 1), padding (scaled 4) ]
+        [ spacing (scaled 1), padding (scaled 2) ]
         [ el SubH [] (text "Welcome, Admin")
         , para [ width (percent 40) ] "As a project administrator you can create a new ballot below, or click on an individual ballot if you wish to edit or delete it."
         , btn [ PriBtn, Small, Click createBallotMsg ] (text "Create new ballot")
@@ -59,22 +59,29 @@ admin ( democId, democracy ) model =
 header : Model -> SvHeader
 header model =
     ( []
-    , [ text model.singleDemocName ]
+    , [ text "Overview" ]
     , []
     )
 
 
 body : ( DemocracyId, Democracy ) -> List ( BallotId, Ballot ) -> Model -> SvElement
 body ( democId, democracy ) ballots model =
-    column IssueList
-        [ spacing (scaled 3) ]
-        [ el SubH [] (text "Open Ballots")
-        , currentBallotList ballots model
-        , el SubH [] (text "Upcoming Ballots")
-        , futureBallotList ballots model
-        , el SubH [] (text "Past Ballots")
-        , pastBallotList ballots model
-        , delegationV ( democId, democracy ) model
+    column NilS
+        [ spacing (scaled 4) ]
+        [ card <|
+            column IssueList
+                []
+                [ el SubH [ paddingBottom (scaled 1) ] (text "Open Proposals")
+                , currentBallotList ballots model
+                , futureBallotList ballots model
+                ]
+        , card <|
+            column IssueList
+                []
+                [ el SubH [ paddingBottom (scaled 1) ] (text "Recent Results")
+                , pastBallotList ballots model
+                ]
+        , card <| delegationV ( democId, democracy ) model
         ]
 
 

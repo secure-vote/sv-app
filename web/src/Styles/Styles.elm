@@ -32,6 +32,7 @@ type SvClass
     | TabBtn
     | IssueList
     | IssueCard
+    | IssueStatusS
     | IssueCardResults
     | CardFooter
     | VoteList
@@ -41,5 +42,9 @@ type SvClass
     | BtnS
     | InputS
     | AdminBoxS
+    | CardS
+    | Slider
+    | SliderBackground
+    | SliderLabel
       -- END TOM
     | NilS

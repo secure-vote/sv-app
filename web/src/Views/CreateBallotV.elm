@@ -4,7 +4,7 @@ import Components.BallotFields exposing (ballotFieldIds, ballotFieldsV, ballotOp
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)
 import Element.Attributes exposing (..)
-import Helpers exposing (dubCol, genDropDown, genNewId, getDemocracy, getField, getIntField, para, timeToDateString)
+import Helpers exposing (card, dubCol, genDropDown, genNewId, getDemocracy, getField, getIntField, para, timeToDateString)
 import Models exposing (Model)
 import Models.Ballot exposing (..)
 import Models.Democracy exposing (Democracy, DemocracyId)
@@ -33,11 +33,12 @@ header =
 
 body : DemocracyId -> BallotId -> Model -> SvElement
 body democId ballotId model =
-    column NilS
-        [ spacing (scaled 4) ]
-        [ ballotFieldsV ballotId model
-        , createNewBallot democId ballotId model
-        ]
+    card <|
+        column NilS
+            [ spacing (scaled 4) ]
+            [ ballotFieldsV ballotId model
+            , createNewBallot democId ballotId model
+            ]
 
 
 createNewBallot : DemocracyId -> BallotId -> Model -> SvElement

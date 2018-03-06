@@ -19,6 +19,7 @@ type VoteState
     | VoteSending
     | VotePending
     | VoteConfirmed
+    | VoteNone
 
 
 type alias VoteOption =

@@ -42,7 +42,7 @@ voteConfirmDialogV ( voteId, vote ) model =
             para [] <| toString <| getSliderValue item.id model
 
         isDisabled =
-            not <| (getVote voteId model).state == VoteInitial
+            not <| (getVote voteId model).state == VoteNone
 
         createVoteMsg =
             MultiMsg
