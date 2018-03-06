@@ -16,6 +16,7 @@ type Route
     | EditBallotR BallotId
     | PetitionsR
     | DebugR
+    | LoginR
     | NotFoundRoute
 
 

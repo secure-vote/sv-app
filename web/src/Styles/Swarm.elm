@@ -109,214 +109,213 @@ bottomBorder =
     ]
 
 
-swmStylesheet : StyleSheet SvClass Variation
-swmStylesheet =
-    styleSheet
-        [ style NilS []
-        , style Body
-            [ Font.size 16
-            , Font.weight 300
+swmStyles : List (Style SvClass Variation)
+swmStyles =
+    [ style NilS []
+    , style Body
+        [ Font.size 16
+        , Font.weight 300
+        ]
+    , style HeaderStyle
+        bottomBorder
+    , style Heading <|
+        [ Font.size <| scaled 4
+        ]
+            ++ headingCommon
+    , style SubH <|
+        [ Font.size 24
+        ]
+            ++ headingCommon
+    , style SubSubH <|
+        [ Font.size 18
+        , Font.weight 400
+        ]
+            ++ textVariations
+    , style FooterText
+        [ Font.weight 400
+        , Font.size 13
+        ]
+    , style Grey
+        [ C.text lightCharcoal
+        ]
+    , style Error
+        [ Font.size <| scaled 4
+        , C.text red
+        ]
+    , style MenuBarHeading <|
+        [ Font.size <| scaled 3
+        ]
+            ++ headingCommon
+    , style TabRow
+        [ bottom 1.0
+        , solid
+        , C.border lightGray
+        , variation NoTabRowBorder
+            [ bottom 0 ]
+        ]
+    , style TabBtn
+        [ Font.size 15
+        , bottom 1.0
+        , solid
+        , C.border <| rgba 0 0 0 0
+        , variation TabBtnActive
+            [ C.border <| swmHltColor
             ]
-        , style HeaderStyle
-            bottomBorder
-        , style Heading <|
-            [ Font.size <| scaled 4
-            ]
-                ++ headingCommon
-        , style SubH <|
-            [ Font.size 24
-            ]
-                ++ headingCommon
-        , style SubSubH <|
-            [ Font.size 18
-            , Font.weight 400
-            ]
-                ++ textVariations
-        , style FooterText
-            [ Font.weight 400
-            , Font.size 13
-            ]
-        , style Grey
-            [ C.text lightCharcoal
-            ]
-        , style Error
-            [ Font.size <| scaled 4
-            , C.text red
-            ]
-        , style MenuBarHeading <|
-            [ Font.size <| scaled 3
-            ]
-                ++ headingCommon
-        , style TabRow
-            [ bottom 1.0
-            , solid
-            , C.border lightGray
-            , variation NoTabRowBorder
-                [ bottom 0 ]
-            ]
-        , style TabBtn
-            [ Font.size 15
-            , bottom 1.0
-            , solid
-            , C.border <| rgba 0 0 0 0
-            , variation TabBtnActive
-                [ C.border <| swmHltColor
-                ]
 
-            --            , variation TabBtnActive
-            --                [ pseudo "after"
-            --                    [ prop "width" "100%"
-            --                    , background swmHltColor
-            --                    ]
-            --                ]
-            --            , pseudo "after"
-            --                [ prop "display" "block"
-            --                , background <| rgba 0 0 0 0
-            --                , prop "bottom" "0"
-            --                , prop "content" " "
-            --                , prop "height" "1px"
-            --                , prop "position" "absolute"
-            --                , prop "transition" "width .25s ease, background-color .25s ease"
-            --                , prop "width" "0"
-            --                , prop "left" "50%"
-            --                , prop "transform" "translateX(-50%)"
-            --                ]
-            ]
-        , style IssueCard <|
-            [ cursor "pointer"
-            , T.all
-            , variation (IssueCardMod IssueVoteNow)
-                [ background swmCardHltColor
-                ]
-            ]
-                ++ bottomBorder
-        , style IssueStatusS
-            [ variation (IssueStatusMod IssueDone)
-                [ C.text swmOkColor
-                ]
-            , variation (IssueStatusMod IssuePending)
-                [ C.text swmPendColor
-                ]
-            , variation (IssueStatusMod IssueVoteNow)
-                [ C.text swmHltColor
-                ]
-            , variation (IssueStatusMod IssueFuture)
-                [ C.text swmGreyColor ]
-            , variation (IssueStatusMod IssuePast)
-                [ C.text swmGreyColor ]
-            ]
-        , style CardFooter
-            [ Font.alignRight
-            ]
-        , style ResultsColumn
-            [ Bdr.right 1.0
-            , solid
-            ]
-        , style ResultsSummary
-            [ Bdr.all 1.0
-            , solid
-            ]
-        , style DataParam
-            [ Font.typeface [ Font.monospace ]
-            ]
-        , style VoteList
-            bottomBorder
-        , style PetitionList
-            bottomBorder
-        , style PetitionBarLeft
-            [ background swmErrColor
-            , variation PetitionGreen [ background swmOkColor ]
-            , T.all
-            ]
-        , style PetitionBarRight
-            [ background swmLightGreyColor
-            , T.all
-            ]
-        , style PetitionBarTick
-            [ Bdr.right 1.0
-            , solid
-            , C.border swmGreyColor
-            , prop "margin-top" "-7px"
-            ]
-        , style DialogBackdrop
-            [ background bgShadow
-            , Shadow.box
-                { offset = ( 0, 0 )
-                , size = 15
-                , blur = 15
-                , color = bgShadow
-                }
-            ]
-        , style DialogStyle
-            [ background white
-            , Shadow.deep
-            ]
-        , style BtnS
-            [ variation BtnDisabled
-                [ cursor "not-allowed"
-                ]
-            , variation BtnWarning
-                [ background swmErrColor
-                ]
-            , variation BtnSmall
-                [ prop "width" "initial"
-                , prop "flex" "none"
-                ]
-            , variation BtnText
-                [ C.text swmHltColor
-                , Font.bold
-                ]
-            ]
-        , style InputS
-            [ prop "pointer-events" "auto"
-            , Font.size 16
-            ]
-        , style AdminBoxS
-            []
-        , style CardS
-            [ background white
-            , shadowLarge
-            ]
-        , style ParaS <|
-            [ prop "white-space" "pre-wrap"
-            ]
-                ++ textVariations
-        , style Notify
-            [ Bdr.all 1.0
-            , solid
-            , C.border swmGreyColor
-            , C.text white
-            , Font.center
-            , variation NGood
-                [ background swmOkColor
-                , C.text white
-                , Bdr.all 0
-                ]
-            , variation NBad
-                [ background swmErrColor
-                , C.text white
-                , Bdr.all 0
-                ]
-            ]
-        , style Slider
-            [ prop "margin-top" "3px"
-            ]
-        , style SliderBackground
-            [ background swmLightGreyColor
-            , Bdr.all 1.0
-            , solid
-            , C.border swmGreyColor
-            , variation SliderGreen
-                [ background swmOkColor
-                ]
-            , variation SliderRed
-                [ background swmErrColor
-                ]
-            ]
-        , style SliderLabel
-            [ background swmDarkGreyColor
-            , C.text white
-            , Font.size 12
-            , Bdr.rounded 8
+        --            , variation TabBtnActive
+        --                [ pseudo "after"
+        --                    [ prop "width" "100%"
+        --                    , background swmHltColor
+        --                    ]
+        --                ]
+        --            , pseudo "after"
+        --                [ prop "display" "block"
+        --                , background <| rgba 0 0 0 0
+        --                , prop "bottom" "0"
+        --                , prop "content" " "
+        --                , prop "height" "1px"
+        --                , prop "position" "absolute"
+        --                , prop "transition" "width .25s ease, background-color .25s ease"
+        --                , prop "width" "0"
+        --                , prop "left" "50%"
+        --                , prop "transform" "translateX(-50%)"
+        --                ]
+        ]
+    , style IssueCard <|
+        [ cursor "pointer"
+        , T.all
+        , variation (IssueCardMod IssueVoteNow)
+            [ background swmCardHltColor
             ]
         ]
+            ++ bottomBorder
+    , style IssueStatusS
+        [ variation (IssueStatusMod IssueDone)
+            [ C.text swmOkColor
+            ]
+        , variation (IssueStatusMod IssuePending)
+            [ C.text swmPendColor
+            ]
+        , variation (IssueStatusMod IssueVoteNow)
+            [ C.text swmHltColor
+            ]
+        , variation (IssueStatusMod IssueFuture)
+            [ C.text swmGreyColor ]
+        , variation (IssueStatusMod IssuePast)
+            [ C.text swmGreyColor ]
+        ]
+    , style CardFooter
+        [ Font.alignRight
+        ]
+    , style ResultsColumn
+        [ Bdr.right 1.0
+        , solid
+        ]
+    , style ResultsSummary
+        [ Bdr.all 1.0
+        , solid
+        ]
+    , style DataParam
+        [ Font.typeface [ Font.monospace ]
+        ]
+    , style VoteList
+        bottomBorder
+    , style PetitionList
+        bottomBorder
+    , style PetitionBarLeft
+        [ background swmErrColor
+        , variation PetitionGreen [ background swmOkColor ]
+        , T.all
+        ]
+    , style PetitionBarRight
+        [ background swmLightGreyColor
+        , T.all
+        ]
+    , style PetitionBarTick
+        [ Bdr.right 1.0
+        , solid
+        , C.border swmGreyColor
+        , prop "margin-top" "-7px"
+        ]
+    , style DialogBackdrop
+        [ background bgShadow
+        , Shadow.box
+            { offset = ( 0, 0 )
+            , size = 15
+            , blur = 15
+            , color = bgShadow
+            }
+        ]
+    , style DialogStyle
+        [ background white
+        , Shadow.deep
+        ]
+    , style BtnS
+        [ variation BtnDisabled
+            [ cursor "not-allowed"
+            ]
+        , variation BtnWarning
+            [ background swmErrColor
+            ]
+        , variation BtnSmall
+            [ prop "width" "initial"
+            , prop "flex" "none"
+            ]
+        , variation BtnText
+            [ C.text swmHltColor
+            , Font.bold
+            ]
+        ]
+    , style InputS
+        [ prop "pointer-events" "auto"
+        , Font.size 16
+        ]
+    , style AdminBoxS
+        []
+    , style CardS
+        [ background white
+        , shadowLarge
+        ]
+    , style ParaS <|
+        [ prop "white-space" "pre-wrap"
+        ]
+            ++ textVariations
+    , style Notify
+        [ Bdr.all 1.0
+        , solid
+        , C.border swmGreyColor
+        , C.text white
+        , Font.center
+        , variation NGood
+            [ background swmOkColor
+            , C.text white
+            , Bdr.all 0
+            ]
+        , variation NBad
+            [ background swmErrColor
+            , C.text white
+            , Bdr.all 0
+            ]
+        ]
+    , style Slider
+        [ prop "margin-top" "3px"
+        ]
+    , style SliderBackground
+        [ background swmLightGreyColor
+        , Bdr.all 1.0
+        , solid
+        , C.border swmGreyColor
+        , variation SliderGreen
+            [ background swmOkColor
+            ]
+        , variation SliderRed
+            [ background swmErrColor
+            ]
+        ]
+    , style SliderLabel
+        [ background swmDarkGreyColor
+        , C.text white
+        , Font.size 12
+        , Bdr.rounded 8
+        ]
+    ]

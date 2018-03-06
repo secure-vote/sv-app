@@ -8,7 +8,7 @@ import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, 
 import Models.Petition exposing (Petition, PetitionId)
 import Models.Vote exposing (Vote, VoteId)
 import Msgs exposing (..)
-import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR))
+import Routes exposing (DialogRoute(NotFoundD), Route(DashboardR, DemocracyR, LoginR))
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle))
 import Time exposing (Time)
 
@@ -39,8 +39,8 @@ type alias Model =
     }
 
 
-initModel : Model
-initModel =
+initModel : Route -> Flags -> Model
+initModel initRoute flags =
     { democracies = Dict.fromList democracies
     , ballots = Dict.fromList ballots
     , members = Dict.fromList members
@@ -51,34 +51,7 @@ initModel =
     , dialogHtml = { title = "", route = NotFoundD }
     , localStorage = Dict.empty
     , txReceipts = Dict.empty
-    , routeStack = [ DashboardR ]
-    , fields = Dict.empty
-    , intFields = Dict.empty
-    , floatFields = Dict.empty
-    , boolFields = Dict.empty
-    , selectFields = Dict.empty
-    , now = 0
-    , isLoading = True
-    , isDemocracyLevel = False
-    , isAdmin = False
-    , globalStyle = SvStyle
-    , singleDemocName = ""
-    }
-
-
-initModelWithFlags : Flags -> Model
-initModelWithFlags flags =
-    { democracies = Dict.fromList democracies
-    , ballots = Dict.fromList ballots
-    , members = Dict.fromList members
-    , votes = Dict.fromList votes
-    , petitions = Dict.fromList petitions
-    , support = Dict.empty
-    , showDialog = False
-    , dialogHtml = { title = "", route = NotFoundD }
-    , localStorage = Dict.empty
-    , txReceipts = Dict.empty
-    , routeStack = [ DemocracyR flags.democracyId ]
+    , routeStack = [ initRoute ]
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty

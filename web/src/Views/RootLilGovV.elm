@@ -1,4 +1,4 @@
-module Views.RootDemoV exposing (..)
+module Views.RootLilGovV exposing (..)
 
 --import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 --import Views.DashboardV exposing (dashboardH, dashboardV)
@@ -17,20 +17,21 @@ import Models exposing (Model)
 import Msgs exposing (..)
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
-import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
-import Styles.Swarm exposing (scaled, swmStylesheet)
+import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle), SvClass(..))
+import Styles.Swarm exposing (scaled)
 import Views.CreateBallotV exposing (createBallotV)
 import Views.DebugV exposing (debugV)
 import Views.DemocracyV exposing (democracyV)
 import Views.EditBallotV exposing (editBallotV)
+import Views.LoginV exposing (loginV)
 import Views.PetitionsV exposing (petitionsV)
 import Views.ResultsV exposing (resultsV)
 import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
 import Views.VoteV exposing (voteV)
 
 
-rootDemoView : Model -> Html Msg
-rootDemoView model =
+rootLilGovView : Model -> Html Msg
+rootLilGovView model =
     let
         isLoading =
             model.isLoading
@@ -50,12 +51,6 @@ rootDemoView model =
                     []
             in
             H.node tag attrs children
-
-        navBack =
-            if List.length model.routeStack > 1 then
-                [ btn [ Click <| Nav <| NBack ] (mkIcon "arrow-left" I24) ]
-            else
-                [ empty ]
 
         debug =
             if List.head model.routeStack == Just DebugR then
@@ -99,20 +94,22 @@ rootDemoView model =
                 DebugR ->
                     debugV model
 
+                LoginR ->
+                    loginV model
+
                 NotFoundRoute ->
                     notFoundView
 
-                _ ->
-                    notFoundView
-
         headerRow =
-            card <|
+            if List.length model.routeStack > 1 then
                 row HeaderStyle
                     [ spacing (scaled 2), spread ]
-                    [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
+                    [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| [ btn [ Click <| Nav <| NBack ] (mkIcon "arrow-left" I24) ] ++ hLeft
                     , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter
                     , row NilS [ width fill, alignRight ] <| hRight ++ debug
                     ]
+            else
+                empty
 
         showDialog =
             if model.showDialog then
@@ -122,7 +119,7 @@ rootDemoView model =
 
         showAdmin =
             if model.isAdmin then
-                card admin
+                admin
             else
                 empty
 
@@ -135,4 +132,4 @@ rootDemoView model =
                 ]
                 |> within showDialog
     in
-    H.div [] [ injectCss, layout (genStylesheet SwmStyle) mainLayout ]
+    H.div [] [ injectCss, layout (genStylesheet SvStyle) mainLayout ]

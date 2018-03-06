@@ -18,8 +18,13 @@ var TARGET_ENV = function () {
         case 'demo':
             __DEV__ = true;
             return 'demo';
+        case 'lilgov':
+            __DEV__ = true;
+            return 'lilgov';
         case 'build-demo':
             return 'demo';
+        case 'build-lilgov':
+            return 'lilgov';
         default:
             __DEV__ = true;
             return 'development'
@@ -42,6 +47,8 @@ const genOutput = () => {
     let extra_dir = '';
     if (TARGET_ENV == 'demo' && !__DEV__) {
         extra_dir = '/demo';
+    } else if (TARGET_ENV == 'lilgov' && !__DEV__) {
+        extra_dir = '/lilgov';
     }
     return {
         output: {
@@ -75,6 +82,11 @@ const genPlugins = () => {
     if (TARGET_ENV === 'demo') {
         extras.push(new HTMLWebpackPlugin({
             template: 'web/index-demo.ejs',
+            inject: 'body',
+        }))
+    } else if (TARGET_ENV === 'lilgov') {
+        extras.push(new HTMLWebpackPlugin({
+            template: 'web/index-lilgov.ejs',
             inject: 'body',
         }))
     } else {
@@ -189,6 +201,19 @@ if (TARGET_ENV === 'demo') {
         entry: {
             demo: [
                 './web/index-demo.js'
+            ]
+        }
+    });
+}
+
+
+
+if (TARGET_ENV === 'lilgov') {
+    console.log('Building for lilgov...');
+    module.exports = genExports({
+        entry: {
+            lilgov: [
+                './web/index-lilgov.js'
             ]
         }
     });

@@ -1,11 +1,16 @@
 module Styles.Styles exposing (..)
 
-import Style exposing (StyleSheet)
+import Style exposing (Style, StyleSheet)
+import Styles.Variations exposing (Variation)
 
 
 type StyleOption
     = SwmStyle
     | SvStyle
+
+
+
+--type SvClass a
 
 
 type SvClass
@@ -53,3 +58,12 @@ type SvClass
     | SliderLabel
       -- END TOM
     | NilS
+
+
+
+--    | FSty a --^ Foreign Style
+
+
+commonStyles : List (Style SvClass Variation)
+commonStyles =
+    []

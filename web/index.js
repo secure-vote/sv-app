@@ -1,3 +1,5 @@
+// Deprecated, See other index files
+
 'use strict';
 
 setTimeout(() => {
