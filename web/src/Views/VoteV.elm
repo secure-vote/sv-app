@@ -49,16 +49,17 @@ admin ballotId ballot model =
                 , Nav <| NTo <| EditBallotR ballotId
                 ]
     in
-    column AdminBoxS
-        [ spacing (scaled 1), padding (scaled 2) ]
-        [ el SubH [] (text "Ballot Admin")
-        , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
-        , row NilS
-            [ spacing (scaled 2) ]
-            [ btn [ PriBtn, Small, Click editMsg, Disabled (not isFutureVote) ] (text "Edit ballot")
-            , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
+    card <|
+        column AdminBoxS
+            [ spacing (scaled 1), padding (scaled 2) ]
+            [ el SubH [] (text "Ballot Admin")
+            , para [ width (percent 40) ] "As an administrator you can edit your ballot before it goes live, or cancel it completetly using the big red button."
+            , row NilS
+                [ spacing (scaled 2) ]
+                [ btn [ PriBtn, Small, Click editMsg, Disabled (not isFutureVote) ] (text "Edit ballot")
+                , btn [ PriBtn, Warning, Small, Click (SetDialog "Ballot Deletion Confirmation" (BallotDeleteConfirmD ballotId)) ] (text "Remove ballot")
+                ]
             ]
-        ]
 
 
 header : Ballot -> SvHeader
