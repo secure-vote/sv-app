@@ -14,6 +14,7 @@ type Route
     | CreateDemocracyR
     | CreateBallotR DemocracyId BallotId
     | EditBallotR BallotId
+    | PetitionsR
     | DebugR
     | NotFoundRoute
 

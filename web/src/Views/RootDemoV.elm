@@ -7,8 +7,8 @@ module Views.RootDemoV exposing (..)
 import Components.Btn exposing (BtnProps(Click), btn)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
-import Element exposing (Element, column, el, empty, html, layout, row, text, within)
-import Element.Attributes exposing (alignBottom, alignLeft, alignRight, center, fill, padding, paddingBottom, px, spacing, spread, width)
+import Element exposing (..)
+import Element.Attributes exposing (..)
 import Helpers exposing (card)
 import Html as H exposing (Html, div, i, node, span)
 import Html.Attributes as HA
@@ -23,6 +23,7 @@ import Views.CreateBallotV exposing (createBallotV)
 import Views.DebugV exposing (debugV)
 import Views.DemocracyV exposing (democracyV)
 import Views.EditBallotV exposing (editBallotV)
+import Views.PetitionsV exposing (petitionsV)
 import Views.ResultsV exposing (resultsV)
 import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
 import Views.VoteV exposing (voteV)
@@ -92,6 +93,9 @@ rootDemoView model =
                 EditBallotR ballotId ->
                     editBallotV ballotId model
 
+                PetitionsR ->
+                    petitionsV model
+
                 DebugR ->
                     debugV model
 
@@ -120,7 +124,7 @@ rootDemoView model =
                 empty
 
         mainLayout =
-            column NilS
+            column Body
                 [ spacing (scaled 4) ]
                 [ showAdmin
                 , headerRow

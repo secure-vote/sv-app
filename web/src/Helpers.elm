@@ -9,6 +9,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Member, Model, lSKeys)
 import Models.Ballot exposing (Ballot, BallotId, BallotState(BallotNone))
 import Models.Democracy exposing (Delegate, DelegateState(Inactive), Democracy, DemocracyId)
+import Models.Petition exposing (PetitionId)
 import Models.Vote exposing (Vote, VoteId, VoteState(VoteNone))
 import Msgs exposing (..)
 import String exposing (slice)
@@ -73,6 +74,11 @@ getMembers id model =
                 False
     in
     List.filter filter <| Dict.values model.members
+
+
+getSupport : PetitionId -> Model -> Bool
+getSupport petId model =
+    Dict.get petId model.support ? False
 
 
 getField : String -> Model -> String
@@ -279,6 +285,22 @@ durationToTime ( durationValue, durationType ) =
 
         Nothing ->
             0
+
+
+
+-- TODO: Format Floats
+
+
+formatNumber : Int -> String
+formatNumber x =
+    let
+        split y =
+            if String.length y < 4 then
+                y
+            else
+                split (String.slice 0 -3 y) ++ "," ++ String.right 3 y
+    in
+    split (toString x)
 
 
 

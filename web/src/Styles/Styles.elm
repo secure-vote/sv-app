@@ -9,7 +9,8 @@ type StyleOption
 
 
 type SvClass
-    = HeaderStyle
+    = Body
+    | HeaderStyle
     | Heading
     | MenuBarHeading
     | SubH
@@ -36,6 +37,10 @@ type SvClass
     | IssueCardResults
     | CardFooter
     | VoteList
+    | PetitionList
+    | PetitionBarLeft
+    | PetitionBarRight
+    | PetitionBarTick
     | DialogBackdrop
     | DialogStyle
       -- TOM STYLES
