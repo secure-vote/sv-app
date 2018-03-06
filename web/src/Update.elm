@@ -198,6 +198,24 @@ updateCRUD msg model =
             in
             { model | democracies = Dict.insert democId removeDelegate model.democracies } ! []
 
+        UpdateSupport ( petId, bool ) ->
+            let
+                updateSupport petition =
+                    let
+                        intMod =
+                            if bool then
+                                1
+                            else
+                                -1
+                    in
+                    Maybe.map (\p -> { p | support = intMod + p.support }) petition
+            in
+            { model
+                | support = Dict.insert petId bool model.support
+                , petitions = Dict.update petId updateSupport model.petitions
+            }
+                ! []
+
 
 updateToBlockchain msg model =
     case msg of

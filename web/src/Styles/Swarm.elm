@@ -52,13 +52,11 @@ swmErrColor =
 
 textVariations =
     [ variation (VarColor red) [ C.text red ]
+    , variation GreenT [ C.text swmOkColor, Font.bold ]
     , variation BoldT [ Font.bold ]
-    , variation Caps
-        [ uppercase
-        ]
-    , variation SmallFont
-        [ Font.size 11
-        ]
+    , variation AlignR [ Font.alignRight ]
+    , variation Caps [ uppercase ]
+    , variation SmallT [ Font.size 14 ]
     ]
 
 
@@ -115,6 +113,10 @@ swmStylesheet : StyleSheet SvClass Variation
 swmStylesheet =
     styleSheet
         [ style NilS []
+        , style Body
+            [ Font.size 16
+            , Font.weight 300
+            ]
         , style HeaderStyle
             bottomBorder
         , style Heading <|
@@ -122,11 +124,11 @@ swmStylesheet =
             ]
                 ++ headingCommon
         , style SubH <|
-            [ Font.size <| scaled 3
+            [ Font.size 24
             ]
                 ++ headingCommon
         , style SubSubH <|
-            [ Font.size <| scaled 2
+            [ Font.size 18
             , Font.weight 400
             ]
                 ++ textVariations
@@ -219,6 +221,23 @@ swmStylesheet =
             ]
         , style VoteList
             bottomBorder
+        , style PetitionList
+            bottomBorder
+        , style PetitionBarLeft
+            [ background swmErrColor
+            , variation PetitionGreen [ background swmOkColor ]
+            , T.all
+            ]
+        , style PetitionBarRight
+            [ background swmLightGreyColor
+            , T.all
+            ]
+        , style PetitionBarTick
+            [ Bdr.right 1.0
+            , solid
+            , C.border swmGreyColor
+            , prop "margin-top" "-7px"
+            ]
         , style DialogBackdrop
             [ background bgShadow
             , Shadow.box
@@ -243,6 +262,10 @@ swmStylesheet =
                 [ prop "width" "initial"
                 , prop "flex" "none"
                 ]
+            , variation BtnText
+                [ C.text swmHltColor
+                , Font.bold
+                ]
             ]
         , style InputS
             [ prop "pointer-events" "auto"
@@ -256,7 +279,6 @@ swmStylesheet =
             ]
         , style ParaS <|
             [ prop "white-space" "pre-wrap"
-            , Font.weight 300
             ]
                 ++ textVariations
         , style Notify
