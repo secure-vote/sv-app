@@ -23,13 +23,13 @@
   },
   "devDependencies": {},
   "scripts": {
-    "build-web": "webpack", // Deprecated
-    "build-demo": "webpack",
+    "build-web": "webpack",
+    "build-swarm": "webpack",
     "build-lilgov": "webpack",
     "build-all": "rm -r _dist || true && yarn build-web && yarn build-demo",
     "build-netlify": "yarn build-demo && cp demo-redirect.html _dist/index.html",
-    "web": "webpack-dev-server --port 3000 --open", // Deprecated
-    "demo": "webpack-dev-server --port 3000 --open",
+    "web": "webpack-dev-server --port 3000 --open",
+    "swarm": "webpack-dev-server --port 3000 --open",
     "lilgov": "webpack-dev-server --port 3000 --open",
     "build-cordova": "cp -a _dist/. sv-cordova/www/ ; cd sv-cordova ; cordova build ios",
     "run-cordova": "cd sv-cordova ; cordova run ios"

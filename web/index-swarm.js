@@ -2,7 +2,7 @@
 
 const loadElm = function() {
 
-    const Elm = require('./src/MainDemo.elm');
+    const Elm = require('./src/MainSwarm.elm');
 
     if (typeof Elm !== "undefined") {
 

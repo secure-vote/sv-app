@@ -78,9 +78,6 @@ rootLilGovView model =
                 ResultsR ballotId ->
                     resultsV ballotId model
 
-                CreateDemocracyR ->
-                    notFoundView
-
                 -- createDemocracyV model
                 CreateBallotR democracyId ballotId ->
                     createBallotV democracyId ballotId model

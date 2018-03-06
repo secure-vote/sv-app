@@ -11,7 +11,6 @@ type Route
     | DemocracyR DemocracyId
     | VoteR BallotId
     | ResultsR BallotId
-    | CreateDemocracyR
     | CreateBallotR DemocracyId BallotId
     | EditBallotR BallotId
     | PetitionsR

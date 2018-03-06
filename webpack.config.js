@@ -15,14 +15,14 @@ var TARGET_ENV = function () {
         case 'web':
             __DEV__ = true;
             return 'development';
-        case 'demo':
+        case 'swarm':
             __DEV__ = true;
-            return 'demo';
+            return 'swarm';
         case 'lilgov':
             __DEV__ = true;
             return 'lilgov';
-        case 'build-demo':
-            return 'demo';
+        case 'build-swarm':
+            return 'swarm';
         case 'build-lilgov':
             return 'lilgov';
         default:
@@ -45,8 +45,8 @@ const CopyWebpackPluginConfig = new CopyWebpackPlugin([
 
 const genOutput = () => {
     let extra_dir = '';
-    if (TARGET_ENV == 'demo' && !__DEV__) {
-        extra_dir = '/demo';
+    if (TARGET_ENV == 'swarm' && !__DEV__) {
+        extra_dir = '/swarm';
     } else if (TARGET_ENV == 'lilgov' && !__DEV__) {
         extra_dir = '/lilgov';
     }
@@ -79,9 +79,9 @@ const genElmLoader = () => {
 const genPlugins = () => {
     const extras = [];
 
-    if (TARGET_ENV === 'demo') {
+    if (TARGET_ENV === 'swarm') {
         extras.push(new HTMLWebpackPlugin({
-            template: 'web/index-demo.ejs',
+            template: 'web/index-swarm.ejs',
             inject: 'body',
         }))
     } else if (TARGET_ENV === 'lilgov') {
@@ -89,14 +89,15 @@ const genPlugins = () => {
             template: 'web/index-lilgov.ejs',
             inject: 'body',
         }))
-    } else {
-        extras.push(new HTMLWebpackPlugin({
-                // using .ejs prevents other loaders causing errors
-                template: 'web/index.ejs',
-                // inject details of output file at end of body
-                inject: 'body'
-            }))
     }
+    // else {
+    //     extras.push(new HTMLWebpackPlugin({
+    //             // using .ejs prevents other loaders causing errors
+    //             template: 'web/index.ejs',
+    //             // inject details of output file at end of body
+    //             inject: 'body'
+    //         }))
+    // }
 
     if (__DEV__) {
         extras.push(new webpack.NamedModulesPlugin())
@@ -156,51 +157,51 @@ const genExports = (customConf) => {
 
 
 
-if (TARGET_ENV === 'development') {
-    console.log('Building for dev...');
-    module.exports = genExports({
-        entry: {
-            app: [
-                './web/index.js'
-            ]
-        },
-        plugins: [
-            // Prevents compilation errors causing the hot loader to lose state
-            new webpack.NoEmitOnErrorsPlugin()
-        ]
-    });
-}
+// if (TARGET_ENV === 'development') {
+//     console.log('Building for dev...');
+//     module.exports = genExports({
+//         entry: {
+//             app: [
+//                 './web/index.js'
+//             ]
+//         },
+//         plugins: [
+//             // Prevents compilation errors causing the hot loader to lose state
+//             new webpack.NoEmitOnErrorsPlugin()
+//         ]
+//     });
+// }
 
 
-if (TARGET_ENV === 'production') {
-    console.log('Building for production...');
-    module.exports = genExports({
-        entry: {
-            app: [
-                './web/index.js'
-            ]
-        },
-        plugins: [
-            // Delete everything from output directory and report to user
-            // NOTE: disabled for the moment - deploys through netlify are always clean anyway.
-            // The reason it's disabled is that we can clean manually with `rm -r _dist`
-            // new CleanWebpackPlugin([_dist], {
-            //     root: __dirname,
-            //     exclude: [],
-            //     verbose: true,
-            //     dry: false
-            // }),
-        ]
-    });
-}
+// if (TARGET_ENV === 'production') {
+//     console.log('Building for production...');
+//     module.exports = genExports({
+//         entry: {
+//             app: [
+//                 './web/index.js'
+//             ]
+//         },
+//         plugins: [
+//             // Delete everything from output directory and report to user
+//             // NOTE: disabled for the moment - deploys through netlify are always clean anyway.
+//             // The reason it's disabled is that we can clean manually with `rm -r _dist`
+//             // new CleanWebpackPlugin([_dist], {
+//             //     root: __dirname,
+//             //     exclude: [],
+//             //     verbose: true,
+//             //     dry: false
+//             // }),
+//         ]
+//     });
+// }
 
 
-if (TARGET_ENV === 'demo') {
-    console.log('Building for demo...');
+if (TARGET_ENV === 'swarm') {
+    console.log('Building for swarm...');
     module.exports = genExports({
         entry: {
             demo: [
-                './web/index-demo.js'
+                './web/index-swarm.js'
             ]
         }
     });

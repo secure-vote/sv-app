@@ -18,7 +18,7 @@ import Msgs exposing (..)
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SwmStyle), SvClass(..))
-import Styles.Swarm exposing (scaled, swmStylesheet)
+import Styles.Swarm exposing (scaled)
 import Views.CreateBallotV exposing (createBallotV)
 import Views.DebugV exposing (debugV)
 import Views.DemocracyV exposing (democracyV)
@@ -82,9 +82,6 @@ rootDemoView model =
 
                 ResultsR ballotId ->
                     resultsV ballotId model
-
-                CreateDemocracyR ->
-                    notFoundView
 
                 -- createDemocracyV model
                 CreateBallotR democracyId ballotId ->
