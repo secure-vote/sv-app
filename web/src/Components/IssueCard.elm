@@ -31,62 +31,68 @@ issueCard model ballotId =
             ballot.finish < model.now
 
         isPending =
-            ballot.state
-                == BallotPendingCreation
-                || ballot.state
-                == BallotPendingEdits
-                || ballot.state
-                == BallotPendingDeletion
-                || vote.state
-                == VotePending
+            List.member ballot.state [ BallotPendingCreation, BallotPendingEdits, BallotPendingDeletion ] || vote.state == VotePending
 
         state =
             if ballotDone then
                 IssuePast
-            else if ballot.start > model.now then
-                IssueFuture
             else if isPending then
                 IssuePending
+            else if ballot.start > model.now then
+                IssueFuture
             else if checkAlreadyVoted ballotId model then
                 IssueDone
             else
                 IssueVoteNow
 
         struct =
+            let
+                relStart =
+                    relativeTime ballot.start model
+
+                relFinish =
+                    relativeTime ballot.finish model
+
+                resultsR =
+                    Nav <| NTo <| ResultsR ballotId
+
+                voteR =
+                    Nav <| NTo <| VoteR ballotId
+            in
             case state of
                 IssuePast ->
                     { icon = "clipboard-text"
-                    , time = "Closed " ++ relativeTime ballot.finish model ++ " ago"
+                    , time = "Closed " ++ relFinish ++ " ago"
                     , status = "View Results"
-                    , msg = Nav <| NTo <| ResultsR ballotId
+                    , msg = resultsR
                     }
 
                 IssueFuture ->
                     { icon = "circle-outline"
-                    , time = "Opens in " ++ relativeTime ballot.start model
+                    , time = "Opens in " ++ relStart
                     , status = "Upcoming"
-                    , msg = Nav <| NTo <| VoteR ballotId
+                    , msg = voteR
                     }
 
                 IssueDone ->
                     { icon = "check-circle-outline"
-                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , time = "Closes in " ++ relFinish
                     , status = "Vote received"
-                    , msg = Nav <| NTo <| VoteR ballotId
+                    , msg = voteR
                     }
 
                 IssuePending ->
                     { icon = "google-circles-communities"
-                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , time = "Closes in " ++ relFinish
                     , status = "Vote pending"
-                    , msg = Nav <| NTo <| VoteR ballotId
+                    , msg = voteR
                     }
 
                 IssueVoteNow ->
                     { icon = "alert-circle-outline"
-                    , time = "Closes in " ++ relativeTime ballot.finish model
+                    , time = "Closes in " ++ relFinish
                     , status = "Vote now"
-                    , msg = Nav <| NTo <| VoteR ballotId
+                    , msg = voteR
                     }
 
         --        TODO: Style this better

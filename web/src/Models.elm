@@ -163,7 +163,7 @@ ballots =
       , Ballot "Strategy Phase 2"
             strategyDescription
             {- now -} 1516004800000
-            1520004800000
+            1530004800000
             [ BallotOption 835957160
                 "Purchase new property in Brazil"
                 "This option for phase 2 will result in approx 200,000 SUN invested into new property aquisitions in San Palo and Rio de Janeiro. See `Documents` for more information."
