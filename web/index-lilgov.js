@@ -2,7 +2,7 @@
 
 const loadElm = function() {
 
-    const Elm = require('./src/MainLilGov.elm');
+    const Elm = require('./src/SecureVote/SPAs/LilGov/Main.elm');
 
     if (typeof Elm !== "undefined") {
 
@@ -16,7 +16,7 @@ const loadElm = function() {
             singleDemocName: "SV Demo"
         };
 
-        const app = Elm.MainLilGov.embed(node, flags);
+        const app = Elm.SecureVote.SPAs.LilGov.Main.embed(node, flags);
 
         initialisePorts(app);
 

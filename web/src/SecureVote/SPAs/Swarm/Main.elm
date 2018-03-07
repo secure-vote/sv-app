@@ -1,19 +1,19 @@
-module MainLilGov exposing (..)
+module SecureVote.SPAs.Swarm.Main exposing (..)
 
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModel, lSKeys)
 import Msgs exposing (..)
 import Ports exposing (..)
-import Routes exposing (Route(LoginR))
+import Routes exposing (Route(DemocracyR))
+import SecureVote.SPAs.Swarm.Views.RootV exposing (rootView)
 import Task exposing (perform, succeed)
 import Time exposing (every, second)
 import Update exposing (update)
-import Views.RootLilGovV exposing (rootLilGovView)
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( initModel LoginR flags, initCmds )
+    ( initModel (DemocracyR flags.democracyId) flags, initCmds )
 
 
 initCmds : Cmd Msg
@@ -39,7 +39,7 @@ main : Program Flags Model Msg
 main =
     Html.programWithFlags
         { init = init
-        , view = rootLilGovView
+        , view = rootView
         , update = update
         , subscriptions = subscriptions
         }

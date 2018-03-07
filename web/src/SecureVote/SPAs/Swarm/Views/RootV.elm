@@ -1,4 +1,4 @@
-module Views.RootDemoV exposing (..)
+module SecureVote.SPAs.Swarm.Views.RootV exposing (..)
 
 --import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 --import Views.DashboardV exposing (dashboardH, dashboardV)
@@ -29,8 +29,8 @@ import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
 import Views.VoteV exposing (voteV)
 
 
-rootDemoView : Model -> Html Msg
-rootDemoView model =
+rootView : Model -> Html Msg
+rootView model =
     let
         isLoading =
             model.isLoading

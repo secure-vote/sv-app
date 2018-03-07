@@ -1,4 +1,4 @@
-module Views.RootLilGovV exposing (..)
+module SecureVote.SPAs.LilGov.Views.RootV exposing (..)
 
 --import AdminViews.CreateDemocracyV exposing (createDemocracyH, createDemocracyV)
 --import Views.DashboardV exposing (dashboardH, dashboardV)
@@ -16,6 +16,7 @@ import Maybe.Extra exposing ((?))
 import Models exposing (Model)
 import Msgs exposing (..)
 import Routes exposing (DialogRoute(UserInfoD), Route(..))
+import SecureVote.SPAs.LilGov.Views.LoginV exposing (loginV)
 import Styles.GenStyles exposing (genStylesheet)
 import Styles.Styles exposing (StyleOption(SvStyle, SwmStyle), SvClass(..))
 import Styles.Swarm exposing (scaled)
@@ -23,15 +24,14 @@ import Views.CreateBallotV exposing (createBallotV)
 import Views.DebugV exposing (debugV)
 import Views.DemocracyV exposing (democracyV)
 import Views.EditBallotV exposing (editBallotV)
-import Views.LoginV exposing (loginV)
 import Views.PetitionsV exposing (petitionsV)
 import Views.ResultsV exposing (resultsV)
 import Views.ViewHelpers exposing (SvElement, cssSpinner, nilView, notFoundView)
 import Views.VoteV exposing (voteV)
 
 
-rootLilGovView : Model -> Html Msg
-rootLilGovView model =
+rootView : Model -> Html Msg
+rootView model =
     let
         isLoading =
             model.isLoading

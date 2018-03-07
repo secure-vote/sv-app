@@ -2,7 +2,7 @@
 
 const loadElm = function() {
 
-    const Elm = require('./src/MainSwarm.elm');
+    const Elm = require('./src/SecureVote/SPAs/Swarm/Main.elm');
 
     if (typeof Elm !== "undefined") {
 
@@ -16,7 +16,7 @@ const loadElm = function() {
             singleDemocName: "SV Demo"
         };
 
-        const app = Elm.MainDemo.embed(node, flags);
+        const app = Elm.SecureVote.SPAs.Swarm.Main.embed(node, flags);
 
         initialisePorts(app);
 

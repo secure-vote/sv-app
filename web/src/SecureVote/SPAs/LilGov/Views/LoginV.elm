@@ -1,4 +1,4 @@
-module Views.LoginV exposing (..)
+module SecureVote.SPAs.LilGov.Views.LoginV exposing (..)
 
 import Components.Btn exposing (BtnProps(..), btn)
 import Element exposing (..)

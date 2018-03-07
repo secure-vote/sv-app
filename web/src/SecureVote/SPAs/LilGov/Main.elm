@@ -1,19 +1,19 @@
-module MainDemo exposing (..)
+module SecureVote.SPAs.LilGov.Main exposing (..)
 
 import Html exposing (Html)
 import Models exposing (Flags, Model, initModel, lSKeys)
 import Msgs exposing (..)
 import Ports exposing (..)
-import Routes exposing (Route(DemocracyR))
+import Routes exposing (Route(LoginR))
+import SecureVote.SPAs.LilGov.Views.RootV exposing (rootView)
 import Task exposing (perform, succeed)
 import Time exposing (every, second)
 import Update exposing (update)
-import Views.RootDemoV exposing (rootDemoView)
 
 
 init : Flags -> ( Model, Cmd Msg )
 init flags =
-    ( initModel (DemocracyR flags.democracyId) flags, initCmds )
+    ( initModel LoginR flags, initCmds )
 
 
 initCmds : Cmd Msg
@@ -39,7 +39,7 @@ main : Program Flags Model Msg
 main =
     Html.programWithFlags
         { init = init
-        , view = rootDemoView
+        , view = rootView
         , update = update
         , subscriptions = subscriptions
         }
