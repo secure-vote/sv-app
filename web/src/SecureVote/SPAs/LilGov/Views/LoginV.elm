@@ -20,7 +20,7 @@ loginV model =
 body : SvElement
 body =
     column NilS
-        [ center, spacing (scaled 2) ]
+        [ center, spacingXY 0 (scaled 2), padding (scaled 2) ]
         [ image NilS [ paddingXY 0 (scaled 6) ] { src = "test", caption = "SecureVote Logo" }
         , btn [ PriBtn ] (text "Participate in a vote")
         , btn [ SecBtn ] (text "Create a vote")

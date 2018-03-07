@@ -6,7 +6,7 @@ import Element.Events exposing (onClick)
 import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(BtnS, NilS))
 import Styles.Swarm exposing (scaled)
-import Styles.Variations exposing (Variation(BtnDisabled, BtnSmall, BtnText, BtnWarning, NBad))
+import Styles.Variations exposing (Variation(..))
 import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
@@ -29,11 +29,13 @@ btn props inner =
         btnPropToAttr prop =
             case prop of
                 PriBtn ->
-                    [ class "btn", padding (scaled 1) ]
+                    [ vary BtnPri True, class "btn" ]
 
+                --                    [ class "btn", padding (scaled 1) ]
                 SecBtn ->
-                    [ class "btn-secondary", padding (scaled 1) ]
+                    [ vary BtnSec True, class "btn-secondary" ]
 
+                --                    [ class "btn-secondary", padding (scaled 1) ]
                 Text ->
                     [ vary BtnText True ]
 

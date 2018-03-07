@@ -13,6 +13,8 @@ type Variation
     | SmallT
     | GreenT
     | AlignR
+    | BtnPri
+    | BtnSec
     | BtnDisabled
     | BtnWarning
     | BtnSmall

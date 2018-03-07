@@ -122,7 +122,7 @@ rootView model =
 
         mainLayout =
             column Body
-                [ spacing (scaled 4) ]
+                []
                 [ showAdmin
                 , headerRow
                 , body

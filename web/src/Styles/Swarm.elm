@@ -251,7 +251,13 @@ swmStyles =
         , Shadow.deep
         ]
     , style BtnS
-        [ variation BtnDisabled
+        [ variation BtnPri
+            [ prop "padding" <| toString (scaled 1) ++ "px"
+            ]
+        , variation BtnSec
+            [ prop "padding" <| toString (scaled 1) ++ "px"
+            ]
+        , variation BtnDisabled
             [ cursor "not-allowed"
             ]
         , variation BtnWarning
