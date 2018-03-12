@@ -1,7 +1,6 @@
 module Update exposing (..)
 
---import Spinner
-
+import Components.Navigation exposing (navUpdate)
 import Dict
 import Element.Input as Input
 import Helpers exposing (getDebugLog, getDemocracy, getSelectField, getTx)
@@ -11,9 +10,10 @@ import Models.Democracy exposing (DelegateState(Active, Inactive))
 import Msgs exposing (..)
 import Ports
 import Process
-import Routes exposing (Route(NotFoundRoute))
+import Routes exposing (Route(CR, NotFoundRoute))
 import Task
 import Time exposing (Time)
+import Utils.Update exposing (doUpdate)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -33,7 +33,7 @@ update msg model =
             { model | showDialog = False } ! []
 
         Nav msg ->
-            updateNav msg model
+            doUpdate Nav (navUpdate CR) msg model.navModel (\n -> { model | navModel = n })
 
         SetField msg ->
             updateField msg model
@@ -92,29 +92,6 @@ update msg model =
                     model2 ! [ cmds, cmds1 ]
             in
             List.foldl chain (model ! []) msgs
-
-
-updateNav : NavMsg -> Model -> ( Model, Cmd Msg )
-updateNav msg model =
-    case msg of
-        NBack ->
-            { model | routeStack = List.tail model.routeStack ? [ NotFoundRoute ] } ! []
-
-        NHome ->
-            { model | routeStack = List.drop (List.length model.routeStack - 1) model.routeStack } ! []
-
-        NTo newRoute ->
-            { model | routeStack = newRoute :: model.routeStack } ! []
-
-        NBackTo oldRoute ->
-            let
-                findRoute routeStack =
-                    if List.head routeStack == Just oldRoute then
-                        routeStack
-                    else
-                        findRoute <| List.tail routeStack ? []
-            in
-            { model | routeStack = findRoute model.routeStack } ! []
 
 
 updateField msg model =

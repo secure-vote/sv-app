@@ -9,12 +9,7 @@ const loadElm = function() {
         window['Elm'] = Elm;
 
         var node = document.getElementById('sv-fullscreen');
-        var flags = {
-            votingPrivKey: '', //Uint8Array.from(Array(32).fill(0)),
-            democracyId: 31,
-            admin: true,
-            singleDemocName: "SV Demo"
-        };
+        var flags = {};
 
         const app = Elm.SecureVote.SPAs.LilGov.Main.embed(node, flags);
 

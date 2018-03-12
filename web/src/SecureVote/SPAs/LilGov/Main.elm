@@ -1,14 +1,14 @@
 module SecureVote.SPAs.LilGov.Main exposing (..)
 
 import Html exposing (Html)
-import Models exposing (Flags, Model, initModel, lSKeys)
-import Msgs exposing (..)
 import Ports exposing (..)
-import Routes exposing (Route(LoginR))
+import SecureVote.SPAs.LilGov.Models exposing (Flags, Model, initModel)
+import SecureVote.SPAs.LilGov.Msgs exposing (..)
+import SecureVote.SPAs.LilGov.Routes exposing (LilGovRoute(LoginR))
+import SecureVote.SPAs.LilGov.Update exposing (update)
 import SecureVote.SPAs.LilGov.Views.RootV exposing (rootView)
 import Task exposing (perform, succeed)
 import Time exposing (every, second)
-import Update exposing (update)
 
 
 init : Flags -> ( Model, Cmd Msg )
@@ -20,7 +20,6 @@ initCmds : Cmd Msg
 initCmds =
     Cmd.batch <|
         [ perform Tick Time.now
-        , perform (ToLs << LsRead) (succeed lSKeys.debugLog)
         ]
 
 
@@ -28,10 +27,6 @@ subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ every second Tick
-        , receiptBcData <| FromBc << BcReceipt
-        , confirmBcData <| FromBc << BcConfirm
-        , receiveBcData <| FromBc << BcReceive
-        , gotLsImpl <| FromLs << LsReceive
         ]
 
 

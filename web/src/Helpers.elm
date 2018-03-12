@@ -312,7 +312,10 @@ genNewId parentId nonce =
     1033 * (parentId + nonce * 17)
 
 
-para : List (Attribute Variation Msg) -> String -> SvElement
+
+--para : List (Attribute Variation Msg) -> String -> SvElement
+
+
 para attrs txt =
     paragraph ParaS attrs [ text txt ]
 

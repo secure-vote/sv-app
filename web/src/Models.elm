@@ -1,5 +1,6 @@
 module Models exposing (..)
 
+import Components.Navigation exposing (NavModel, initNavModel)
 import Dict exposing (Dict)
 import Element.Input as Input exposing (SelectMsg, SelectWith)
 import Json.Decode exposing (Value)
@@ -24,7 +25,7 @@ type alias Model =
     , dialogHtml : { title : String, route : DialogRoute Msg }
     , localStorage : Dict String String
     , txReceipts : Dict String BcRequest
-    , routeStack : List Route
+    , navModel : NavModel Route
     , fields : Dict String String
     , intFields : Dict String Int
     , floatFields : Dict String Float
@@ -51,7 +52,7 @@ initModel initRoute flags =
     , dialogHtml = { title = "", route = NotFoundD }
     , localStorage = Dict.empty
     , txReceipts = Dict.empty
-    , routeStack = [ initRoute ]
+    , navModel = initNavModel initRoute
     , fields = Dict.empty
     , intFields = Dict.empty
     , floatFields = Dict.empty

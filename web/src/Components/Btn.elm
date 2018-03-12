@@ -3,27 +3,31 @@ module Components.Btn exposing (..)
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)
-import Msgs exposing (Msg)
 import Styles.Styles exposing (SvClass(BtnS, NilS))
 import Styles.Swarm exposing (scaled)
 import Styles.Variations exposing (Variation(..))
-import Views.ViewHelpers exposing (SvAttribute, SvElement)
 
 
-type BtnProps
+--import Views.ViewHelpers exposing (SvAttribute, SvElement)
+
+
+type BtnProps msg
     = PriBtn
     | SecBtn
     | Text
     | Small
     | VSmall
-    | Click Msg
+    | Click msg
     | Disabled Bool
     | Warning
     | BtnNop -- doesn't do anything
-    | Attr SvAttribute
+    | Attr (Attribute Variation msg)
 
 
-btn : List BtnProps -> SvElement -> SvElement
+
+--btn : List (BtnProps msg) -> SvElement -> SvElement
+
+
 btn props inner =
     let
         btnPropToAttr prop =
@@ -48,7 +52,6 @@ btn props inner =
                 Click msg ->
                     [ onClick msg ]
 
-                -- TODO: Btn is not safely disabled. Can be removed with Dev Tools
                 Disabled bool ->
                     if bool then
                         [ attribute "disabled" "disabled" ]

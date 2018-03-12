@@ -1,5 +1,6 @@
 module Msgs exposing (..)
 
+import Components.Navigation exposing (NavMsg)
 import Element.Input exposing (SelectMsg, SelectWith)
 import Models.Ballot exposing (Ballot, BallotId, BallotState)
 import Models.Democracy exposing (DelegateState, Democracy, DemocracyId)
@@ -14,7 +15,7 @@ type Msg
     | Tick Time
     | SetDialog String (DialogRoute Msg)
     | HideDialog
-    | Nav NavMsg
+    | Nav (NavMsg Route)
     | SetField SetFieldMsg
     | Select String (SelectMsg DurationType)
     | SetState SetStateMsg
@@ -28,13 +29,6 @@ type Msg
       --    Helper Msgs
     | MultiMsg (List Msg)
     | ChainMsgs (List Msg)
-
-
-type NavMsg
-    = NBack
-    | NHome
-    | NTo Route
-    | NBackTo Route
 
 
 type SetFieldMsg

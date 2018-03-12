@@ -7,6 +7,7 @@ module SecureVote.SPAs.Swarm.Views.RootV exposing (..)
 import Components.Btn exposing (BtnProps(Click), btn)
 import Components.Dialog exposing (dialog)
 import Components.Icons exposing (IconSize(I24, I36), mkIcon)
+import Components.Navigation exposing (NavMsg(..))
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Helpers exposing (card)
@@ -52,13 +53,13 @@ rootView model =
             H.node tag attrs children
 
         navBack =
-            if List.length model.routeStack > 1 then
+            if List.length model.navModel.routeStack > 1 then
                 [ btn [ Click <| Nav <| NBack ] (mkIcon "arrow-left" I24) ]
             else
                 [ empty ]
 
         debug =
-            if List.head model.routeStack == Just DebugR then
+            if List.head model.navModel.routeStack == Just DebugR then
                 [ empty ]
             else
                 [ btn [ Click <| Nav <| NTo DebugR ] (mkIcon "alert-circle-outline" I24) ]
@@ -67,7 +68,7 @@ rootView model =
             header
 
         ( admin, header, body ) =
-            case List.head model.routeStack ? NotFoundRoute of
+            case List.head model.navModel.routeStack ? NotFoundRoute of
                 DashboardR ->
                     notFoundView
 
@@ -104,7 +105,7 @@ rootView model =
 
         headerRow =
             card <|
-                row HeaderStyle
+                row HeaderS
                     [ spacing (scaled 2), spread ]
                     [ row NilS [ width fill, alignLeft, padding (scaled 1) ] <| navBack ++ hLeft
                     , row MenuBarHeading [ width fill, padding (scaled 1), center ] hCenter

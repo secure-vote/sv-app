@@ -1,6 +1,7 @@
 module Components.IssueCard exposing (..)
 
 import Components.Icons exposing (IconSize(I24), mkIcon)
+import Components.Navigation exposing (NavMsg(..))
 import Element exposing (..)
 import Element.Attributes exposing (..)
 import Element.Events exposing (onClick)

@@ -1,6 +1,7 @@
 module Views.DialogV exposing (..)
 
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn), btn)
+import Components.Navigation exposing (NavMsg(..))
 import Element exposing (column, el, html, paragraph, row, table, text)
 import Element.Attributes exposing (alignRight, center, class, height, padding, px, spacing)
 import Helpers exposing (findDemocracy, getBallot, getFloatField, getVote, para)

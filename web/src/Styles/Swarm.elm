@@ -116,7 +116,7 @@ swmStyles =
         [ Font.size 16
         , Font.weight 300
         ]
-    , style HeaderStyle
+    , style HeaderS
         bottomBorder
     , style Heading <|
         [ Font.size <| scaled 4

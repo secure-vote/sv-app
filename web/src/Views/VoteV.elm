@@ -2,6 +2,7 @@ module Views.VoteV exposing (..)
 
 import Components.Btn exposing (BtnProps(Click, Disabled, PriBtn, SecBtn, Small, VSmall, Warning), btn)
 import Components.Icons exposing (IconSize(I24), mkIcon)
+import Components.Navigation exposing (NavMsg(..))
 import Components.Slider exposing (slider)
 import Element exposing (..)
 import Element.Attributes exposing (..)

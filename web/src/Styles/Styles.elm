@@ -15,7 +15,7 @@ type StyleOption
 
 type SvClass
     = Body
-    | HeaderStyle
+    | HeaderS
     | Heading
     | MenuBarHeading
     | SubH

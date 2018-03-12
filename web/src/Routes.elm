@@ -1,8 +1,10 @@
 module Routes exposing (..)
 
+import Components.Navigation exposing (CommonRoute)
 import Models.Ballot exposing (BallotId)
 import Models.Democracy exposing (DemocracyId)
 import Models.Vote exposing (Vote, VoteId)
+import SecureVote.SPAs.LilGov.Routes exposing (LilGovRoute)
 
 
 type Route
@@ -16,6 +18,8 @@ type Route
     | PetitionsR
     | DebugR
     | LoginR
+    | LGR LilGovRoute
+    | CR CommonRoute
     | NotFoundRoute
 
 
